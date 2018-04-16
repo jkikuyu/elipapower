@@ -2,14 +2,25 @@ package com.ipayafrica.elipapower;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
-@SpringBootApplication
-public class ElipaAPI {
+@SpringBootApplication(scanBasePackages={"com.ipayafrica.elipapower"})// same as @Configuration @EnableAutoConfiguration @ComponentScan
+
+public class ElipaAPI extends SpringBootServletInitializer{
 
 	public ElipaAPI() {
 		// TODO Auto-generated constructor stub
 	}
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(ElipaAPI.class);
+    }
+     
+
 	public static void main (String[] args){
-		SpringApplication.run(ElipaAPI.class, args);
+        SpringApplication.run(ElipaAPI.class, args);
 	}
 }
+
+ 
