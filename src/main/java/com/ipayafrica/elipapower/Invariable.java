@@ -38,8 +38,6 @@ public class Invariable {
     
     public static final String VER = "ver";
     
-    public static final String VERION = "2.44";
-    
     public static final String AMT = "amt";
     
     public static final String VENDLASTREQ = "vendLastReq";
@@ -48,13 +46,15 @@ public class Invariable {
     
     public static final String REPCOUNT ="repcount" ;
     
-    public static final String ORIGTIMEE = "origTime";
+    public static final String ORIGTIME = "origTime";
+    
+    public static final String ORIGREF = "origref";
+
     
     public static final String VENDREVREQ = "vendRevReq";
     
     public static final String VENDREVRES = "vendRevRes";
     
-    public static final String NUMTOKEN = "numToken";
 
     
 

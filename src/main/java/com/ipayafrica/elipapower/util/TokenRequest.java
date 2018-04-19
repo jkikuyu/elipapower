@@ -1,6 +1,4 @@
 package com.ipayafrica.elipapower.util;
-
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -9,27 +7,35 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.nio.charset.Charset;
 import java.util.Scanner;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 @Component
+@PropertySource("classpath:application.properties")
 public class TokenRequest {
-	private byte[] res = null, message=null ;
+	private byte[] res = null; 
+	
+	@Autowired
+	private Environment env;
 
 	public TokenRequest() {
 	}
+
+
 	/**
-	 * @author iPay
-	 * @param msg
+	 * 
+	 * @param reqB
 	 * @return
-	 * @throws Exception
 	 */
-	
-	public String makeRequest(String req){
-		String serverIP= "41.204.194.188";
-		int port = 8902;
+	public String makeRequest(byte[] reqB){
+//		String serverIP= "41.204.194.188";
+		String serverIP = env.getProperty("server.ip");
+		int port =  Integer.parseInt(env.getProperty("server.port"));
+//		int port = 8902;
 		int timeout = 30000;
 		Scanner is = null;
 		DataOutputStream os = null;
@@ -37,22 +43,20 @@ public class TokenRequest {
 
 	    String responseLine =""; // obtain response from server
 
-		try {
-			byte[] reqB = req.getBytes(Charset.forName("UTF-8"));
 
+		try {
 			res = wrap(reqB);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e2) {
+			e2.printStackTrace();
 		}
-		
-		InputStream inputStream = new ByteArrayInputStream(res); //convert into input stream
+
+		/*	InputStream inputStream = new ByteArrayInputStream(res); //convert into input stream
 		try {
 			message = unWrap(inputStream);
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
+		}*/
 
 		try {
 			socket = new Socket();

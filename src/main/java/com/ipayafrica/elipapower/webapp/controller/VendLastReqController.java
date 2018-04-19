@@ -1,6 +1,5 @@
 package com.ipayafrica.elipapower.webapp.controller;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.RequestMapping;
 /**
  * @author Jude Kikuyu
@@ -19,9 +18,6 @@ public class VendLastReqController {
 
     private byte[] reqXML;
     private CreateXML createxml;
-
-	@Autowired
-	private Environment env;
 
 	@Autowired
     private TokenRequest tokenRequest;
@@ -47,9 +43,8 @@ public class VendLastReqController {
 	
 	@RequestMapping("/vendlastreq")
 	public void lastRequest(){
-		String client = env.getProperty("company.name");
-		String term = env.getProperty("company.id");
-		reqXML = createxml.buildXML(client, term);
+		String meterNo = "A12C3456789";
+		reqXML = createxml.buildXML(meterNo, 2);
 		tokenRequest.makeRequest(reqXML);
 
 		
