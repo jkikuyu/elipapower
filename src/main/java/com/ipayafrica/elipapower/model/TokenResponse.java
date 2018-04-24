@@ -1,4 +1,9 @@
 package com.ipayafrica.elipapower.model;
+/**
+*
+* @author Jude Kikuyu
+* created on 18/04/2018
+* 
 
 import java.io.Serializable;
 import java.util.Date;
@@ -94,4 +99,4 @@ public class TokenResponse implements Serializable{
 	}
 	
 
-}
+}*/

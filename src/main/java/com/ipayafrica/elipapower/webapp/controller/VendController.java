@@ -19,8 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ipayafrica.elipapower.service.ITokenRequestService;
 import com.ipayafrica.elipapower.util.CreateXML;
-import com.ipayafrica.elipapower.util.TokenRequest;
+import com.ipayafrica.elipapower.util.RequestToken;
 
 @RestController
 public class VendController {
@@ -29,27 +30,34 @@ public class VendController {
     private CreateXML createxml;
     
 	@Autowired
-    private TokenRequest tokenRequest;
+    private RequestToken requestToken;
    
+	private ITokenRequestService iTokenRequestManager = null;
+	
 	public VendController() {
 	}
-	public TokenRequest getTokenRequest() {
-		return tokenRequest;
+	public RequestToken getTokenRequest() {
+		return requestToken;
 	}
 
 	public CreateXML getCreatexml() {
 		return createxml;
 	}
+
 	@Autowired
 	public void setCreatexml(CreateXML createxml) {
 		this.createxml = createxml;
 	}
 
 	@Autowired
-	public void setTokenRequest(TokenRequest tokenRequest) {
-		this.tokenRequest = tokenRequest;
+	public void setTokenRequest(RequestToken tokenRequest) {
+		this.requestToken = tokenRequest;
 	}
-	
+	@Autowired
+	public void setiTokenRequestManager(ITokenRequestService iTokenRequestManager) {
+		this.iTokenRequestManager = iTokenRequestManager;
+	}
+
 	@RequestMapping("/tokenreq")
 	public void getElectricity(){
 
@@ -58,8 +66,10 @@ public class VendController {
 
     
 	byte[] reqXML= createxml.buildXML( meterNo, amount );
-	tokenRequest.makeRequest(reqXML);
+	requestToken.makeRequest(reqXML);
+	
 	}
+
 
 }
 

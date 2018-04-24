@@ -3,12 +3,13 @@ package com.ipayafrica.elipapower.service.impl;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
+import javax.transaction.Transactional;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import com.ipayafrica.elipapower.repository.IGenericDao;
 import com.ipayafrica.elipapower.service.IGenericService;
 
 
@@ -21,15 +22,13 @@ public class GenericServiceImpl<T, PK extends Serializable> implements IGenericS
     /**
      * GenericDao instance, set by constructor of child classes
      */
-    protected GenericRepository<T, PK> dao;
+    protected IGenericDao<T, PK> dao;
 
-    @Autowired
-    private CompassSearchHelper compass;
 
     public GenericServiceImpl() {
     }
 
-    public GenericServiceImpl(GenericDao<T, PK> genericDao) {
+    public GenericServiceImpl(IGenericDao<T, PK> genericDao) {
         this.dao = genericDao;
     }
 
@@ -50,15 +49,16 @@ public class GenericServiceImpl<T, PK extends Serializable> implements IGenericS
     /**
      * {@inheritDoc}
      */
-    public boolean exists(PK id) {
+/*    public boolean exists(PK id) {
         return dao.exists(id);
     }
-
+*/
     /**
      * {@inheritDoc}
      */
-    public T save(T object) {
-        return dao.save(object);
+    @Transactional
+    public <S extends T> S save(S entity) {
+        return dao.save(entity);
     }
 
     /**
@@ -86,23 +86,11 @@ public class GenericServiceImpl<T, PK extends Serializable> implements IGenericS
         
         q = "*"+q+"*";
 
-        CompassSearchCommand command = new CompassSearchCommand(q);
-        CompassSearchResults compassResults = compass.search(command);
-        CompassHit[] hits = compassResults.getHits();
 
         if (log.isDebugEnabled() && clazz != null) {
             log.debug("Filtering by type: " + clazz.getName());
         }
 
-        for (CompassHit hit : hits) {
-            if (clazz != null) {
-                if (hit.data().getClass().equals(clazz)) {
-                    results.add((T) hit.data());
-                }
-            } else {
-                results.add((T) hit.data());
-            }
-        }
 
         if (log.isDebugEnabled()) {
             log.debug("Number of results for '" + q + "': " + results.size());
@@ -137,10 +125,10 @@ public class GenericServiceImpl<T, PK extends Serializable> implements IGenericS
 		return dao.search(className, creteria, column, item);
 	}
 
-	public Integer updateAll(String queryString)
+/*	public Integer updateAll(String queryString)
 	{
 		return dao.updateAll(queryString);
-	}
+	}*/
 	
 	public List  <T> searchByDate(String field, String dfrom, String dto,
 			Class<?> klass) {
@@ -150,35 +138,6 @@ public class GenericServiceImpl<T, PK extends Serializable> implements IGenericS
 	
 	}
 	
-	public List  <T> findTopN ( String  q , Integer N)
-	{
-		
-		return dao.findTopN (q ,N);
-	}
-
-	public List<Map<String, Object>> GetColumns (String objectname) {
-		return this.dao.GetColumns(objectname);
-	}
-
-	public List<Object> SearchReport(String className, String creteria,
-			String column, String item, String dfrom, String dto) {
-		return dao.SearchReport( className,  creteria,column,  item,  dfrom,  dto);
-	}
-
-
-
-	public List<Object> getReconDetails(String tempstatus, Integer recordtype,
-			String Datefrom, String DateTo, String clmn, String Criteria, String strItem) {		
-		return dao.getReconDetails(tempstatus, recordtype, Datefrom, DateTo, clmn, Criteria, strItem);
-	}
-
-	public List<Object> getConfirmDetails(String status, String Datefrom, String DateTo, String clmn, String Criteria, String strItem) {		
-		return dao.getConfirmDetails(status, Datefrom, DateTo, clmn, Criteria, strItem);
-	}
-	
-	public List<Object> getFromPaymentsRecon(String status, String Datefrom, String DateTo, String clmn, String Criteria, String strItem) {		
-		return dao.getFromPaymentsRecon(status, Datefrom, DateTo, clmn, Criteria, strItem);
-	}
 	
 	
 }

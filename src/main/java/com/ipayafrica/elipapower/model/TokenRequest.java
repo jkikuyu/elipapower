@@ -31,7 +31,7 @@ public class TokenRequest implements Serializable{
     @Id
     @Basic(optional = false)
     @GeneratedValue(generator="sequence",strategy=GenerationType.SEQUENCE)
-    @Column(name = "REQUESID")
+    @Column(name = "REQUESTID")
     private Long requestid;
     @Column(name = "METERNO")
     private Long meterno;
@@ -44,15 +44,19 @@ public class TokenRequest implements Serializable{
     private String requestxml;
     @Column(name = "TYPE")
     private String type;
+    @Column(name = "REF")
+    private Long ref;
+
     @Column(name="REQUESTEDBY")
     private Long requestedby;
-    @Column(name = "REQUESTDATE")
+    
+	@Column(name = "REQUESTDATE")
     @Temporal(TemporalType.TIMESTAMP)
+	
     private Date requestdate;
     @Column(name = "OSYSDATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date osysdate;
-    
 
 	public TokenRequest() {
 		
@@ -147,5 +151,16 @@ public class TokenRequest implements Serializable{
 	public void setOsysdate(Date osysdate) {
 		this.osysdate = osysdate;
 	}
+    public Long getRef() {
+		return ref;
+	}
+
+
+	public void setRef(Long ref) {
+		this.ref = ref;
+	}
+
+
+
 
 }

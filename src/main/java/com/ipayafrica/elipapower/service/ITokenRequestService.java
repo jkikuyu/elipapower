@@ -1,8 +1,18 @@
 package com.ipayafrica.elipapower.service;
 
+import java.util.List;
+
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 
+import com.ipayafrica.elipapower.model.TokenRequest;
+
 @Service
-public interface ITokenRequestService {
+@ComponentScan({"com.ipayafrica.elipapower"})
+public interface ITokenRequestService extends IGenericService<TokenRequest, Long>{
+
+	List<TokenRequest> getAllRecords();
+	TokenRequest getByTokenRequestId (Long requestId);
+
 
 }

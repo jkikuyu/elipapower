@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ipayafrica.elipapower.util.CreateXML;
-import com.ipayafrica.elipapower.util.TokenRequest;
+import com.ipayafrica.elipapower.util.RequestToken;
 
 @RestController
 public class VendRevController {
@@ -24,7 +24,7 @@ public class VendRevController {
     private CreateXML createxml;
 
 	@Autowired
-    private TokenRequest tokenRequest;
+    private RequestToken tokenRequest;
    
 	public CreateXML getCreatexml() {
 		return createxml;
@@ -35,7 +35,7 @@ public class VendRevController {
 	}
 
 	@Autowired
-	public void setTokenRequest(TokenRequest tokenRequest) {
+	public void setTokenRequest(RequestToken tokenRequest) {
 		this.tokenRequest = tokenRequest;
 	}
 

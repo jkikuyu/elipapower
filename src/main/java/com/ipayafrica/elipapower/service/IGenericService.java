@@ -30,14 +30,14 @@ public interface IGenericService<T, PK extends Serializable> {
      * @param id the identifier (primary key) of the object to get
      * @return - true if it exists, false if it doesn't
      */
-    boolean exists(PK id);
+    //boolean exists(PK id);
 
     /**
      * Generic method to save an object - handles both update and insert.
      * @param object the object to save
      * @return the updated object
      */
-    T save(T object);
+    <S extends T> S save(S entity);
 
     /**
      * Generic method to delete an object based on class and id
@@ -57,8 +57,8 @@ public interface IGenericService<T, PK extends Serializable> {
     
     List <T> FindAll(String queryString);
     
-   Integer updateAll(String queryString);
-   
+/*   Integer updateAll(String queryString);
+*/   
    List  <T> search(String className, String creteria, String column,String item);
    
    List <T> searchByDate(String field, String dfrom, String dto, Class<?> klass) ;

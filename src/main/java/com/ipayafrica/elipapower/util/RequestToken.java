@@ -16,13 +16,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 @PropertySource("classpath:application.properties")
-public class TokenRequest {
+public class RequestToken {
 	private byte[] res = null; 
 	
 	@Autowired
 	private Environment env;
 
-	public TokenRequest() {
+	public RequestToken() {
 	}
 
 
