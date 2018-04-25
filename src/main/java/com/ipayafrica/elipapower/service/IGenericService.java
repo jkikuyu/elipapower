@@ -1,11 +1,9 @@
 package com.ipayafrica.elipapower.service;
 
-import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 
-public interface IGenericService<T, PK extends Serializable> {
+public interface IGenericService<T> {
 
     /**
      * Generic method used to get all objects of a particular type. This
@@ -23,7 +21,7 @@ public interface IGenericService<T, PK extends Serializable> {
      * @return a populated object
      * @see org.springframework.orm.ObjectRetrievalFailureException
      */
-    T get(PK id);
+    //T get(id);
 
     /**
      * Checks for existence of an object of type T using the id arg.
@@ -37,8 +35,6 @@ public interface IGenericService<T, PK extends Serializable> {
      * @param object the object to save
      * @return the updated object
      */
-    <S extends T> S save(S entity);
-
     /**
      * Generic method to delete an object based on class and id
      * @param long the identifier (primary key) of the object to remove
@@ -51,17 +47,6 @@ public interface IGenericService<T, PK extends Serializable> {
      * @param clazz type of class to search for.
      * @return a list of matched objects
      */
-    List<T> search(String searchTerm, Class clazz);
-    
-    int deleteALL(String  Entity , String Property , String Value);
-    
-    List <T> FindAll(String queryString);
-    
-/*   Integer updateAll(String queryString);
-*/   
-   List  <T> search(String className, String creteria, String column,String item);
-   
-   List <T> searchByDate(String field, String dfrom, String dto, Class<?> klass) ;
-   
+
 
 }

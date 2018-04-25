@@ -1,36 +1,52 @@
 package com.ipayafrica.elipapower.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.ipayafrica.elipapower.model.TokenRequest;
-import com.ipayafrica.elipapower.repository.ITokenRequestDao;
+import com.ipayafrica.elipapower.repository.ITokenRequestRepository;
 import com.ipayafrica.elipapower.service.ITokenRequestService;
-@Service("tokenRequestService")
 
-public class TokenRequestServiceImpl extends GenericServiceImpl<TokenRequest, Long>
-implements ITokenRequestService{
-	private ITokenRequestDao iTokenRequestDao = null;
+public class TokenRequestService implements ITokenRequestService{
+
 	@Autowired
-	public void setiTokenRequestDao(ITokenRequestDao iTokenRequestDao) {
-		this.dao = iTokenRequestDao;
+	ITokenRequestRepository tokenRequestRepository;
 
-		this.iTokenRequestDao = iTokenRequestDao;
+	@Override
+	public List<TokenRequest> getAll() {
+		List <TokenRequest> tokenRequests = new ArrayList<>();
+		tokenRequestRepository.findAll().forEach(tokenRequests::add);
+
+		// TODO Auto-generated method stub
+		
+		return tokenRequests;
 	}
+
+	public void save(TokenRequest tokenRequest) {
+		tokenRequestRepository.save(tokenRequest);
+	}
+
+	@Override
+	public void remove(long Long) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	@Override
 	public List<TokenRequest> getAllRecords() {
-		// TODO Auto-generated method stub
-		return iTokenRequestDao.getAllRecords();
-	}
-
-	@Override
-	public TokenRequest getByTokenRequestId(Long accountId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
+	public TokenRequest getByTokenRequestId(Long requestId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+		 
 
 
 }

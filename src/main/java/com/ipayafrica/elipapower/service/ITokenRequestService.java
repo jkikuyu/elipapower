@@ -9,7 +9,7 @@ import com.ipayafrica.elipapower.model.TokenRequest;
 
 @Service
 @ComponentScan({"com.ipayafrica.elipapower"})
-public interface ITokenRequestService extends IGenericService<TokenRequest, Long>{
+public interface ITokenRequestService extends IGenericService<TokenRequest>{
 
 	List<TokenRequest> getAllRecords();
 	TokenRequest getByTokenRequestId (Long requestId);
