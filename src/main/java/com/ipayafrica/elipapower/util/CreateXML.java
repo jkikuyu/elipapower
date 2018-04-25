@@ -11,7 +11,6 @@ package com.ipayafrica.elipapower.util;
  * A12C3456789</meter><payType>cash</payType></vendReq></elecMsg></ipayMsg>
  */
 import java.io.ByteArrayOutputStream;
-
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,11 +30,15 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.output.XMLOutputter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import com.ipayafrica.elipapower.Invariable;;
+import com.ipayafrica.elipapower.Invariable;
+@PropertySource("classpath:application.properties")
+
 @Component
+
 public class CreateXML {
 	@Autowired
 	private Environment env;
@@ -55,9 +58,7 @@ public class CreateXML {
 		currency = "KES";
 		num  = "1";
 		type = "cash";
-		client = env.getProperty("company.name");
-		term = env.getProperty("company.id");
-        ver = env.getProperty("api.ver");
+
 
 		Date date = new Date();// date to be used in message
         
@@ -71,6 +72,8 @@ public class CreateXML {
 
 
 	}
+
+
 	/**
 	 *<ipayMsg client="IPAYAFRICA" term="00001" seqNum="2" time="2018­-04­-16 10:57:00 +0300"> 
 	 * <elecMsg ver="2.44"> <custInfoReq><ref>136105700003</ref><meter>123456789</meter>
@@ -84,7 +87,9 @@ public class CreateXML {
 
 		doc = new Document();
 		createInitDoc();
-		
+		client = env.getProperty("company.name");
+		term = env.getProperty("company.id");
+        ver = env.getProperty("api.ver");
 		Element ref = new Element(Invariable.REF);
 		ref.setText(refNo);
 		

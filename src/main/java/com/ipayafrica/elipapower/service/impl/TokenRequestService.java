@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.ipayafrica.elipapower.model.TokenRequest;
 import com.ipayafrica.elipapower.repository.ITokenRequestRepository;
 import com.ipayafrica.elipapower.service.ITokenRequestService;
 
+@Service
 public class TokenRequestService implements ITokenRequestService{
 
 	@Autowired
