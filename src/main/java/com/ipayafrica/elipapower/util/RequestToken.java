@@ -13,7 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-
+/**
+ * 
+ * @author jkikuyu
+ * created on 18/04/2018
+ */
 @Component
 @PropertySource("classpath:application.properties")
 public class RequestToken {

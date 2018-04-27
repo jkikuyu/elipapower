@@ -2,6 +2,7 @@ package com.ipayafrica.elipapower.util;
 /**
  * 
  * @author Jude Kikuyu
+ * created on 18/04/2018
  * 
  * This class is used to generate the XML document
  * The document resembles the format below
@@ -26,6 +27,8 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.output.XMLOutputter;
@@ -35,29 +38,34 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.ipayafrica.elipapower.Invariable;
+import com.ipayafrica.elipapower.model.TokenRequest;
 @PropertySource("classpath:application.properties")
 
 @Component
 
 public class CreateXML {
-	@Autowired
-	private Environment env;
-	//Document
-	Document doc=null;
-	
+    protected final transient Log log = LogFactory.getLog(getClass());
 
 	private Element ipayMsg = null, elecMsg=null;
 	byte[] reqXML=null;
 	private String seqNo, refNo, num, currency, type, client, term, ver, dtt;
 	int repeat = 0;
 	
+	@Autowired
+	private Environment env;
+	//Document
+	Document doc=null;
+	@Autowired
+	LogFile logfile;
+	
+
+
 	//constructor
 	public CreateXML() {
 		seqNo = "1";
 		refNo = "136105500001";
 		currency = "KES";
 		num  = "1";
-		type = "cash";
 
 
 		Date date = new Date();// date to be used in message
@@ -68,8 +76,6 @@ public class CreateXML {
 		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 		sdf.setTimeZone(TimeZone.getTimeZone("Africa/Nairobi"));
 		dtt = sdf.format(date);
-
-
 
 	}
 
@@ -90,6 +96,8 @@ public class CreateXML {
 		client = env.getProperty("company.name");
 		term = env.getProperty("company.id");
         ver = env.getProperty("api.ver");
+        type = env.getProperty("payment.type");
+        currency = env.getProperty("currency.code");
 		Element ref = new Element(Invariable.REF);
 		ref.setText(refNo);
 		
@@ -142,7 +150,7 @@ public class CreateXML {
 			elecMsg.addContent(vendRevReq);
 		}
 		makeXML(doc);
-
+		logfile.eventLog(reqXML.toString());
 		return reqXML;
 	}
 	/**
@@ -151,7 +159,7 @@ public class CreateXML {
 	 * @param meterNo
 	 * @return
 	 */
-	public byte[] buildXML(String meterNo, String amount){
+	public byte[] buildXML(String meterNo, String amount,TokenRequest tokenReq){
 
         reqXML = null;
 
@@ -160,6 +168,10 @@ public class CreateXML {
     	// vendreq element
     	Element vendReq = null;
     	
+    	tokenReq.setAmount(Double.parseDouble(amount));
+    	tokenReq.setMeterno(meterNo);
+    	tokenReq.setRef(ref);
+    	tokenReq.setType(type);
 		createInitDoc();
 		//ref
 		Element ref = new Element(Invariable.REF);
@@ -247,6 +259,20 @@ public class CreateXML {
 		}
         reqXML =baos.toByteArray();
 
+	}
+	private void generateRef() {
+		
+		/**i.) The fixed length reference  number is generated as follows
+		 * "last digit of current year" + "day of the year" + "hour" + "minute" +
+		 *"incremental counter val". E.g on the 18 April 2018 (138th day of 2018), at 1:02
+		 *pm local time, while sending the 140'th message since the client software started
+		 *up, your reference number should be: "813813020140". 
+		 *ii.) All values are zero padded on the left to make up a fixed 12 digit value. 
+		 *iii.)The message counter does not reset to zero at the start of every minute. If the
+		 *message counter reaches 9999 it simply rolls over to 0000 again.
+		**/
+		dtt
+		ref
 	}
 }
 	

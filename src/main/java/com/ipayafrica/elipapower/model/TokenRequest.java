@@ -15,37 +15,34 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "TOKENREQUEST")
-@SequenceGenerator(allocationSize=1,name="sequence", sequenceName="TOKENREQUEST_FCSEQ")
-
 public class TokenRequest implements Serializable{
 
 
 	private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @GeneratedValue(generator="sequence",strategy=GenerationType.SEQUENCE)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "REQUESTID")
     private Long requestid;
-    @Column(name = "METERNO")
-    private Long meterno;
+    @Column(name = "METERNO", nullable=false, length=100)
+    private String meterno;
     @Column(name = "SEQNUM")
-    private String seqnum;
-    @Column(name = "AMOUNT")
+    private Integer seqnum;
+    @Column(name = "AMOUNT", precision=8, scale=2)
     private Double amount;
 
     @Column(name = "REQUESTXML")
     private String requestxml;
     @Column(name = "TYPE")
     private String type;
-    @Column(name = "REF")
-    private Long ref;
+    @Column(name = "REF", precision=12)
+    private Double ref;
 
     @Column(name="REQUESTEDBY")
     private Long requestedby;
@@ -61,19 +58,17 @@ public class TokenRequest implements Serializable{
 	public TokenRequest() {
 		
 	}
-
-
 	public Long getRequestid() {
 		return requestid;
 	}
 
 
-	public Long getMeterno() {
+	public String getMeterno() {
 		return meterno;
 	}
 
 
-	public String getSeqnum() {
+	public Integer getSeqnum() {
 		return seqnum;
 	}
 
@@ -113,12 +108,12 @@ public class TokenRequest implements Serializable{
 	}
 
 
-	public void setMeterno(Long meterno) {
+	public void setMeterno(String meterno) {
 		this.meterno = meterno;
 	}
 
 
-	public void setSeqnum(String seqnum) {
+	public void setSeqnum(Integer seqnum) {
 		this.seqnum = seqnum;
 	}
 
@@ -151,12 +146,12 @@ public class TokenRequest implements Serializable{
 	public void setOsysdate(Date osysdate) {
 		this.osysdate = osysdate;
 	}
-    public Long getRef() {
+    public Double getRef() {
 		return ref;
 	}
 
 
-	public void setRef(Long ref) {
+	public void setRef(Double ref) {
 		this.ref = ref;
 	}
 

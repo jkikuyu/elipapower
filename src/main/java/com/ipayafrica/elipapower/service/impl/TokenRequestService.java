@@ -14,20 +14,20 @@ import com.ipayafrica.elipapower.service.ITokenRequestService;
 public class TokenRequestService implements ITokenRequestService{
 
 	@Autowired
-	ITokenRequestRepository tokenRequestRepository;
+	ITokenRequestRepository<TokenRequest, Long> tokenRequestRepository;
 
 	@Override
 	public List<TokenRequest> getAll() {
 		List <TokenRequest> tokenRequests = new ArrayList<>();
 		tokenRequestRepository.findAll().forEach(tokenRequests::add);
 
-		// TODO Auto-generated method stub
-		
+	
 		return tokenRequests;
 	}
 
-	public void save(TokenRequest tokenRequest) {
+	public TokenRequest save(TokenRequest tokenRequest) {
 		tokenRequestRepository.save(tokenRequest);
+		return tokenRequest;
 	}
 
 	@Override
@@ -44,6 +44,12 @@ public class TokenRequestService implements ITokenRequestService{
 
 	@Override
 	public TokenRequest getByTokenRequestId(Long requestId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public TokenRequest get(Long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

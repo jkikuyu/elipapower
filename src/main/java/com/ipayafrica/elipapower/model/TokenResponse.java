@@ -4,7 +4,7 @@ package com.ipayafrica.elipapower.model;
 * @author Jude Kikuyu
 * created on 18/04/2018
 * 
-
+*/
 import java.io.Serializable;
 import java.util.Date;
 
@@ -21,23 +21,25 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "TOKENRESPONSE")
-@SequenceGenerator(allocationSize=1,name="sequence", sequenceName="TOKENRESPONSE_FCSEQ")
-
 
 public class TokenResponse implements Serializable{
 	private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @GeneratedValue(generator="sequence",strategy=GenerationType.SEQUENCE)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "REPONSEID")
     private Long responseid;
     @Column(name = "METERNO")
     private Long meterno;
 
-    @Column(name = "RESPONSEXML")
-    private String responsetxml;
+    @Column(name = "ERRORCODEID")
+    private String errorcodeid;
     @Column(name = "TYPE")
     private Byte type;
+    @Column(name = "REF")
+    private Long ref;
+    @Column(name = "RESPONSEXML")
+    private String responsetxml;
 
     @Column(name = "RESPONSEDATE")
     @Temporal(TemporalType.TIMESTAMP)
@@ -99,4 +101,4 @@ public class TokenResponse implements Serializable{
 	}
 	
 
-}*/
+}

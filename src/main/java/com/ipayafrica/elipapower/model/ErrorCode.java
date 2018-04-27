@@ -4,7 +4,7 @@ package com.ipayafrica.elipapower.model;
 * @author Jude Kikuyu
 * created on 18/04/2018
 * 
-
+*/
 import java.io.Serializable;
 
 import javax.persistence.Basic;
@@ -13,27 +13,24 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 @Entity
 @Table(name = "ERRORCODE")
-@SequenceGenerator(allocationSize=1,name="sequence", sequenceName="ERRORCODE_FCSEQ")
-
 public class ErrorCode implements Serializable{
 
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @GeneratedValue(generator="sequence",strategy=GenerationType.SEQUENCE)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "ERRORCODEID")
     private Long errorcodeid;
     
    
-    @Column(name = "MESSAGECODE")
+    @Column(name = "MESSAGECODE", nullable=false, length=20)
     private String messagecode;
 
-    @Column(name = "DESCRIPTION")
+    @Column(name = "DESCRIPTION" , nullable=false)
     private String description;
     
     
@@ -72,4 +69,4 @@ public class ErrorCode implements Serializable{
 	}
 	
 
-}*/
+}

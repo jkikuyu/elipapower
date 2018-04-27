@@ -19,7 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ipayafrica.elipapower.model.TokenRequest;
 import com.ipayafrica.elipapower.service.ITokenRequestService;
+import com.ipayafrica.elipapower.service.impl.TokenRequestService;
 import com.ipayafrica.elipapower.util.CreateXML;
 import com.ipayafrica.elipapower.util.RequestToken;
 
@@ -28,11 +30,12 @@ public class VendController {
     protected final transient Log log = LogFactory.getLog(getClass());
 
     private CreateXML createxml;
-    
+    private TokenRequest tokenReq = null;
+	private ITokenRequestService iTokenRequestService= null;
+
 	@Autowired
     private RequestToken requestToken;
    
-	private ITokenRequestService iTokenRequestManager = null;
 	
 	public VendController() {
 	}
@@ -54,8 +57,8 @@ public class VendController {
 		this.requestToken = tokenRequest;
 	}
 	@Autowired
-	public void setiTokenRequestManager(ITokenRequestService iTokenRequestManager) {
-		this.iTokenRequestManager = iTokenRequestManager;
+	public void setiTokenRequestService(ITokenRequestService iTokenRequestService) {
+		this.iTokenRequestService = iTokenRequestService;
 	}
 
 	@RequestMapping("/tokenreq")
@@ -63,10 +66,12 @@ public class VendController {
 
 	String meterNo = "A12C3456789";
 	String amount = "100";
+	tokenReq = new TokenRequest();
 
-    
-	byte[] reqXML= createxml.buildXML( meterNo, amount );
-	requestToken.makeRequest(reqXML);
+	byte[] reqXML= createxml.buildXML( meterNo, amount,tokenReq );
+	//iTokenRequestService.save(tokenReq);
+	log.info("begin make request....");
+	//requestToken.makeRequest(reqXML);
 	
 	}
 

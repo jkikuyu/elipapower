@@ -1,9 +1,10 @@
 package com.ipayafrica.elipapower.service;
 
+import java.io.Serializable;
 import java.util.List;
 
 
-public interface IGenericService<T> {
+public interface IGenericService<T,PK extends Serializable> {
 
     /**
      * Generic method used to get all objects of a particular type. This
@@ -21,7 +22,7 @@ public interface IGenericService<T> {
      * @return a populated object
      * @see org.springframework.orm.ObjectRetrievalFailureException
      */
-    //T get(id);
+    T get(PK id);
 
     /**
      * Checks for existence of an object of type T using the id arg.
@@ -35,6 +36,7 @@ public interface IGenericService<T> {
      * @param object the object to save
      * @return the updated object
      */
+    T save(T object);
     /**
      * Generic method to delete an object based on class and id
      * @param long the identifier (primary key) of the object to remove

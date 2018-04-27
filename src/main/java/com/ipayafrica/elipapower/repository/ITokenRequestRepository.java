@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.ipayafrica.elipapower.model.TokenRequest;
 
 
-public interface ITokenRequestRepository extends JpaRepository<TokenRequest, Long>{
+public interface ITokenRequestRepository<T extends TokenRequest,PK> extends JpaRepository<T, Long>{
 
 }
