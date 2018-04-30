@@ -3,10 +3,18 @@ package com.ipayafrica.elipapower.service.impl;
 
 import java.util.List;
 
-import com.ipayafrica.elipapower.model.SerialNumber;
-import com.ipayafrica.elipapower.service.ISerialNumberService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import com.ipayafrica.elipapower.model.SerialNumber;
+import com.ipayafrica.elipapower.repository.ISerialNumberRepository;
+import com.ipayafrica.elipapower.service.ISerialNumberService;
+@Service
 public class SerialNumberService implements ISerialNumberService {
+	
+	@Autowired
+	ISerialNumberRepository<SerialNumber, Long> iSerialNumberRepository;
+
 	@Override
 	public List<SerialNumber> getAll() {
 		// TODO Auto-generated method stub
@@ -16,7 +24,8 @@ public class SerialNumberService implements ISerialNumberService {
 	@Override
 	public SerialNumber get(Long id) {
 		// TODO Auto-generated method stub
-		return null;
+		return 	null;
+
 	}
 
 	@Override
@@ -28,7 +37,18 @@ public class SerialNumberService implements ISerialNumberService {
 	@Override
 	public void remove(long Long) {
 		// TODO Auto-generated method stub
+	}
 
+	@Override
+	public int updateLastNumber(String name) {
+		// TODO Auto-generated method stub
+		return iSerialNumberRepository.updateNextNumber(name);
+	}
+
+	@Override
+	public int getLastNumber() {
+		// TODO Auto-generated method stub
+		return iSerialNumberRepository.getLastNumber();
 	}
 
 }

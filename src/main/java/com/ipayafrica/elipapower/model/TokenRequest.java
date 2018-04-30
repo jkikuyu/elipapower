@@ -47,6 +47,9 @@ public class TokenRequest implements Serializable{
     @Column(name="REQUESTEDBY")
     private Long requestedby;
     
+    @Column(name="STATUS")
+    private Long status;
+    
 	@Column(name = "REQUESTDATE")
     @Temporal(TemporalType.TIMESTAMP)
 	

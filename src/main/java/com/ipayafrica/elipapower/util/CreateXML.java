@@ -14,6 +14,7 @@ package com.ipayafrica.elipapower.util;
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -39,6 +40,7 @@ import org.springframework.stereotype.Component;
 
 import com.ipayafrica.elipapower.Invariable;
 import com.ipayafrica.elipapower.model.TokenRequest;
+import com.ipayafrica.elipapower.service.ISerialNumberService;
 @PropertySource("classpath:application.properties")
 
 @Component
@@ -48,9 +50,11 @@ public class CreateXML {
 
 	private Element ipayMsg = null, elecMsg=null;
 	byte[] reqXML=null;
-	private String seqNo, refNo, num, currency, type, client, term, ver, dtt;
+	private String seqNo, num, currency, type, client, term, ver, dtt;
 	int repeat = 0;
-	
+	Double refNo;
+	Date date = null;
+	TimeZone tz = null;
 	@Autowired
 	private Environment env;
 	//Document
@@ -58,22 +62,22 @@ public class CreateXML {
 	@Autowired
 	LogFile logfile;
 	
+	@Autowired
+	ISerialNumberService iSerialNumberService;
+	
 
 
 	//constructor
 	public CreateXML() {
 		seqNo = "1";
-		refNo = "136105500001";
-		currency = "KES";
 		num  = "1";
 
-
-		Date date = new Date();// date to be used in message
+		date = new Date();// date to be used in message
         
-
+		tz = TimeZone.getTimeZone("UTC");
 		/*format for date in date time and timezone*/
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
-		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		sdf.setTimeZone(tz);
 		sdf.setTimeZone(TimeZone.getTimeZone("Africa/Nairobi"));
 		dtt = sdf.format(date);
 
@@ -99,7 +103,9 @@ public class CreateXML {
         type = env.getProperty("payment.type");
         currency = env.getProperty("currency.code");
 		Element ref = new Element(Invariable.REF);
-		ref.setText(refNo);
+		refNo = 0.0;
+		generateRef();
+		ref.setText(refNo.toString());
 		
 		
 		Element meter = new Element(Invariable.METER);
@@ -143,7 +149,7 @@ public class CreateXML {
 			//if repeat request for reversal then add the or
 			if(repeat >1){
 				Element origRef = new Element(Invariable.ORIGREF);
-				origRef.setText(refNo);
+				origRef.setText(refNo.toString());
 				vendRevReq.addContent(origRef);
 			}
 			vendRevReq.addContent(meter);
@@ -170,13 +176,13 @@ public class CreateXML {
     	
     	tokenReq.setAmount(Double.parseDouble(amount));
     	tokenReq.setMeterno(meterNo);
-    	tokenReq.setRef(ref);
+    	tokenReq.setRef(refNo);
     	tokenReq.setType(type);
 		createInitDoc();
 		//ref
 		Element ref = new Element(Invariable.REF);
 		
-		ref.setText(refNo);
+		ref.setText(refNo.toString());
 		
 		Element amt = new Element(Invariable.AMT);
 		amt.setAttribute(Invariable.CUR, currency);
@@ -271,8 +277,22 @@ public class CreateXML {
 		 *iii.)The message counter does not reset to zero at the start of every minute. If the
 		 *message counter reaches 9999 it simply rolls over to 0000 again.
 		**/
-		dtt
-		ref
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.setTimeZone(tz);
+		Integer year = cal.get(Calendar.YEAR);
+		Integer hour = cal.get(Calendar.HOUR);
+		Integer min = cal.get(Calendar.MINUTE);
+		String last_digit_of_year = year.toString().substring(4);
+		int day_of_year = cal.get(Calendar.DAY_OF_YEAR);
+		String name =env.getProperty("ref.counter");
+
+		iSerialNumberService.setNextNumber(name);
+		Long nextNum = iSerialNumberService.getNextNumber();
+		String s = last_digit_of_year+day_of_year   +hour.toString()+min.toString() + nextNum.toString();
+		refNo = Double.parseDouble(s);
+
+		
 	}
 }
 	
