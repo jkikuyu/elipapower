@@ -50,10 +50,11 @@ public class CreateXML {
 
 	private Element ipayMsg = null, elecMsg=null;
 	byte[] reqXML=null;
-	private String seqNo, num, currency, type, client, term, ver, dtt;
+	private String  num, currency, type;
 	int repeat = 0;
 	Double refNo;
 	Date date = null;
+	SimpleDateFormat sdf;
 	TimeZone tz = null;
 	@Autowired
 	private Environment env;
@@ -69,17 +70,13 @@ public class CreateXML {
 
 	//constructor
 	public CreateXML() {
-		seqNo = "1";
 		num  = "1";
 
-		date = new Date();// date to be used in message
         
-		tz = TimeZone.getTimeZone("UTC");
+		tz = TimeZone.getTimeZone("Africa/Nairobi");
 		/*format for date in date time and timezone*/
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
-		sdf.setTimeZone(tz);
-		sdf.setTimeZone(TimeZone.getTimeZone("Africa/Nairobi"));
-		dtt = sdf.format(date);
+		sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
+		//sdf.setTimeZone(tz);
 
 	}
 
@@ -93,17 +90,17 @@ public class CreateXML {
 	 * @return
 	 */
 	public byte[] buildXML(String meterNo,int reqtype){
+		date = new Date();// date to be used in message
+
+		String dtt;
 		reqXML= null;
+		sdf.setTimeZone(tz);
+		dtt = sdf.format(date);
 
 		doc = new Document();
 		createInitDoc();
-		client = env.getProperty("company.name");
-		term = env.getProperty("company.id");
-        ver = env.getProperty("api.ver");
-        type = env.getProperty("payment.type");
-        currency = env.getProperty("currency.code");
+
 		Element ref = new Element(Invariable.REF);
-		refNo = 0.0;
 		generateRef();
 		ref.setText(refNo.toString());
 		
@@ -156,7 +153,7 @@ public class CreateXML {
 			elecMsg.addContent(vendRevReq);
 		}
 		makeXML(doc);
-		logfile.eventLog(reqXML.toString());
+		logfile.eventLog(new String(reqXML));
 		return reqXML;
 	}
 	/**
@@ -168,20 +165,20 @@ public class CreateXML {
 	public byte[] buildXML(String meterNo, String amount,TokenRequest tokenReq){
 
         reqXML = null;
+		date = new Date();// date to be used in message
+
 
         doc = new Document();
         
     	// vendreq element
     	Element vendReq = null;
-    	
+		createInitDoc();
     	tokenReq.setAmount(Double.parseDouble(amount));
     	tokenReq.setMeterno(meterNo);
     	tokenReq.setRef(refNo);
     	tokenReq.setType(type);
-		createInitDoc();
 		//ref
 		Element ref = new Element(Invariable.REF);
-		
 		ref.setText(refNo.toString());
 		
 		Element amt = new Element(Invariable.AMT);
@@ -202,7 +199,7 @@ public class CreateXML {
 		
 		doc.setRootElement(ipayMsg);   
 		ipayMsg.addContent(elecMsg);
-		elecMsg.addContent(vendReq);
+
 		vendReq = new Element(Invariable.VENDREQ);
 
 		vendReq.addContent(ref);
@@ -210,19 +207,37 @@ public class CreateXML {
 		vendReq.addContent(numTokens);
 		vendReq.addContent(meter);
 		vendReq.addContent(payType);
-		
+		elecMsg.addContent(vendReq);
 		makeXML(doc);
+		log.info(new String(reqXML));
 	return reqXML;
 	}
 	
 	/**
-	 * 
+	 * function to create the initial XML document with the initial standard elements.
 	 * @param client
 	 * @param seqNo
 	 * @param term
 	 */
 	private void createInitDoc(){
-        
+		String client, term, ver,dtt,seqNo;
+		client = env.getProperty("company.name");
+		term = env.getProperty("company.id");
+        ver = env.getProperty("api.ver");
+		sdf.setTimeZone(tz);
+		dtt = sdf.format(date);
+		
+		String name =env.getProperty("seq.counter");
+		iSerialNumberService.updateLastNumber(name);
+		Integer nextNum = iSerialNumberService.getLastNumber(); 
+		seqNo = nextNum.toString();
+
+
+        type = env.getProperty("payment.type");
+        currency = env.getProperty("currency.code");
+        //
+		generateRef();
+
 
 		// ipayMsg element
 		ipayMsg = new Element(Invariable.IPAY);
@@ -237,7 +252,8 @@ public class CreateXML {
 
 	}
 	/**
-	 * 
+	 * function creates the XML from a ByteArrayOutputStream, 
+	 * omits the xml declaration and ensures it is UTF-8
 	 * @param doc
 	 */
 	private void makeXML(Document doc){
@@ -266,6 +282,9 @@ public class CreateXML {
         reqXML =baos.toByteArray();
 
 	}
+	/**
+	 * 
+	 */
 	private void generateRef() {
 		
 		/**i.) The fixed length reference  number is generated as follows
@@ -278,19 +297,27 @@ public class CreateXML {
 		 *message counter reaches 9999 it simply rolls over to 0000 again.
 		**/
 		Calendar cal = Calendar.getInstance();
+		refNo = 0.0;
+
 		cal.setTime(date);
 		cal.setTimeZone(tz);
 		Integer year = cal.get(Calendar.YEAR);
-		Integer hour = cal.get(Calendar.HOUR);
+		Integer hour = cal.get(Calendar.HOUR_OF_DAY);
 		Integer min = cal.get(Calendar.MINUTE);
-		String last_digit_of_year = year.toString().substring(4);
-		int day_of_year = cal.get(Calendar.DAY_OF_YEAR);
+		String last_digit_of_year = year.toString().substring(3);
+		Integer day_of_year = cal.get(Calendar.DAY_OF_YEAR);
 		String name =env.getProperty("ref.counter");
 
-		iSerialNumberService.setNextNumber(name);
-		Long nextNum = iSerialNumberService.getNextNumber();
-		String s = last_digit_of_year+day_of_year   +hour.toString()+min.toString() + nextNum.toString();
+
+		iSerialNumberService.updateLastNumber(name);
+		Integer nextNum = iSerialNumberService.getLastNumber(); 
+		log.info(nextNum);
+		String s = last_digit_of_year+String.format("%03d",day_of_year)  +String.format("%02d",hour) 
+		+String.format("%02d",min) + String.format("%04d",nextNum);
+		log.info("diplay ref no");
+		log.info(s);
 		refNo = Double.parseDouble(s);
+		
 
 		
 	}

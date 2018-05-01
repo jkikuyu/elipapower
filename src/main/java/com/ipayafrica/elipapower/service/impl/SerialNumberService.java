@@ -5,15 +5,17 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ipayafrica.elipapower.model.SerialNumber;
 import com.ipayafrica.elipapower.repository.ISerialNumberRepository;
 import com.ipayafrica.elipapower.service.ISerialNumberService;
 @Service
+@Transactional
 public class SerialNumberService implements ISerialNumberService {
 	
 	@Autowired
-	ISerialNumberRepository<SerialNumber, Long> iSerialNumberRepository;
+	private ISerialNumberRepository iSerialNumberRepository;
 
 	@Override
 	public List<SerialNumber> getAll() {

@@ -48,7 +48,7 @@ public class TokenRequest implements Serializable{
     private Long requestedby;
     
     @Column(name="STATUS")
-    private Long status;
+    private Byte status;
     
 	@Column(name = "REQUESTDATE")
     @Temporal(TemporalType.TIMESTAMP)
@@ -152,7 +152,7 @@ public class TokenRequest implements Serializable{
     public Double getRef() {
 		return ref;
 	}
-
+    
 
 	public void setRef(Double ref) {
 		this.ref = ref;

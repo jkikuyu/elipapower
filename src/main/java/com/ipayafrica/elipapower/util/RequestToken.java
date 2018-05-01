@@ -37,8 +37,8 @@ public class RequestToken {
 	 */
 	public String makeRequest(byte[] reqB){
 //		String serverIP= "41.204.194.188";
-		String serverIP = env.getProperty("server.ip");
-		int port =  Integer.parseInt(env.getProperty("server.port"));
+		String serverIP = env.getProperty("token.server.ip");
+		int port =  Integer.parseInt(env.getProperty("token.server.port"));
 //		int port = 8902;
 		int timeout = 30000;
 		Scanner is = null;
