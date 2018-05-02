@@ -52,7 +52,7 @@ public class CreateXML {
 	private Element ipayMsg = null, elecMsg=null;
 	byte[] reqXML=null;
 
-	private String  num, currency, type,tref;
+	private String  num, currency, type,tref, seqNo;
 	Double refNo;
 
 	int repeat = 0;
@@ -154,7 +154,8 @@ public class CreateXML {
 			elecMsg.addContent(vendRevReq);
 		}
 		makeXML(doc);
-		logfile.eventLog(new String(reqXML));
+		String mess = "Request: " + new String(reqXML);
+		logfile.eventLog(mess);
 		return reqXML;
 	}
 	/**
@@ -174,10 +175,7 @@ public class CreateXML {
     	// vendreq element
     	Element vendReq = null;
 		createInitDoc();
-    	tokenReq.setAmount(Double.parseDouble(amount));
-    	tokenReq.setMeterno(meterNo);
-    	tokenReq.setRef(refNo);
-    	tokenReq.setType(type);
+
 		//ref
 		Element ref = new Element(Invariable.REF);
 		ref.setText(tref);
@@ -210,7 +208,24 @@ public class CreateXML {
 		vendReq.addContent(payType);
 		elecMsg.addContent(vendReq);
 		makeXML(doc);
-		log.info(new String(reqXML));
+		String sXML = new String(reqXML);
+		String mess = "Request: " + sdf.format(date)+ sXML;
+    	
+		String key = env.getProperty("payment.key");
+    	Byte paytype = (byte) Integer.parseInt(key);
+
+    	tokenReq.setAmount(Double.parseDouble(amount));
+    	tokenReq.setMeterno(meterNo);
+    	tokenReq.setRef(refNo);
+    	tokenReq.setType(paytype);
+    	tokenReq.setOsysdate(date);
+    	tokenReq.setRequestdate(date);
+    	tokenReq.setRequestxml(sXML);
+    	tokenReq.setSeqnum(Integer.parseInt(seqNo));
+
+    	tokenReq.setType(paytype);
+		logfile.eventLog(mess);
+
 	return reqXML;
 	}
 	
@@ -221,7 +236,7 @@ public class CreateXML {
 	 * @param term
 	 */
 	private void createInitDoc(){
-		String client, term, ver,dtt,seqNo;
+		String client, term, ver,dtt;
 		client = env.getProperty("company.name");
 		term = env.getProperty("company.id");
         ver = env.getProperty("api.ver");
@@ -234,7 +249,7 @@ public class CreateXML {
 		seqNo = nextNum.toString();
 
 
-        type = env.getProperty("payment.type");
+        type = env.getProperty("payment.value");
         currency = env.getProperty("currency.code");
         //
 		tref = generateRef();

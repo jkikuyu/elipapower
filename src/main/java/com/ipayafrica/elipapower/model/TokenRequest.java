@@ -40,7 +40,7 @@ public class TokenRequest implements Serializable{
     @Column(name = "REQUESTXML")
     private String requestxml;
     @Column(name = "TYPE")
-    private String type;
+    private Byte type;
     @Column(name = "REF", precision=12)
     private Double ref;
 
@@ -86,7 +86,7 @@ public class TokenRequest implements Serializable{
 	}
 
 
-	public String getType() {
+	public Byte getType() {
 		return type;
 	}
 
@@ -131,7 +131,7 @@ public class TokenRequest implements Serializable{
 	}
 
 
-	public void setType(String type) {
+	public void setType(Byte type) {
 		this.type = type;
 	}
 

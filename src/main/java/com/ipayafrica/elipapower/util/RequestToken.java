@@ -25,6 +25,9 @@ public class RequestToken {
 	
 	@Autowired
 	private Environment env;
+	
+	@Autowired
+	private LogFile logfile;
 
 	public RequestToken() {
 	}
@@ -85,7 +88,9 @@ public class RequestToken {
             while (is.hasNext()) {
             	responseLine += is.next();
             }
-            System.out.println("response from socket " + responseLine);
+            String mess = "response: " + responseLine;
+    		logfile.eventLog(mess);
+
             socket.close();
 
 		} catch (SocketException e) {
