@@ -48,7 +48,7 @@ public class LogFile {
 			Date d = new Date();
 			SimpleDateFormat fomatter = new SimpleDateFormat("ddMMyyyy");
 			String date = fomatter.format(d);
-			String filepath =  logPath + date + "_Ebills.log";
+			String filepath =  logPath + date + "_powertoken.log";
 			file = new File(filepath);
 			if(ex.getMessage()!=null && !ex.getMessage().contains("IntBd.ttf")){
 			boolean exists = file.exists();
@@ -91,7 +91,7 @@ public class LogFile {
 			Date d = new Date();
 			SimpleDateFormat fomatter = new SimpleDateFormat("ddMMyyyy");
 			String date = fomatter.format(d);
-			String filepath =  logPath + date+ "_EbillsEventLog" + ".log";
+			String filepath =  logPath + date+ "_PowerTokenEvent" + ".log";
 			File file = new File(filepath);
 
 //			SimpleDateFormat fomatter2 = new SimpleDateFormat("HH:mm:ss");
@@ -135,7 +135,7 @@ public class LogFile {
 			Date d = new Date();
 			SimpleDateFormat fomatter = new SimpleDateFormat("ddMMyyyy");
 			String date = fomatter.format(d);
-			String filepath =  logPath + date+ "_EbillsServiceCheck" + ".log";
+			String filepath =  logPath + date+ "_PowerTokenServiceCheck" + ".log";
 			File file = new File(filepath);
 
 			boolean exists = file.exists();
@@ -177,7 +177,7 @@ public class LogFile {
 			Date d = new Date();
 			SimpleDateFormat fomatter = new SimpleDateFormat("ddMMyyyy");
 			String date = fomatter.format(d);
-			String filepath =  logPath + date+ "_EbillsEmailsCheck" + ".log";
+			String filepath =  logPath + date+ "_PowerTokenEmailsCheck" + ".log";
 			File file = new File(filepath);
 
 			boolean exists = file.exists();
@@ -220,7 +220,7 @@ public class LogFile {
 			Date d = new Date();
 			SimpleDateFormat fomatter = new SimpleDateFormat("ddMMyyyy");
 			String date = fomatter.format(d);
-			String filepath = logPath + date + "_ebills.log";
+			String filepath = logPath + date + "_PowerToken.log";
 			File file = new File(filepath);
 			if(!ex.getMessage().contains("IntBd.ttf")){
 //				log.debug("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ HERE 3" );

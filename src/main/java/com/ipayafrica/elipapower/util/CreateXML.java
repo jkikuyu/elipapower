@@ -13,6 +13,7 @@ package com.ipayafrica.elipapower.util;
  */
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -50,9 +51,11 @@ public class CreateXML {
 
 	private Element ipayMsg = null, elecMsg=null;
 	byte[] reqXML=null;
-	private String  num, currency, type;
-	int repeat = 0;
+
+	private String  num, currency, type,tref;
 	Double refNo;
+
+	int repeat = 0;
 	Date date = null;
 	SimpleDateFormat sdf;
 	TimeZone tz = null;
@@ -101,8 +104,6 @@ public class CreateXML {
 		createInitDoc();
 
 		Element ref = new Element(Invariable.REF);
-		generateRef();
-		ref.setText(refNo.toString());
 		
 		
 		Element meter = new Element(Invariable.METER);
@@ -179,8 +180,8 @@ public class CreateXML {
     	tokenReq.setType(type);
 		//ref
 		Element ref = new Element(Invariable.REF);
-		ref.setText(refNo.toString());
-		
+		ref.setText(tref);
+
 		Element amt = new Element(Invariable.AMT);
 		amt.setAttribute(Invariable.CUR, currency);
 		
@@ -236,7 +237,7 @@ public class CreateXML {
         type = env.getProperty("payment.type");
         currency = env.getProperty("currency.code");
         //
-		generateRef();
+		tref = generateRef();
 
 
 		// ipayMsg element
@@ -285,7 +286,7 @@ public class CreateXML {
 	/**
 	 * 
 	 */
-	private void generateRef() {
+	private String generateRef() {
 		
 		/**i.) The fixed length reference  number is generated as follows
 		 * "last digit of current year" + "day of the year" + "hour" + "minute" +
@@ -317,7 +318,7 @@ public class CreateXML {
 		log.info("diplay ref no");
 		log.info(s);
 		refNo = Double.parseDouble(s);
-		
+		return s;
 
 		
 	}

@@ -47,7 +47,7 @@ public class VendRevController {
 	public void reversalRequest(){
 		String meterNo = "A12C3456789";
 		reqXML = createxml.buildXML(meterNo, 3);
-		tokenRequest.makeRequest(reqXML);
+		//tokenRequest.makeRequest(reqXML);
 	
 	}
 
