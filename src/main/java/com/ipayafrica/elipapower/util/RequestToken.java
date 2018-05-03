@@ -29,6 +29,8 @@ public class RequestToken {
 	@Autowired
 	private LogFile logfile;
 
+	@Autowired
+	ResponseToken responseToken;
 	public RequestToken() {
 	}
 
@@ -89,7 +91,9 @@ public class RequestToken {
             	responseLine += is.next();
             }
             String mess = "response: " + responseLine;
+            
     		logfile.eventLog(mess);
+    		responseToken.
     		
             socket.close();
 
