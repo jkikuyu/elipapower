@@ -13,7 +13,6 @@ package com.ipayafrica.elipapower.util;
  */
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -218,7 +217,6 @@ public class CreateXML {
     	tokenReq.setMeterno(meterNo);
     	tokenReq.setRef(refNo);
     	tokenReq.setType(paytype);
-    	tokenReq.setOsysdate(date);
     	tokenReq.setRequestdate(date);
     	tokenReq.setRequestxml(sXML);
     	tokenReq.setSeqnum(Integer.parseInt(seqNo));

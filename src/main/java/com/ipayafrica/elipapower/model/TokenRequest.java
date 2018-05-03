@@ -47,16 +47,13 @@ public class TokenRequest implements Serializable{
     @Column(name="REQUESTEDBY")
     private Long requestedby;
     
-    @Column(name="STATUS")
+    @Column(name="STATUS") // 1 success 2 pending 3 failed
     private Byte status;
     
 	@Column(name = "REQUESTDATE")
     @Temporal(TemporalType.TIMESTAMP)
 	
     private Date requestdate;
-    @Column(name = "OSYSDATE")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date osysdate;
 
 	public TokenRequest() {
 		
@@ -101,11 +98,6 @@ public class TokenRequest implements Serializable{
 	}
 
 
-	public Date getOsysdate() {
-		return osysdate;
-	}
-
-
 	public void setRequestid(Long requestid) {
 		this.requestid = requestid;
 	}
@@ -146,9 +138,6 @@ public class TokenRequest implements Serializable{
 	}
 
 
-	public void setOsysdate(Date osysdate) {
-		this.osysdate = osysdate;
-	}
     public Double getRef() {
 		return ref;
 	}

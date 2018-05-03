@@ -14,7 +14,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -30,12 +29,10 @@ public class TokenResponse implements Serializable{
     @Column(name = "REPONSEID")
     private Long responseid;
     @Column(name = "METERNO")
-    private Long meterno;
+    private String meterno;
 
     @Column(name = "ERRORCODEID")
     private String errorcodeid;
-    @Column(name = "TYPE")
-    private Byte type;
     @Column(name = "REF")
     private Long ref;
     @Column(name = "RESPONSEXML")
@@ -56,7 +53,7 @@ public class TokenResponse implements Serializable{
 		return responseid;
 	}
 
-	public Long getMeterno() {
+	public String getMeterno() {
 		return meterno;
 	}
 
@@ -64,9 +61,6 @@ public class TokenResponse implements Serializable{
 		return responsetxml;
 	}
 
-	public Byte getType() {
-		return type;
-	}
 
 	public Date getResponsedate() {
 		return responsedate;
@@ -80,7 +74,7 @@ public class TokenResponse implements Serializable{
 		this.responseid = responseid;
 	}
 
-	public void setMeterno(Long meterno) {
+	public void setMeterno(String meterno) {
 		this.meterno = meterno;
 	}
 
@@ -88,17 +82,10 @@ public class TokenResponse implements Serializable{
 		this.responsetxml = responsetxml;
 	}
 
-	public void setType(Byte type) {
-		this.type = type;
-	}
-
 	public void setResponsedate(Date responsedate) {
 		this.responsedate = responsedate;
 	}
 
-	public void setOsysdate(Date osysdate) {
-		this.osysdate = osysdate;
-	}
-	
+
 
 }

@@ -38,7 +38,7 @@ public class RequestToken {
 	 * @param reqB
 	 * @return
 	 */
-	public String makeRequest(byte[] reqB){
+	public String makeRequest(byte[] reqB, String meterNo){
 //		String serverIP= "41.204.194.188";
 		String serverIP = env.getProperty("token.server.ip");
 		int port =  Integer.parseInt(env.getProperty("token.server.port"));
@@ -90,7 +90,7 @@ public class RequestToken {
             }
             String mess = "response: " + responseLine;
     		logfile.eventLog(mess);
-
+    		
             socket.close();
 
 		} catch (SocketException e) {
