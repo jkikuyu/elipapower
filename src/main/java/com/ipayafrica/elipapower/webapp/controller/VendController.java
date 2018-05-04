@@ -69,7 +69,7 @@ public class VendController {
 	tokenReq = new TokenRequest();
 
 	byte[] reqXML= createxml.buildXML( meterNo, amount,tokenReq );
-	//iTokenRequestService.save(tokenReq);
+	iTokenRequestService.save(tokenReq);
 	log.info("begin make request....");
 	requestToken.makeRequest(reqXML,meterNo);
 	

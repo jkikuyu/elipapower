@@ -33,8 +33,8 @@ public class TokenResponse implements Serializable{
 
     @Column(name = "ERRORCODEID")
     private String errorcodeid;
-    @Column(name = "REF")
-    private Long ref;
+    @Column(name = "REF", precision=12)
+    private Double ref;
     @Column(name = "RESPONSEXML")
     private String responsetxml;
 
@@ -44,6 +44,8 @@ public class TokenResponse implements Serializable{
     @Column(name = "OSYSDATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date osysdate;
+    @Column(name="STATUS",  nullable=false) // 1 success 2 pending 3 failed
+    private Byte status;
 
 	public TokenResponse() {
 		// TODO Auto-generated constructor stub
@@ -84,6 +86,34 @@ public class TokenResponse implements Serializable{
 
 	public void setResponsedate(Date responsedate) {
 		this.responsedate = responsedate;
+	}
+
+	public String getErrorcodeid() {
+		return errorcodeid;
+	}
+
+	public Double getRef() {
+		return ref;
+	}
+
+	public Byte getStatus() {
+		return status;
+	}
+
+	public void setErrorcodeid(String errorcodeid) {
+		this.errorcodeid = errorcodeid;
+	}
+
+	public void setRef(Double ref) {
+		this.ref = ref;
+	}
+
+	public void setOsysdate(Date osysdate) {
+		this.osysdate = osysdate;
+	}
+
+	public void setStatus(Byte status) {
+		this.status = status;
 	}
 
 

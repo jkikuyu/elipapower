@@ -45,7 +45,7 @@ public class VendLastReqController {
 	public void lastRequest(){
 		String meterNo = "A12C3456789";
 		reqXML = createxml.buildXML(meterNo, 2);
-		//tokenRequest.makeRequest(reqXML);
+		//tokenRequest.makeRequest(reqXML,meterNo);
 
 		
 	}

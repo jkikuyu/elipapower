@@ -43,7 +43,7 @@ public class CustomerInfoController {
 		String meterNo = "A12C3456789";
 
 		byte[] reqXML = createxml.buildXML(meterNo,1);
-		tokenRequest.makeRequest(reqXML);
+		tokenRequest.makeRequest(reqXML, meterNo);
 
 		
 	}

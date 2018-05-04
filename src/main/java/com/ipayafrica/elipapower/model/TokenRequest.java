@@ -32,14 +32,14 @@ public class TokenRequest implements Serializable{
     private Long requestid;
     @Column(name = "METERNO", nullable=false, length=100)
     private String meterno;
-    @Column(name = "SEQNUM")
+    @Column(name = "SEQNUM", nullable=false)
     private Integer seqnum;
     @Column(name = "AMOUNT", precision=8, scale=2)
     private Double amount;
 
-    @Column(name = "REQUESTXML")
+    @Column(name = "REQUESTXML",  nullable=false, length=1000)
     private String requestxml;
-    @Column(name = "TYPE")
+    @Column(name = "TYPE", nullable=false)
     private Byte type;
     @Column(name = "REF", precision=12)
     private Double ref;
@@ -47,10 +47,8 @@ public class TokenRequest implements Serializable{
     @Column(name="REQUESTEDBY")
     private Long requestedby;
     
-    @Column(name="STATUS") // 1 success 2 pending 3 failed
-    private Byte status;
     
-	@Column(name = "REQUESTDATE")
+	@Column(name = "REQUESTDATE",  nullable=false)
     @Temporal(TemporalType.TIMESTAMP)
 	
     private Date requestdate;

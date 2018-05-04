@@ -1,5 +1,29 @@
 package com.ipayafrica.elipapower.util;
-
+/**
+ * @author Jude Kikuyu
+ * created on 4/05/2018
+ * Class to create a reponse xml that is formatted in a way that it can be parsed by SAXParser
+ * Examples below
+ * 	xml = "<ipayMsgclient=\"IPAYAFRICA\"term=\"00001\"seqNum=\"10\""
+ *				+ "time=\"2018-05-0315:20:43+0200\"><elecMsgver=\"2.48\">"
+ *			+ "<custInfoRes><ref/><rescode=\"elec000\">OK</res>"
+ *				+ "<customeraddr=\"Mr.JohnLinde&#xA;34Tokai,CapeTown.&#xA;7999.\""
+ *				+ "util=\"iPayDemoUtil\"agrRef=\"8934893898934\""
+ *				+ "type=\"STS\"locRef=\"Cape_Town\"supGrpRef=\"100405\""
+ *				+ "tokenTechCode=\"02\"algCode=\"05\"tariffIdx=\"52\""
+ *				+ "keyRevNum=\"1\"daysLastVend=\"19999\">AdeneJonah</customer>"
+ *				+ "<contractagrRef=\"444444\"idNo=\"134141414141\"leRefNo=\"128\">"
+ *				+ "AdeneJonah</contract></custInfoRes></elecMsg></ipayMsg>";
+ *		
+ *		xml = "<ipayMsgclient=\"IPAYAFRICA\"term=\"00001\"seqNum=\"9\""
+ *				+ "time=\"2018-05-0309:01:27+0200\"><elecMsgver=\"2.48\">"
+ *				+ "<vendRes><ref>812310010009</ref><rescode=\"elec001\"extCode=\"0\">"
+ *				+ "MaximumAmountExceededMaximumAmountExceeded="
+ *				+ "1.0Notvalid-Range10.0-9.9999999999999E13."
+ *				+ "Verifythedataprovidedandretry</res>"
+ *				+ "</vendRes></elecMsg></ipayMsg>";
+ * 
+ */
 import java.io.IOException;
 import java.io.StringReader;
 
@@ -7,10 +31,14 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+@Component
 public class ResponseToken {
 	/**
 	 * <ipayMsgclient="IPAYAFRICA"term="00001"seqNum="7"time="2018-05-0308:04:43+0200">
@@ -23,34 +51,24 @@ public class ResponseToken {
 	 * </custInfoRes></elecMsg></ipayMsg>
 	 * 
 	 */
+    protected final transient Log log = LogFactory.getLog(getClass());
+
 	@Autowired 
 	XMLTokenHandler xmlTokenHandler;
 	public void cleanXML(String xml) throws ParserConfigurationException, SAXException, IOException {
-/*		xml = "<ipayMsgclient=\"IPAYAFRICA\"term=\"00001\"seqNum=\"10\""
-				+ "time=\"2018-05-0315:20:43+0200\"><elecMsgver=\"2.48\">"
-				+ "<custInfoRes><ref/><rescode=\"elec000\">OK</res>"
-				+ "<customeraddr=\"Mr.JohnLinde&#xA;34Tokai,CapeTown.&#xA;7999.\""
-				+ "util=\"iPayDemoUtil\"agrRef=\"8934893898934\""
-				+ "type=\"STS\"locRef=\"Cape_Town\"supGrpRef=\"100405\""
-				+ "tokenTechCode=\"02\"algCode=\"05\"tariffIdx=\"52\""
-				+ "keyRevNum=\"1\"daysLastVend=\"19999\">AdeneJonah</customer>"
-				+ "<contractagrRef=\"444444\"idNo=\"134141414141\"leRefNo=\"128\">"
-				+ "AdeneJonah</contract></custInfoRes></elecMsg></ipayMsg>";
-		
-		xml = "<ipayMsgclient=\"IPAYAFRICA\"term=\"00001\"seqNum=\"9\""
-				+ "time=\"2018-05-0309:01:27+0200\"><elecMsgver=\"2.48\">"
-				+ "<vendRes><ref>812310010009</ref><rescode=\"elec001\"extCode=\"0\">"
-				+ "MaximumAmountExceededMaximumAmountExceeded="
-				+ "1.0Notvalid-Range10.0-9.9999999999999E13."
-				+ "Verifythedataprovidedandretry</res>"
-				+ "</vendRes></elecMsg></ipayMsg>";
-*/
+
+	
 	SAXParserFactory factory = SAXParserFactory.newInstance();
 	SAXParser saxParser = factory.newSAXParser();
 
 		
     StringBuffer resXML = new StringBuffer(xml);
-    int pos = resXML.indexOf("client"); 
+    
+    int pos = resXML.indexOf("<"); 
+    if(pos>0) {
+  	  resXML.delete(0, pos );
+    }
+    pos = resXML.indexOf("client"); 
     if(pos>0) {
   	  resXML.replace(pos, pos + 6, " client");
     }
@@ -147,7 +165,8 @@ public class ResponseToken {
 
     System.out.println(resXML.toString());
     InputSource is = new InputSource(new StringReader(resXML.toString()));
-     saxParser.parse(is, xmlTokenHandler);
+    saxParser.parse(is, xmlTokenHandler);
+    
 
    }
 }

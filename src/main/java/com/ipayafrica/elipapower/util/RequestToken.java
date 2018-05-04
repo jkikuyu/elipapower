@@ -9,10 +9,13 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.xml.sax.SAXException;
 /**
  * 
  * @author jkikuyu
@@ -93,7 +96,15 @@ public class RequestToken {
             String mess = "response: " + responseLine;
             
     		logfile.eventLog(mess);
-    		responseToken.
+    		try {
+				responseToken.cleanXML(mess);
+			} catch (ParserConfigurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SAXException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     		
             socket.close();
 

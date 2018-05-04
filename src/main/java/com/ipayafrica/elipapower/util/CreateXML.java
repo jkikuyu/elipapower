@@ -220,7 +220,6 @@ public class CreateXML {
     	tokenReq.setRequestdate(date);
     	tokenReq.setRequestxml(sXML);
     	tokenReq.setSeqnum(Integer.parseInt(seqNo));
-
     	tokenReq.setType(paytype);
 		logfile.eventLog(mess);
 

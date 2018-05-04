@@ -1,18 +1,14 @@
 package com.ipayafrica.elipapower.util;
 
-import java.io.IOException;
-import java.io.StringReader;
+import java.util.HashMap;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
+import org.hibernate.mapping.Map;
 import org.springframework.stereotype.Component;
 import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.ipayafrica.elipapower.model.TokenResponse;
 
 @Component
@@ -32,10 +28,11 @@ public class XMLTokenHandler extends DefaultHandler {
 	boolean bcustInfoRes = false;
 	boolean bcustomer = false;
 	boolean bcontract = false;
-	TokenResponse tokenResponse;
-
+	HashMap<String, String> map =null;
+	
 	public void startElement(String uri, String localName,String qName, 
-                Attributes attributes) throws SAXException {
+	            Attributes attributes) throws SAXException {
+		
 
 
 		if (qName.equalsIgnoreCase("ipaymsg")) {
@@ -66,6 +63,7 @@ public class XMLTokenHandler extends DefaultHandler {
 			bcontract = true;
 		}
 
+		boolean isSuccess = false;
 
 
 		int length = attributes.getLength();
@@ -74,11 +72,15 @@ public class XMLTokenHandler extends DefaultHandler {
 			System.out.println("Name:" + name);
 			String value = attributes.getValue(i);
 			System.out.println("Value:" + value);
-			if(attributes.getQName(i).equalsIgnoreCase("ref")){
-				tokenResponse.setMeterno(value);
+			if(attributes.getQName(i).equalsIgnoreCase("res") &&  attributes.getValue(i).equalsIgnoreCase("elec000")){
+				isSuccess = true;
 			}
 		}
 	}
+	public String getJSONMessage() {
+		return null;
+	}
+	
 	public void endElement(String uri, String localName,
 		String qName) throws SAXException {
 
