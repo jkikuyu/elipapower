@@ -37,6 +37,8 @@ public class TokenResponse implements Serializable{
     private Double ref;
     @Column(name = "RESPONSEXML")
     private String responsetxml;
+    @Column(name = "ORIGXML")
+    private String origtxml;
 
     @Column(name = "RESPONSEDATE")
     @Temporal(TemporalType.TIMESTAMP)
@@ -114,6 +116,14 @@ public class TokenResponse implements Serializable{
 
 	public void setStatus(Byte status) {
 		this.status = status;
+	}
+
+	public String getOrigtxml() {
+		return origtxml;
+	}
+
+	public void setOrigtxml(String origtxml) {
+		this.origtxml = origtxml;
 	}
 
 

@@ -26,6 +26,7 @@ package com.ipayafrica.elipapower.util;
  */
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.HashMap;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -55,7 +56,7 @@ public class ResponseToken {
 
 	@Autowired 
 	XMLTokenHandler xmlTokenHandler;
-	public void cleanXML(String xml) throws ParserConfigurationException, SAXException, IOException {
+	public HashMap<String, String> cleanXML(String xml) throws ParserConfigurationException, SAXException, IOException {
 
 	
 	SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -160,13 +161,131 @@ public class ResponseToken {
     }
     pos = resXML.indexOf("leRefNo"); 
     if(pos>0) {
-  	  resXML.replace(pos, pos + 7, " leRefNo");
+    	resXML.replace(pos, pos + 7, " leRefNo");
+    }
+    
+    pos = resXML.indexOf("finAdj"); 
+
+    if(pos>0) {
+    	resXML.replace(pos, pos + 6, " finAdj");
+    }
+    pos = resXML.indexOf("leRefNo"); 
+
+    if(pos>0) {
+    	resXML.replace(pos, pos + 7, " leRefNo");
+    }
+    pos = resXML.indexOf("finAdj"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 6, " finAdj");
     }
 
-    System.out.println(resXML.toString());
+
+    pos = resXML.indexOf("keyRevNum"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 9, " keyRevNum");
+    }
+    pos = resXML.indexOf("resource"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 8, " resource");
+    }
+    pos = resXML.indexOf("taxRef"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 6, " taxRef");
+    }
+    pos = resXML.indexOf("distId"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 6, " distId");
+    }
+    pos = resXML.indexOf("units="); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 6, " units=");
+    }
+    pos = resXML.indexOf("tax="); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 4, " tax=");
+    }
+    pos = resXML.indexOf("tax=",pos+4); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 4, " tax=");
+    }
+    pos = resXML.indexOf("tax=",pos+4); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 4, " tax=");
+    }
+
+    pos = resXML.indexOf("tax=",pos+4); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 4, " tax=");
+    }
+
+    pos = resXML.indexOf("tariff="); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 7, " tariff=");
+    }
+    pos = resXML.indexOf("amt"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 3, " amt");
+    }
+    pos = resXML.indexOf("amt",pos+3); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 3, " amt");
+    }
+    pos = resXML.indexOf("amt",pos+3); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 3, " amt");
+    }
+    
+    pos = resXML.indexOf("amt",pos+3); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 3, " amt");
+    }
+
+    pos = resXML.indexOf("unitsType"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 9, " unitsType");
+    }
+    pos = resXML.indexOf("rctNum"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 6, " rctNum");
+    }
+    pos = resXML.indexOf("desc"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 4, " desc");
+    }
+    pos = resXML.indexOf("bsstDate"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 8, " bsstDate");
+    }
+    pos = resXML.indexOf("rem"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 3, " rem");
+    }
+
+    pos = resXML.lastIndexOf("unitsType"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 9, " unitsType");
+    }
+    pos = resXML.lastIndexOf("units="); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 6, " units=");
+    }
+    pos = resXML.lastIndexOf("tariff="); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 7, " tariff=");
+    }
+    pos = resXML.lastIndexOf("desc"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 4, " desc");
+    }
+    pos = resXML.lastIndexOf("desc",pos); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 4, " desc");
+    }
+
     InputSource is = new InputSource(new StringReader(resXML.toString()));
     saxParser.parse(is, xmlTokenHandler);
+    HashMap<String, String> messMap = xmlTokenHandler.getMessageMap();
     
-
+    return messMap;
    }
 }

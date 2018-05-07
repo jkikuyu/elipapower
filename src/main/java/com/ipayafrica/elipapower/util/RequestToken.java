@@ -7,6 +7,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.Scanner;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -43,7 +44,7 @@ public class RequestToken {
 	 * @param reqB
 	 * @return
 	 */
-	public String makeRequest(byte[] reqB, String meterNo){
+	public HashMap<String,String> makeRequest(byte[] reqB, String meterNo){
 //		String serverIP= "41.204.194.188";
 		String serverIP = env.getProperty("token.server.ip");
 		int port =  Integer.parseInt(env.getProperty("token.server.port"));
@@ -54,7 +55,7 @@ public class RequestToken {
 		Socket socket = null;
 
 	    String responseLine =""; // obtain response from server
-
+	    HashMap<String, String> messResponse = null;
 
 		try {
 			res = wrap(reqB);
@@ -97,7 +98,8 @@ public class RequestToken {
             
     		logfile.eventLog(mess);
     		try {
-				responseToken.cleanXML(mess);
+    			messResponse = new HashMap<String,String>();
+				messResponse = responseToken.cleanXML(mess);
 			} catch (ParserConfigurationException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -114,7 +116,7 @@ public class RequestToken {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-	return responseLine;
+	return messResponse;
   	}
 
 	 private byte[] wrap(byte[] msg) throws Exception {

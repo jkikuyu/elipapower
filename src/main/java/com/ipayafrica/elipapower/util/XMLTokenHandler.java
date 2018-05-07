@@ -2,14 +2,10 @@ package com.ipayafrica.elipapower.util;
 
 import java.util.HashMap;
 
-import org.hibernate.mapping.Map;
 import org.springframework.stereotype.Component;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import com.ipayafrica.elipapower.model.TokenResponse;
 
 @Component
 public class XMLTokenHandler extends DefaultHandler {
@@ -28,7 +24,14 @@ public class XMLTokenHandler extends DefaultHandler {
 	boolean bcustInfoRes = false;
 	boolean bcustomer = false;
 	boolean bcontract = false;
-	HashMap<String, String> map =null;
+	boolean util = false;
+	boolean stdToken = false;
+	boolean bsstToken = false;
+	boolean debt = false;
+	boolean fixed = false;
+	boolean rtlrMsg = false;
+
+	HashMap<String, String> mapResponse =null;
 	
 	public void startElement(String uri, String localName,String qName, 
 	            Attributes attributes) throws SAXException {
@@ -62,23 +65,57 @@ public class XMLTokenHandler extends DefaultHandler {
 		if (qName.equalsIgnoreCase("contract")) {
 			bcontract = true;
 		}
+		if (util) {
+			//System.out.println("contract : " + new String(ch, start, length));
+			util = false;
+		}
+		if (stdToken) {
+			//System.out.println("contract : " + new String(ch, start, length));
+			stdToken = false;
+		}
+		if (bsstToken) {
+			//System.out.println("contract : " + new String(ch, start, length));
+			bsstToken = false;
+		}
+		if (debt) {
+			//System.out.println("contract : " + new String(ch, start, length));
+			debt = false;
+		}
+		if (rtlrMsg) {
+			//System.out.println("contract : " + new String(ch, start, length));
+			rtlrMsg = false;
+		}
 
+
+		mapResponse = new HashMap<String, String>();
 		boolean isSuccess = false;
-
-
 		int length = attributes.getLength();
+		
 		for (int i=0; i<length; i++) {
 			String name = attributes.getQName(i);
 			System.out.println("Name:" + name);
 			String value = attributes.getValue(i);
 			System.out.println("Value:" + value);
-			if(attributes.getQName(i).equalsIgnoreCase("res") &&  attributes.getValue(i).equalsIgnoreCase("elec000")){
-				isSuccess = true;
+			String elecMess;
+			String elm  = qName;
+			
+			if(elm.equalsIgnoreCase("res")){
+				elecMess = attributes.getValue(i);
+				mapResponse.put("code", elecMess);
+				if (elecMess.equalsIgnoreCase("elec000")){
+					isSuccess = true;
+				}
 			}
-		}
+			if (isSuccess) {
+				if(elm.equalsIgnoreCase("util")) {
+					mapResponse.put(attributes.getQName(i), attributes.getValue(i));
+
+				}
+			}}
+
 	}
-	public String getJSONMessage() {
-		return null;
+	public HashMap<String, String>  getMessageMap() {
+		return mapResponse;
 	}
 	
 	public void endElement(String uri, String localName,
@@ -109,7 +146,7 @@ public class XMLTokenHandler extends DefaultHandler {
 			bref = false;
 		}
 		if (bres) {
-			System.out.println("res : " + new String(ch, start, length));
+			mapResponse.put("message",new String(ch, start, length));
 			bres = false;
 		}
 		if (bcustInfoRes) {
@@ -124,6 +161,28 @@ public class XMLTokenHandler extends DefaultHandler {
 			//System.out.println("contract : " + new String(ch, start, length));
 			bcontract = false;
 		}
+		if (util) {
+			//System.out.println("contract : " + new String(ch, start, length));
+			util = false;
+		}
+		if (stdToken) {
+			//System.out.println("contract : " + new String(ch, start, length));
+			stdToken = false;
+		}
+		if (bsstToken) {
+			//System.out.println("contract : " + new String(ch, start, length));
+			bsstToken = false;
+		}
+		if (debt) {
+			//System.out.println("contract : " + new String(ch, start, length));
+			debt = false;
+		}
+		if (rtlrMsg) {
+			//System.out.println("contract : " + new String(ch, start, length));
+			rtlrMsg = false;
+		}
+
+
 	}
 
   

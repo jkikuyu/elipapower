@@ -1,4 +1,6 @@
 package com.ipayafrica.elipapower.webapp.controller;
+import java.util.HashMap;
+
 /**
  * 
  * @author Jude Kikuyu
@@ -16,12 +18,15 @@ package com.ipayafrica.elipapower.webapp.controller;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ipayafrica.elipapower.model.Token;
 import com.ipayafrica.elipapower.model.TokenRequest;
 import com.ipayafrica.elipapower.service.ITokenRequestService;
-import com.ipayafrica.elipapower.service.impl.TokenRequestService;
 import com.ipayafrica.elipapower.util.CreateXML;
 import com.ipayafrica.elipapower.util.RequestToken;
 
@@ -62,17 +67,32 @@ public class VendController {
 	}
 
 	@RequestMapping("/tokenreq")
-	public void getElectricity(){
+	public String getElectricity(@RequestBody Token token){
 
-	String meterNo = "A12C3456789";
-	String amount = "100";
+	ObjectMapper objectMapper = new ObjectMapper();
+
+	String meterNo = token.getMeterNo();
+	Double dAmt = token.getAmount();
+	String amount = dAmt.toString();
+	log.info("amount:"+amount);
+
+	HashMap<String,String> messResponse = null;
 	tokenReq = new TokenRequest();
 
 	byte[] reqXML= createxml.buildXML( meterNo, amount,tokenReq );
 	iTokenRequestService.save(tokenReq);
 	log.info("begin make request....");
-	requestToken.makeRequest(reqXML,meterNo);
+	messResponse = new HashMap<String,String>();
+	messResponse = requestToken.makeRequest(reqXML,meterNo);
+	String messJSON = null;
+	try {
+		messJSON = objectMapper.writeValueAsString(messResponse);
+	} catch (JsonProcessingException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 	
+	return messJSON;
 	}
 
 
