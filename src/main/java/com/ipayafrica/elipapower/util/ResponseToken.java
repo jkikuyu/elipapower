@@ -302,6 +302,20 @@ public class ResponseToken {
     tokenResponse.setOsysdate(new Date());
     tokenResponse.setResponsedate(xmlTokenHandler.getResponseDate());
 	int errorCodeId = iErrorCodeService.getByMessageCode(xmlTokenHandler.getResCode());
+	Byte status = null;
+	if (errorCodeId ==1){
+		status = 1;
+	}
+	else if (errorCodeId >1){
+		status = 2;
+	
+	}
+	else{
+		status = 0;
+	}
+	tokenResponse.setStatus(status);
+		
+	
 	tokenResponse.setErrorcodeid(errorCodeId);
 
     return messMap;
