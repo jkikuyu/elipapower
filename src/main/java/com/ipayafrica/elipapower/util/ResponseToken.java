@@ -26,6 +26,7 @@ package com.ipayafrica.elipapower.util;
  */
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Date;
 import java.util.HashMap;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -38,6 +39,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import com.ipayafrica.elipapower.model.TokenResponse;
+import com.ipayafrica.elipapower.service.IErrorCodeService;
 
 @Component
 public class ResponseToken {
@@ -53,15 +57,20 @@ public class ResponseToken {
 	 * 
 	 */
     protected final transient Log log = LogFactory.getLog(getClass());
+    
+	private TokenResponse tokenResponse = null;
+	private String xml;
 
 	@Autowired 
 	XMLTokenHandler xmlTokenHandler;
-	public HashMap<String, String> cleanXML(String xml) throws ParserConfigurationException, SAXException, IOException {
+	@Autowired
+	private IErrorCodeService iErrorCodeService;
 
+	public HashMap<String, Object> cleanXML(String xml) throws ParserConfigurationException, SAXException, IOException {
+	this.xml= xml;
 	
 	SAXParserFactory factory = SAXParserFactory.newInstance();
 	SAXParser saxParser = factory.newSAXParser();
-
 		
     StringBuffer resXML = new StringBuffer(xml);
     
@@ -281,11 +290,24 @@ public class ResponseToken {
     if(pos>0) {
   	  resXML.replace(pos, pos + 4, " desc");
     }
-
-    InputSource is = new InputSource(new StringReader(resXML.toString()));
+    String cleanedXML = resXML.toString();
+    InputSource is = new InputSource(new StringReader(cleanedXML));
     saxParser.parse(is, xmlTokenHandler);
-    HashMap<String, String> messMap = xmlTokenHandler.getMessageMap();
+    tokenResponse = new TokenResponse();
     
+    HashMap<String, Object> messMap = xmlTokenHandler.getMessageMap();
+    tokenResponse.setOrigxml(xml);
+    tokenResponse.setRef(xmlTokenHandler.getRef());
+    tokenResponse.setResponsexml(cleanedXML);
+    tokenResponse.setOsysdate(new Date());
+    tokenResponse.setResponsedate(xmlTokenHandler.getResponseDate());
+	int errorCodeId = iErrorCodeService.getByMessageCode(xmlTokenHandler.getResCode());
+	tokenResponse.setErrorcodeid(errorCodeId);
+
     return messMap;
    }
+	public TokenResponse getTokenResponse() {
+		return tokenResponse;
+	}
+	
 }

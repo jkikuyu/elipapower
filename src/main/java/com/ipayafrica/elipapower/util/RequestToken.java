@@ -35,6 +35,8 @@ public class RequestToken {
 
 	@Autowired
 	ResponseToken responseToken;
+	
+
 	public RequestToken() {
 	}
 
@@ -44,7 +46,7 @@ public class RequestToken {
 	 * @param reqB
 	 * @return
 	 */
-	public HashMap<String,String> makeRequest(byte[] reqB, String meterNo){
+	public HashMap<String,Object> makeRequest(byte[] reqB, String meterNo){
 //		String serverIP= "41.204.194.188";
 		String serverIP = env.getProperty("token.server.ip");
 		int port =  Integer.parseInt(env.getProperty("token.server.port"));
@@ -55,7 +57,7 @@ public class RequestToken {
 		Socket socket = null;
 
 	    String responseLine =""; // obtain response from server
-	    HashMap<String, String> messResponse = null;
+	    HashMap<String, Object> messResponse = null;
 
 		try {
 			res = wrap(reqB);
@@ -98,8 +100,10 @@ public class RequestToken {
             
     		logfile.eventLog(mess);
     		try {
-    			messResponse = new HashMap<String,String>();
+    			messResponse = new HashMap<String,Object>();
 				messResponse = responseToken.cleanXML(mess);
+				
+				
 			} catch (ParserConfigurationException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

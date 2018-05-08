@@ -24,7 +24,7 @@ public class ErrorCode implements Serializable{
     @Basic(optional = false)
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "ERRORCODEID")
-    private Long errorcodeid;
+    private Integer errorcodeid;
     
    
     @Column(name = "MESSAGECODE", nullable=false, length=20)
@@ -39,7 +39,7 @@ public class ErrorCode implements Serializable{
 	}
 
 
-	public Long getErrorcodeid() {
+	public Integer getErrorcodeid() {
 		return errorcodeid;
 	}
 
@@ -54,7 +54,7 @@ public class ErrorCode implements Serializable{
 	}
 
 
-	public void setErrorcodeid(Long errorcodeid) {
+	public void setErrorcodeid(Integer errorcodeid) {
 		this.errorcodeid = errorcodeid;
 	}
 

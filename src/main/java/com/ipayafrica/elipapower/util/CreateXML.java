@@ -74,10 +74,12 @@ public class CreateXML {
 	public CreateXML() {
 		num  = "1";
 
-        
-		tz = TimeZone.getTimeZone("Africa/Nairobi");
+		tz = TimeZone.getTimeZone(env.getProperty("timezone.local"));
+		sdf = new SimpleDateFormat(env.getProperty("time.local"));
+
+		//tz = TimeZone.getTimeZone("Africa/Nairobi");
 		/*format for date in date time and timezone*/
-		sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
+		//sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
 		//sdf.setTimeZone(tz);
 
 	}

@@ -32,13 +32,13 @@ public class TokenResponse implements Serializable{
     private String meterno;
 
     @Column(name = "ERRORCODEID")
-    private String errorcodeid;
+    private  Integer errorcodeid;
     @Column(name = "REF", precision=12)
     private Double ref;
     @Column(name = "RESPONSEXML")
-    private String responsetxml;
+    private String responsexml;
     @Column(name = "ORIGXML")
-    private String origtxml;
+    private String origxml;
 
     @Column(name = "RESPONSEDATE")
     @Temporal(TemporalType.TIMESTAMP)
@@ -61,8 +61,8 @@ public class TokenResponse implements Serializable{
 		return meterno;
 	}
 
-	public String getResponsetxml() {
-		return responsetxml;
+	public String getResponsexml() {
+		return responsexml;
 	}
 
 
@@ -82,15 +82,15 @@ public class TokenResponse implements Serializable{
 		this.meterno = meterno;
 	}
 
-	public void setResponsetxml(String responsetxml) {
-		this.responsetxml = responsetxml;
+	public void setResponsexml(String responsexml) {
+		this.responsexml = responsexml;
 	}
 
 	public void setResponsedate(Date responsedate) {
 		this.responsedate = responsedate;
 	}
 
-	public String getErrorcodeid() {
+	public Integer getErrorcodeid() {
 		return errorcodeid;
 	}
 
@@ -102,7 +102,7 @@ public class TokenResponse implements Serializable{
 		return status;
 	}
 
-	public void setErrorcodeid(String errorcodeid) {
+	public void setErrorcodeid(Integer errorcodeid) {
 		this.errorcodeid = errorcodeid;
 	}
 
@@ -118,12 +118,12 @@ public class TokenResponse implements Serializable{
 		this.status = status;
 	}
 
-	public String getOrigtxml() {
-		return origtxml;
+	public String getOrigxml() {
+		return origxml;
 	}
 
-	public void setOrigtxml(String origtxml) {
-		this.origtxml = origtxml;
+	public void setOrigxml(String origxml) {
+		this.origxml = origxml;
 	}
 
 

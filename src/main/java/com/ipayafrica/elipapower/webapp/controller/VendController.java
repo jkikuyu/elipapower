@@ -1,4 +1,5 @@
 package com.ipayafrica.elipapower.webapp.controller;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -26,21 +27,29 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ipayafrica.elipapower.model.Token;
 import com.ipayafrica.elipapower.model.TokenRequest;
+import com.ipayafrica.elipapower.model.TokenResponse;
 import com.ipayafrica.elipapower.service.ITokenRequestService;
+import com.ipayafrica.elipapower.service.ITokenResponseService;
 import com.ipayafrica.elipapower.util.CreateXML;
 import com.ipayafrica.elipapower.util.RequestToken;
+import com.ipayafrica.elipapower.util.ResponseToken;
 
 @RestController
 public class VendController {
     protected final transient Log log = LogFactory.getLog(getClass());
 
     private CreateXML createxml;
-    private TokenRequest tokenReq = null;
+    private TokenRequest tokenRequest = null;
+    private TokenResponse tokenResponse = null;
 	private ITokenRequestService iTokenRequestService= null;
 
 	@Autowired
     private RequestToken requestToken;
    
+	@Autowired
+    private ResponseToken responseToken;
+	
+
 	
 	public VendController() {
 	}
@@ -65,6 +74,8 @@ public class VendController {
 	public void setiTokenRequestService(ITokenRequestService iTokenRequestService) {
 		this.iTokenRequestService = iTokenRequestService;
 	}
+	@Autowired
+	private ITokenResponseService iTokenResponseService;
 
 	@RequestMapping("/tokenreq")
 	public String getElectricity(@RequestBody Token token){
@@ -76,13 +87,19 @@ public class VendController {
 	String amount = dAmt.toString();
 	log.info("amount:"+amount);
 
-	HashMap<String,String> messResponse = null;
-	tokenReq = new TokenRequest();
+	HashMap<String,Object> messResponse = null;
+	tokenRequest = new TokenRequest();
 
-	byte[] reqXML= createxml.buildXML( meterNo, amount,tokenReq );
-	iTokenRequestService.save(tokenReq);
+	byte[] reqXML= createxml.buildXML( meterNo, amount,tokenRequest );
+	iTokenRequestService.save(tokenRequest);
+	tokenResponse= responseToken.getTokenResponse();
+	tokenResponse.setMeterno(meterNo);
+	tokenResponse.setOsysdate(new Date());
+
+	iTokenResponseService.save(tokenResponse);
+
 	log.info("begin make request....");
-	messResponse = new HashMap<String,String>();
+	messResponse = new HashMap<String,Object>();
 	messResponse = requestToken.makeRequest(reqXML,meterNo);
 	String messJSON = null;
 	try {

@@ -21,7 +21,7 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "TOKENREQUEST")
-public class TokenRequest implements Serializable{
+public class TokenRequest extends Token implements Serializable{
 
 
 	private static final long serialVersionUID = 1L;

@@ -1,7 +1,13 @@
 package com.ipayafrica.elipapower.util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.TimeZone;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -24,21 +30,41 @@ public class XMLTokenHandler extends DefaultHandler {
 	boolean bcustInfoRes = false;
 	boolean bcustomer = false;
 	boolean bcontract = false;
-	boolean util = false;
-	boolean stdToken = false;
-	boolean bsstToken = false;
-	boolean debt = false;
-	boolean fixed = false;
-	boolean rtlrMsg = false;
-
-	HashMap<String, String> mapResponse =null;
+	boolean butil = false;
+	boolean bstdToken = false;
+	boolean bbsstToken = false;
+	boolean bdebt = false;
+	boolean bfixed = false;
+	boolean brtlrMsg = false;
+	
+	private HashMap<String, Object> mapResponse =null;
+	private Double ref;
+	private String resCode;
+	private Date responseDate;
+	@Autowired
+	Environment env;
 	
 	public void startElement(String uri, String localName,String qName, 
 	            Attributes attributes) throws SAXException {
-		
-
-
+		mapResponse = new HashMap<String, Object>();
+		/*format for date in date time and timezone*/
+		SimpleDateFormat sdf = null;
+		TimeZone tz = null;
 		if (qName.equalsIgnoreCase("ipaymsg")) {
+			
+			tz = TimeZone.getTimeZone(env.getProperty("timezone.local"));
+			sdf =  new SimpleDateFormat(env.getProperty("time.local"));
+			sdf.setTimeZone(tz);
+
+			String datetime = attributes.getValue("time");
+			try {
+				responseDate = sdf.parse(datetime);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+
 			biPayMsg = true;
 		}
 
@@ -51,9 +77,15 @@ public class XMLTokenHandler extends DefaultHandler {
 		}
 
 		if (qName.equalsIgnoreCase("ref")) {
+			String s = attributes.getValue("ref");
+			ref = Double.parseDouble(s);
+			
 			bref = true;
 		}
 		if (qName.equalsIgnoreCase("res")) {
+			resCode = attributes.getValue("code");
+			
+
 			bres = true;
 		}
 		if (qName.equalsIgnoreCase("custInfoRes")) {
@@ -65,63 +97,54 @@ public class XMLTokenHandler extends DefaultHandler {
 		if (qName.equalsIgnoreCase("contract")) {
 			bcontract = true;
 		}
-		if (util) {
-			//System.out.println("contract : " + new String(ch, start, length));
-			util = false;
-		}
-		if (stdToken) {
-			//System.out.println("contract : " + new String(ch, start, length));
-			stdToken = false;
-		}
-		if (bsstToken) {
-			//System.out.println("contract : " + new String(ch, start, length));
-			bsstToken = false;
-		}
-		if (debt) {
-			//System.out.println("contract : " + new String(ch, start, length));
-			debt = false;
-		}
-		if (rtlrMsg) {
-			//System.out.println("contract : " + new String(ch, start, length));
-			rtlrMsg = false;
-		}
-
-
-		mapResponse = new HashMap<String, String>();
-		boolean isSuccess = false;
-		int length = attributes.getLength();
-		
-		for (int i=0; i<length; i++) {
-			String name = attributes.getQName(i);
-			System.out.println("Name:" + name);
-			String value = attributes.getValue(i);
-			System.out.println("Value:" + value);
-			String elecMess;
-			String elm  = qName;
+		if (qName.equalsIgnoreCase("util")) {
 			
-			if(elm.equalsIgnoreCase("res")){
-				elecMess = attributes.getValue(i);
-				mapResponse.put("code", elecMess);
-				if (elecMess.equalsIgnoreCase("elec000")){
-					isSuccess = true;
-				}
+			butil = true;
+		}
+		
+		if (qName.equalsIgnoreCase("stdToken")) {
+			mapResponse.put("token",attributes.getValue("stdToken"));
+
+			mapResponse.put("units", attributes.getValue("units"));
+
+			HashMap<String,String> mapTarrif = new HashMap<String,String>();
+			mapResponse.put("tax", attributes.getValue("tax"));
+			String tarrifs[] = attributes.getValue("tarrif").split(":");
+			String key = "";
+			int i = 1;
+
+			for (String tarrif:tarrifs) {
+				key="t" +Integer.toString(i);
+				mapTarrif.put(key, tarrif);
+				i++;
 			}
-			if (isSuccess) {
-				if(elm.equalsIgnoreCase("util")) {
-					mapResponse.put(attributes.getQName(i), attributes.getValue(i));
+			mapResponse.put("tarrif",mapTarrif);
+			mapResponse.put("unitsType", attributes.getValue("unitsType"));
+			bstdToken = true;
+		}
+		if (qName.equalsIgnoreCase("bsstToken")) {
+			bbsstToken = true;
+		}
+		if (qName.equalsIgnoreCase("debt")) {
+			bdebt = true;
+		}
+		if (qName.equalsIgnoreCase("fixed")) {
+			mapResponse.put("fixedamt", attributes.getValue("amt"));
+			mapResponse.put("fixedtax", attributes.getValue("tax"));
 
-				}
-			}}
+			bfixed = true;
+		}
 
+		if (qName.equalsIgnoreCase("rtlrMsg")) {
+			brtlrMsg = true;
+		}
 	}
-	public HashMap<String, String>  getMessageMap() {
+	public HashMap<String, Object>  getMessageMap() {
 		return mapResponse;
 	}
 	
 	public void endElement(String uri, String localName,
 		String qName) throws SAXException {
-
-
 	}
 
 	public void characters(char ch[], int start, int length) throws SAXException {
@@ -161,31 +184,43 @@ public class XMLTokenHandler extends DefaultHandler {
 			//System.out.println("contract : " + new String(ch, start, length));
 			bcontract = false;
 		}
-		if (util) {
+		if (butil) {
 			//System.out.println("contract : " + new String(ch, start, length));
-			util = false;
+			butil = false;
 		}
-		if (stdToken) {
+		if (bstdToken) {
 			//System.out.println("contract : " + new String(ch, start, length));
-			stdToken = false;
+			bstdToken = false;
 		}
-		if (bsstToken) {
+		if (bbsstToken) {
 			//System.out.println("contract : " + new String(ch, start, length));
-			bsstToken = false;
+			bbsstToken = false;
 		}
-		if (debt) {
+		if (bdebt) {
 			//System.out.println("contract : " + new String(ch, start, length));
-			debt = false;
+			bdebt = false;
 		}
-		if (rtlrMsg) {
+		if (bfixed) {
 			//System.out.println("contract : " + new String(ch, start, length));
-			rtlrMsg = false;
+			bfixed = false;
+		}
+
+		if (brtlrMsg) {
+			//System.out.println("contract : " + new String(ch, start, length));
+			brtlrMsg = false;
 		}
 
 
 	}
-
-  
+	public Double getRef() {
+		return ref;
+	}
+	public Date getResponseDate() {
+		return responseDate;
+	}
+	public String getResCode() {
+		return resCode;
+	}
    
 }
 
