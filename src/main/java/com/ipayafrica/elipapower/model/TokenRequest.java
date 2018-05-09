@@ -18,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "TOKENREQUEST")
@@ -35,7 +36,7 @@ public class TokenRequest extends Token implements Serializable{
     @Column(name = "SEQNUM", nullable=false)
     private Integer seqnum;
     @Column(name = "AMOUNT", precision=8, scale=2)
-    private Double amount;
+    private Double amt;
 
     @Column(name = "REQUESTXML",  nullable=false, length=1000)
     private String requestxml;
@@ -51,7 +52,14 @@ public class TokenRequest extends Token implements Serializable{
 	@Column(name = "REQUESTDATE",  nullable=false)
     @Temporal(TemporalType.TIMESTAMP)
 	
-    private Date requestdate;
+	private Date requestdate;
+	
+	@Transient
+    private String amount;
+	
+	@Transient
+    private String refNo;
+
 
 	public TokenRequest() {
 		
@@ -70,10 +78,6 @@ public class TokenRequest extends Token implements Serializable{
 		return seqnum;
 	}
 
-
-	public Double getAmount() {
-		return amount;
-	}
 
 
 	public String getRequestxml() {
@@ -111,10 +115,6 @@ public class TokenRequest extends Token implements Serializable{
 	}
 
 
-	public void setAmount(Double amount) {
-		this.amount = amount;
-	}
-
 
 	public void setRequestxml(String requestxml) {
 		this.requestxml = requestxml;
@@ -143,6 +143,12 @@ public class TokenRequest extends Token implements Serializable{
 
 	public void setRef(Double ref) {
 		this.ref = ref;
+	}
+	public Double getAmt() {
+		return amt;
+	}
+	public void setAmt(Double amt) {
+		this.amt = amt;
 	}
 
 

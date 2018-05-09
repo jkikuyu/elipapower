@@ -40,6 +40,7 @@ import org.springframework.stereotype.Component;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.ipayafrica.elipapower.model.ErrorCode;
 import com.ipayafrica.elipapower.model.TokenResponse;
 import com.ipayafrica.elipapower.service.IErrorCodeService;
 
@@ -294,14 +295,19 @@ public class ResponseToken {
     InputSource is = new InputSource(new StringReader(cleanedXML));
     saxParser.parse(is, xmlTokenHandler);
     tokenResponse = new TokenResponse();
+    Double ref = xmlTokenHandler.getRef();
     
     HashMap<String, Object> messMap = xmlTokenHandler.getMessageMap();
+
     tokenResponse.setOrigxml(xml);
-    tokenResponse.setRef(xmlTokenHandler.getRef());
+    tokenResponse.setRef(ref);
     tokenResponse.setResponsexml(cleanedXML);
     tokenResponse.setOsysdate(new Date());
     tokenResponse.setResponsedate(xmlTokenHandler.getResponseDate());
-	int errorCodeId = iErrorCodeService.getByMessageCode(xmlTokenHandler.getResCode());
+	int errorCodeId =  iErrorCodeService.getByMessageCode(xmlTokenHandler.getResCode());
+	Long ecodeid =  (long) errorCodeId;
+	ErrorCode errorCode =iErrorCodeService.getByErrorCodeID(ecodeid);
+	
 	Byte status = null;
 	if (errorCodeId ==1){
 		status = 1;
@@ -313,9 +319,22 @@ public class ResponseToken {
 	else{
 		status = 0;
 	}
+	messMap.put("ref",Double.toString(ref));
+
+	if(errorCodeId==0){
+		messMap.put("error","Please try again later");
+		messMap.put("status", 0);
+		
+		
+	}
+	else{
+		messMap.put("error",errorCode.getDescription());
+		messMap.put("status",2);
+
+	}
+	
 	tokenResponse.setStatus(status);
 		
-	
 	tokenResponse.setErrorcodeid(errorCodeId);
 
     return messMap;

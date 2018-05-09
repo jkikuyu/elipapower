@@ -1,15 +1,14 @@
 package com.ipayafrica.elipapower.service.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.Repository;
+import org.springframework.stereotype.Service;
 
 import com.ipayafrica.elipapower.model.ErrorCode;
 import com.ipayafrica.elipapower.repository.IErrorCodeRepository;
 import com.ipayafrica.elipapower.service.IErrorCodeService;
-
+@Service
 public class ErrorCodeService implements IErrorCodeService {
 	
 	@Autowired
