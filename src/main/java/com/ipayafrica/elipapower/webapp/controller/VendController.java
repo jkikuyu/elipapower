@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -77,14 +78,18 @@ public class VendController {
 	@Autowired
 	private ITokenResponseService iTokenResponseService;
 
-	@RequestMapping("/tokenreq")
+	@RequestMapping(value ="/tokenreq", method=RequestMethod.POST)
 	public String getElectricity(@RequestBody Token token){
+	
+	String messJSON = null;
 
 	ObjectMapper objectMapper = new ObjectMapper();
 
-	String meterNo = token.getMeterNo();
-	Double dAmt = token.getAmount();
+	String meterNo = token.getMeterno();
+	
+	String dAmt = token.getAmount();
 	String amount = dAmt.toString();
+
 	log.info("amount:"+amount);
 
 	HashMap<String,Object> messResponse = null;
@@ -92,23 +97,26 @@ public class VendController {
 
 	byte[] reqXML= createxml.buildXML( meterNo, amount,tokenRequest );
 	iTokenRequestService.save(tokenRequest);
-	tokenResponse= responseToken.getTokenResponse();
-	tokenResponse.setMeterno(meterNo);
-	tokenResponse.setOsysdate(new Date());
+	log.info("meter No:" + meterNo);
 
-	iTokenResponseService.save(tokenResponse);
 
 	log.info("begin make request....");
 	messResponse = new HashMap<String,Object>();
 	messResponse = requestToken.makeRequest(reqXML,meterNo);
-	String messJSON = null;
+	tokenResponse= responseToken.getTokenResponse();
+	tokenResponse.setMeterno(meterNo);
+
+
 	try {
 		messJSON = objectMapper.writeValueAsString(messResponse);
+		
 	} catch (JsonProcessingException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
-	
+	tokenResponse.setJsonresponse(messJSON);
+	iTokenResponseService.save(tokenResponse);
+
 	return messJSON;
 	}
 

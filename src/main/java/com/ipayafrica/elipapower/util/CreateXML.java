@@ -74,8 +74,6 @@ public class CreateXML {
 	public CreateXML() {
 		num  = "1";
 
-		tz = TimeZone.getTimeZone(env.getProperty("timezone.local"));
-		sdf = new SimpleDateFormat(env.getProperty("time.local"));
 
 		//tz = TimeZone.getTimeZone("Africa/Nairobi");
 		/*format for date in date time and timezone*/
@@ -215,7 +213,7 @@ public class CreateXML {
 		String key = env.getProperty("payment.key");
     	Byte paytype = (byte) Integer.parseInt(key);
 
-    	tokenReq.setAmount(Double.parseDouble(amount));
+    	tokenReq.setAmt(Double.parseDouble(amount));
     	tokenReq.setMeterno(meterNo);
     	tokenReq.setRef(refNo);
     	tokenReq.setType(paytype);
@@ -239,6 +237,9 @@ public class CreateXML {
 		client = env.getProperty("company.name");
 		term = env.getProperty("company.id");
         ver = env.getProperty("api.ver");
+		tz = TimeZone.getTimeZone(env.getProperty("timezone.local"));
+		sdf = new SimpleDateFormat(env.getProperty("time.format"));
+
 		sdf.setTimeZone(tz);
 		dtt = sdf.format(date);
 		
