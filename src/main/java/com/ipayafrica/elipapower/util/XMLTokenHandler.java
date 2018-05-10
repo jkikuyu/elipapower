@@ -57,6 +57,10 @@ public class XMLTokenHandler extends DefaultHandler {
 			sdf.setTimeZone(tz);
 
 			String datetime = attributes.getValue("time");
+			StringBuffer sb = new StringBuffer(datetime);
+			sb.insert(11," ");
+			sb.insert(sb.indexOf("+"), " ");
+			datetime = sb.toString();
 			try {
 				responseDate = sdf.parse(datetime);
 			} catch (ParseException e) {
