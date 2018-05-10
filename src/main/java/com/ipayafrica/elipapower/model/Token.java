@@ -1,17 +1,11 @@
 package com.ipayafrica.elipapower.model;
 
 public class Token {
-	private String refNo;
+	private String refno;
 	private String meterno;
 	private String amount;
-	public String getRefNo() {
-		return refNo;
-	}
 	public String getAmount() {
 		return amount;
-	}
-	public void setRefNo(String refNo) {
-		this.refNo = refNo;
 	}
 	public void setAmount(String amount) {
 		this.amount = amount;
@@ -21,5 +15,11 @@ public class Token {
 	}
 	public void setMeterno(String meterno) {
 		this.meterno = meterno;
+	}
+	public String getRefno() {
+		return refno;
+	}
+	public void setRefno(String refno) {
+		this.refno = refno;
 	}
 }

@@ -1,5 +1,4 @@
 package com.ipayafrica.elipapower.webapp.controller;
-import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -43,7 +42,7 @@ public class VendController {
     private TokenRequest tokenRequest = null;
     private TokenResponse tokenResponse = null;
 	private ITokenRequestService iTokenRequestService= null;
-
+	private boolean isEmptyMeterNo =false, isEmptyAmount=false, isEmptyRef=false;
 	@Autowired
     private RequestToken requestToken;
    
@@ -86,37 +85,68 @@ public class VendController {
 	ObjectMapper objectMapper = new ObjectMapper();
 
 	String meterNo = token.getMeterno();
-	
-	String dAmt = token.getAmount();
-	String amount = dAmt.toString();
 
-	log.info("amount:"+amount);
-
+	String amount = token.getAmount();
+	//Double dAmt = Double.parseDouble(amount);
+	String refNo = token.getRefno();
 	HashMap<String,Object> messResponse = null;
-	tokenRequest = new TokenRequest();
+	log.info("meter no:"+meterNo);
+	log.info("ref:"+refNo);
 
-	byte[] reqXML= createxml.buildXML( meterNo, amount,tokenRequest );
-	iTokenRequestService.save(tokenRequest);
-	log.info("meter No:" + meterNo);
+	if(meterNo==null || meterNo.isEmpty()) {
+		isEmptyMeterNo = true;
 
-
-	log.info("begin make request....");
+	}
+	else if (amount==null || amount.isEmpty()){
+		isEmptyAmount =true;
+	}
+	else if (refNo==null || refNo.isEmpty()) {
+		isEmptyRef =true;
+	}
+	log.info("amount:"+amount);
 	messResponse = new HashMap<String,Object>();
-	messResponse = requestToken.makeRequest(reqXML,meterNo);
-	tokenResponse= responseToken.getTokenResponse();
-	tokenResponse.setMeterno(meterNo);
 
+	if (!isEmptyMeterNo && !isEmptyAmount && !isEmptyRef) {
+		
+		tokenRequest = new TokenRequest();
+	
+		byte[] reqXML= createxml.buildXML( meterNo, amount,tokenRequest );
+		iTokenRequestService.save(tokenRequest);
+		log.info("meter No:" + meterNo);
+	
+	
+		log.info("begin make request....");
+		
+		messResponse = requestToken.makeRequest(reqXML,meterNo);
+		tokenResponse= responseToken.getTokenResponse();
+		tokenResponse.setMeterno(meterNo);
+		tokenResponse.setJsonresponse(messJSON);
+		iTokenResponseService.save(tokenResponse);
+	}
+	else {
+		String errResponse = null;
+		errResponse = isEmptyMeterNo? "Meter No is empty or  key used is wrong. ":"";
+		errResponse +=isEmptyRef? "Reference Number is empty or key used is wrong":"";
+
+		errResponse +=isEmptyAmount ? "Amount is empty or key used is wrong":"";
+		messResponse.put("error",errResponse);
+		messResponse.put("status", "0");
+		isEmptyMeterNo =false;
+		isEmptyAmount=false;
+		isEmptyRef=false;
+	}
 
 	try {
 		messJSON = objectMapper.writeValueAsString(messResponse);
+		log.info("response:"+ messJSON);
+
 		
 	} catch (JsonProcessingException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
-	tokenResponse.setJsonresponse(messJSON);
-	iTokenResponseService.save(tokenResponse);
-
+	
+	
 	return messJSON;
 	}
 
