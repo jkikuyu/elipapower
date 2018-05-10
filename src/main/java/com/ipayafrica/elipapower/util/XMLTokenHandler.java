@@ -53,7 +53,7 @@ public class XMLTokenHandler extends DefaultHandler {
 		if (qName.equalsIgnoreCase("ipaymsg")) {
 			
 			tz = TimeZone.getTimeZone(env.getProperty("timezone.local"));
-			sdf =  new SimpleDateFormat(env.getProperty("time.local"));
+			sdf =  new SimpleDateFormat(env.getProperty("time.format"));
 			sdf.setTimeZone(tz);
 
 			String datetime = attributes.getValue("time");

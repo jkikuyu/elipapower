@@ -323,13 +323,13 @@ public class ResponseToken {
 
 	if(errorCodeId==0){
 		messMap.put("error","Please try again later");
-		messMap.put("status", 0);
+		messMap.put("status"," 0");
 		
 		
 	}
 	else{
 		messMap.put("error",errorCode.getDescription());
-		messMap.put("status",2);
+		messMap.put("status","2");
 
 	}
 	

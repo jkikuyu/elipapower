@@ -58,7 +58,7 @@ public class TokenRequest extends Token implements Serializable{
     private String amount;
 	
 	@Transient
-    private String refNo;
+    private String refno;
 
 
 	public TokenRequest() {

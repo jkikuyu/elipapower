@@ -51,7 +51,8 @@ public class RequestToken {
 		String serverIP = env.getProperty("token.server.ip");
 		int port =  Integer.parseInt(env.getProperty("token.server.port"));
 //		int port = 8902;
-		int timeout = 30000;
+//		int timeout = 30000;
+		int timeout = Integer.parseInt(env.getProperty("token.server.timeout"));
 		Scanner is = null;
 		DataOutputStream os = null;
 		Socket socket = null;
