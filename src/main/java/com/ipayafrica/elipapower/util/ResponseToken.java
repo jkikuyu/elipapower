@@ -305,8 +305,7 @@ public class ResponseToken {
     tokenResponse.setOsysdate(new Date());
     tokenResponse.setResponsedate(xmlTokenHandler.getResponseDate());
 	int errorCodeId =  iErrorCodeService.getByMessageCode(xmlTokenHandler.getResCode());
-	Long ecodeid =  (long) errorCodeId;
-	ErrorCode errorCode =iErrorCodeService.getByErrorCodeID(ecodeid);
+	ErrorCode errorCode =iErrorCodeService.getByErrorCodeID(errorCodeId);
 	
 	Byte status = null;
 	if (errorCodeId ==1){
