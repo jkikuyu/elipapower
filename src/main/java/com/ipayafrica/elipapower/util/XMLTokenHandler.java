@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.TimeZone;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -21,6 +23,7 @@ public class XMLTokenHandler extends DefaultHandler {
  * @author Jude Kikuyu
  * @since 03/05/2018 
  */
+    protected final transient Log log = LogFactory.getLog(getClass());
 
 	boolean biPayMsg = false;
 	boolean belecMsg = false;
@@ -46,6 +49,7 @@ public class XMLTokenHandler extends DefaultHandler {
 	
 	public void startElement(String uri, String localName,String qName, 
 	            Attributes attributes) throws SAXException {
+
 		mapResponse = new HashMap<String, Object>();
 		/*format for date in date time and timezone*/
 		SimpleDateFormat sdf = null;
@@ -81,8 +85,6 @@ public class XMLTokenHandler extends DefaultHandler {
 		}
 
 		if (qName.equalsIgnoreCase("ref")) {
-			String s = attributes.getValue("ref");
-			ref = Double.parseDouble(s);
 			
 			bref = true;
 		}
@@ -105,7 +107,18 @@ public class XMLTokenHandler extends DefaultHandler {
 			
 			butil = true;
 		}
-		
+		int length = attributes.getLength();
+
+		for (int i=0; i<length; i++) {
+			String name = attributes.getQName(i);
+			if(name.equalsIgnoreCase("ref")){
+				String s = attributes.getValue(i);
+				ref = Double.parseDouble(s);
+				break;
+			}
+
+		}
+		log.info("ref " + ref);
 		if (qName.equalsIgnoreCase("stdToken")) {
 			mapResponse.put("token",attributes.getValue("stdToken"));
 
@@ -173,7 +186,7 @@ public class XMLTokenHandler extends DefaultHandler {
 			bref = false;
 		}
 		if (bres) {
-			mapResponse.put("message",new String(ch, start, length));
+			mapResponse.put("reason",new String(ch, start, length));
 			bres = false;
 		}
 		if (bcustInfoRes) {

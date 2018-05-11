@@ -20,7 +20,7 @@ public class ErrorCodeService implements IErrorCodeService {
 	}
 
 	@Override
-	public ErrorCode get(Long id) {
+	public ErrorCode get(Integer id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -38,7 +38,7 @@ public class ErrorCodeService implements IErrorCodeService {
 	}
 
 	@Override
-	public ErrorCode getByErrorCodeID(Long errorCodeId) {
+	public ErrorCode getByErrorCodeID(Integer errorCodeId) {
 		// TODO Auto-generated method stub
 		return iErrorCodeRepository.getOne(errorCodeId);
 	}
