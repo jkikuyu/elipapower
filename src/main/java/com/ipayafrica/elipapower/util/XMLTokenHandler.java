@@ -41,7 +41,7 @@ public class XMLTokenHandler extends DefaultHandler {
 	boolean brtlrMsg = false;
 	
 	private HashMap<String, Object> mapResponse =null;
-	private Double ref;
+	private String ref;
 	private String resCode;
 	private Date responseDate;
 	@Autowired
@@ -85,7 +85,6 @@ public class XMLTokenHandler extends DefaultHandler {
 		}
 
 		if (qName.equalsIgnoreCase("ref")) {
-			
 			bref = true;
 		}
 		if (qName.equalsIgnoreCase("res")) {
@@ -107,7 +106,7 @@ public class XMLTokenHandler extends DefaultHandler {
 			
 			butil = true;
 		}
-		int length = attributes.getLength();
+/*		int length = attributes.getLength();
 
 		for (int i=0; i<length; i++) {
 			String name = attributes.getQName(i);
@@ -118,7 +117,7 @@ public class XMLTokenHandler extends DefaultHandler {
 			}
 
 		}
-		log.info("ref " + ref);
+*/		
 		if (qName.equalsIgnoreCase("stdToken")) {
 			mapResponse.put("token",attributes.getValue("stdToken"));
 
@@ -182,7 +181,10 @@ public class XMLTokenHandler extends DefaultHandler {
 		}
 
 		if (bref) {
-			System.out.println("ref : " + new String(ch, start, length));
+			
+			ref = new String(ch, start, length);
+			//ref = Double.parseDouble(s);
+
 			bref = false;
 		}
 		if (bres) {
@@ -229,7 +231,7 @@ public class XMLTokenHandler extends DefaultHandler {
 
 
 	}
-	public Double getRef() {
+	public String getRef() {
 		return ref;
 	}
 	public Date getResponseDate() {

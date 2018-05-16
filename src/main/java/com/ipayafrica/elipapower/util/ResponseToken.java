@@ -295,12 +295,12 @@ public class ResponseToken {
     InputSource is = new InputSource(new StringReader(cleanedXML));
     saxParser.parse(is, xmlTokenHandler);
     tokenResponse = new TokenResponse();
-    Double ref = xmlTokenHandler.getRef();
+    String ref = xmlTokenHandler.getRef();
     
     HashMap<String, Object> messMap = xmlTokenHandler.getMessageMap();
 
     tokenResponse.setOrigxml(xml);
-    tokenResponse.setRef(ref);
+    tokenResponse.setRef(Double.parseDouble(ref));
     tokenResponse.setResponsexml(cleanedXML);
     tokenResponse.setOsysdate(new Date());
     tokenResponse.setResponsedate(xmlTokenHandler.getResponseDate());
@@ -318,8 +318,8 @@ public class ResponseToken {
 	else{
 		status = 0;
 	}
-	messMap.put("ref",Double.toString(ref));
-
+	messMap.put("ref",ref);
+	
 	if(errorCodeId==0){
 		messMap.put("error","Please try again later");
 		messMap.put("status"," 0");

@@ -46,6 +46,30 @@ public class RequestToken {
 	 * @param reqB
 	 * @return
 	 */
+	public HashMap<String,Object> makeRequest(byte[] reqB, String meterNo,boolean test){
+		
+		/*
+		 * method only passes a static value for testing purpose
+		 */
+	    HashMap<String, Object> messResponse = null;
+		messResponse = new HashMap<String,Object>();
+		String mess = "<ipayMsgclient=\"IPAYAFRICA\"term=\"00001\"seqNum=\"32\"time=\"2018-05-1112:17:52+0200\"><elecMsgver=\"2.48\"><vendRes><ref>813113170032</ref><rescode=\"elec001\"extCode=\"0\">MaximumAmountExceededMaximumAmountExceeded=1.0Notvalid-Range10.0-9.9999999999999E13.Verifythedataprovidedandretry</res></vendRes></elecMsg></ipayMsg>";
+		try {
+			messResponse = responseToken.cleanXML(mess);
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return messResponse;
+	}
+
 	public HashMap<String,Object> makeRequest(byte[] reqB, String meterNo){
 //		String serverIP= "41.204.194.188";
 		String serverIP = env.getProperty("token.server.ip");

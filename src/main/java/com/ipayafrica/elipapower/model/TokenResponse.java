@@ -28,16 +28,16 @@ public class TokenResponse implements Serializable{
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "REPONSEID")
     private Long responseid;
-    @Column(name = "METERNO")
+    @Column(name = "METERNO", length=100)
     private String meterno;
 
     @Column(name = "ERRORCODEID")
     private  Integer errorcodeid;
     @Column(name = "REF", precision=12)
     private Double ref;
-    @Column(name = "RESPONSEXML")
+    @Column(name = "RESPONSEXML",length=1000)
     private String responsexml;
-    @Column(name = "ORIGXML")
+    @Column(name = "ORIGXML", length=1000)
     private String origxml;
     @Column(name = "JSONResponse")
     private String jsonresponse;
