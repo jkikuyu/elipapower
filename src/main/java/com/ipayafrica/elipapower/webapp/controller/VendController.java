@@ -89,7 +89,8 @@ public class VendController {
 	String meterNo = token.getMeterno();
 
 	String amount = token.getAmount();
-	//Double dAmt = Double.parseDouble(amount);
+	Double dAmt = Double.parseDouble(amount);
+	amount = String.format("%.2f", dAmt);
 	String refNo = token.getRefno();
 	HashMap<String,Object> messResponse = null;
 	log.info("meter no:"+meterNo);
