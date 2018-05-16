@@ -107,6 +107,9 @@ public class XMLTokenHandler extends DefaultHandler {
 			butil = true;
 		}
 /*		int length = attributes.getLength();
+=======
+		int length = attributes.getLength();
+>>>>>>> 26af70525da8389a3acb8ed271267278a6e065e8
 
 		for (int i=0; i<length; i++) {
 			String name = attributes.getQName(i);
@@ -117,7 +120,9 @@ public class XMLTokenHandler extends DefaultHandler {
 			}
 
 		}
+<<<<<<< HEAD
 */		
+		log.info("ref " + ref);
 		if (qName.equalsIgnoreCase("stdToken")) {
 			mapResponse.put("token",attributes.getValue("stdToken"));
 

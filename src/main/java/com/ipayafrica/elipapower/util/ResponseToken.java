@@ -296,6 +296,7 @@ public class ResponseToken {
     saxParser.parse(is, xmlTokenHandler);
     tokenResponse = new TokenResponse();
     String ref = xmlTokenHandler.getRef();
+
     
     HashMap<String, Object> messMap = xmlTokenHandler.getMessageMap();
 
@@ -320,6 +321,7 @@ public class ResponseToken {
 	}
 	messMap.put("ref",ref);
 	
+
 	if(errorCodeId==0){
 		messMap.put("error","Please try again later");
 		messMap.put("status"," 0");
