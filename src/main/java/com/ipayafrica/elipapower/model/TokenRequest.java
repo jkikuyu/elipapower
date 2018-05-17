@@ -54,12 +54,14 @@ public class TokenRequest extends Token implements Serializable{
 	
 	private Date requestdate;
 	
+    @Column(name = "oref",nullable=false, length=50)
+    private String oref;
+
+
+	
 	@Transient
     private String amount;
 	
-	@Transient
-    private String refno;
-
 
 	public TokenRequest() {
 		
@@ -149,6 +151,12 @@ public class TokenRequest extends Token implements Serializable{
 	}
 	public void setAmt(Double amt) {
 		this.amt = amt;
+	}
+	public String getOref() {
+		return oref;
+	}
+	public void setOref(String oref) {
+		this.oref = oref;
 	}
 
 

@@ -39,18 +39,20 @@ public class XMLTokenHandler extends DefaultHandler {
 	boolean bdebt = false;
 	boolean bfixed = false;
 	boolean brtlrMsg = false;
-	
-	private HashMap<String, Object> mapResponse =null;
+
+	private HashMap<String, Object> mapResponse = null;
 	private String ref;
 	private String resCode;
 	private Date responseDate;
 	@Autowired
 	Environment env;
-	
+	public XMLTokenHandler() {
+		mapResponse =new HashMap<String, Object>();
+	}
 	public void startElement(String uri, String localName,String qName, 
 	            Attributes attributes) throws SAXException {
 
-		mapResponse = new HashMap<String, Object>();
+		//mapResponse = 
 		/*format for date in date time and timezone*/
 		SimpleDateFormat sdf = null;
 		TimeZone tz = null;
@@ -106,31 +108,26 @@ public class XMLTokenHandler extends DefaultHandler {
 			
 			butil = true;
 		}
+
 /*		int length = attributes.getLength();
-=======
-		int length = attributes.getLength();
->>>>>>> 26af70525da8389a3acb8ed271267278a6e065e8
 
 		for (int i=0; i<length; i++) {
 			String name = attributes.getQName(i);
-			if(name.equalsIgnoreCase("ref")){
-				String s = attributes.getValue(i);
-				ref = Double.parseDouble(s);
-				break;
-			}
+			System.out.println("Name:" + name);
+			String value = attributes.getValue(i);
+			System.out.println("Value:" + value);				
+			
 
 		}
-<<<<<<< HEAD
-*/		
-		log.info("ref " + ref);
+*/
+		//log.info("ref " + ref);
 		if (qName.equalsIgnoreCase("stdToken")) {
-			mapResponse.put("token",attributes.getValue("stdToken"));
 
 			mapResponse.put("units", attributes.getValue("units"));
 
 			HashMap<String,String> mapTarrif = new HashMap<String,String>();
 			mapResponse.put("tax", attributes.getValue("tax"));
-			String tarrifs[] = attributes.getValue("tarrif").split(":");
+			String tarrifs[] = attributes.getValue("tariff").split(":");
 			String key = "";
 			int i = 1;
 
@@ -159,8 +156,19 @@ public class XMLTokenHandler extends DefaultHandler {
 		if (qName.equalsIgnoreCase("rtlrMsg")) {
 			brtlrMsg = true;
 		}
+
 	}
 	public HashMap<String, Object>  getMessageMap() {
+	    if (mapResponse.isEmpty() ||mapResponse==null) {
+			log.info("hashmap empty");
+
+	    }
+	    else {
+			log.info("hashmap not empty");
+
+			mapResponse.forEach((k,v)->log.info("key : " + k + " value : " + v));
+		
+	    }
 		return mapResponse;
 	}
 	
@@ -213,6 +221,8 @@ public class XMLTokenHandler extends DefaultHandler {
 			butil = false;
 		}
 		if (bstdToken) {
+			mapResponse.put("token",new String(ch, start, length));
+
 			//System.out.println("contract : " + new String(ch, start, length));
 			bstdToken = false;
 		}

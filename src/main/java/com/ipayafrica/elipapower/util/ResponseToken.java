@@ -79,6 +79,8 @@ public class ResponseToken {
     if(pos>0) {
   	  resXML.delete(0, pos );
     }
+    log.info("xml string : "+resXML.toString());
+    /*
     pos = resXML.indexOf("client"); 
     if(pos>0) {
   	  resXML.replace(pos, pos + 6, " client");
@@ -290,6 +292,205 @@ public class ResponseToken {
     pos = resXML.lastIndexOf("desc",pos); 
     if(pos>0) {
   	  resXML.replace(pos, pos + 4, " desc");
+    }*/
+    pos = resXML.indexOf("client"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 6, " client");
+    }
+    pos = resXML.indexOf("term"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 4, " term");
+    }
+    pos = resXML.indexOf("seqNum"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 6, " seqNum");
+  	  
+    }
+    pos = resXML.indexOf("time"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 4, " time");
+  	  
+    }
+    pos = resXML.indexOf("seqNum"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 6, " seqNum");
+  	  
+    }
+    pos = resXML.indexOf("ver"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 3, " ver");
+  	  
+    }
+    pos = resXML.indexOf("code"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 4, " code");
+  	  
+    }
+    pos = resXML.indexOf("extCode"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 7, " extCode");
+  	  
+    }
+    pos = resXML.indexOf("addr"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 4, " addr");
+    }
+    pos = resXML.indexOf("util="); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 5, " util=");
+    }
+    pos = resXML.indexOf("agrRef"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 6, " agrRef");
+    }
+    pos = resXML.indexOf("type"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 4, " type");
+    }
+    pos = resXML.indexOf("locRef"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 6, " locRef");
+    }
+    pos = resXML.indexOf("supGrpRef"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 9, " supGrpRef");
+    }
+    pos = resXML.indexOf("tokenTechCode"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 13, " tokenTechCode");
+    }
+    pos = resXML.indexOf("algCode"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 7, " algCode");
+    }
+    pos = resXML.indexOf("tariffIdx"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 9, " tariffIdx");
+    }
+    pos = resXML.indexOf("keyRevNum"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 9, " keyRevNum");
+    }
+    pos = resXML.indexOf("daysLastVend"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 12, " daysLastVend");
+    }
+    pos = resXML.indexOf("contractagrRef"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 14, "contract agrRef");
+    }
+    pos = resXML.indexOf("idNo"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 4, " idNo");
+    }
+    pos = resXML.indexOf("leRefNo"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 7, " leRefNo");
+    }
+    pos = resXML.indexOf("finAdj"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 6, " finAdj");
+    }
+    pos = resXML.indexOf("keyRevNum"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 9, " keyRevNum");
+    }
+    pos = resXML.indexOf("resource"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 8, " resource");
+    }
+    pos = resXML.indexOf("taxRef"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 6, " taxRef");
+    }
+    pos = resXML.indexOf("distId"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 6, " distId");
+    }
+    pos = resXML.indexOf("units="); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 6, " units=");
+    }
+    pos = resXML.indexOf("tax="); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 4, " tax=");
+    }
+    pos = resXML.indexOf("tax=",pos+4); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 4, " tax=");
+    }
+    pos = resXML.indexOf("tax=",pos+4); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 4, " tax=");
+    }
+
+    pos = resXML.indexOf("tax=",pos+4); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 4, " tax=");
+    }
+
+    pos = resXML.indexOf("tariff="); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 7, " tariff=");
+    }
+    pos = resXML.indexOf("amt"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 3, " amt");
+    }
+    pos = resXML.indexOf("amt",pos+3); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 3, " amt");
+    }
+    pos = resXML.indexOf("amt",pos+3); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 3, " amt");
+    }
+    
+    pos = resXML.indexOf("amt",pos+3); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 3, " amt");
+    }
+
+    pos = resXML.indexOf("unitsType"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 9, " unitsType");
+    }
+    pos = resXML.indexOf("rctNum"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 6, " rctNum");
+    }
+    pos = resXML.indexOf("desc"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 4, " desc");
+    }
+    pos = resXML.indexOf("bsstDate"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 8, " bsstDate");
+    }
+    pos = resXML.indexOf("rem"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 3, " rem");
+    }
+
+    pos = resXML.lastIndexOf("unitsType"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 9, " unitsType");
+    }
+    pos = resXML.lastIndexOf("units="); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 6, " units=");
+    }
+    pos = resXML.lastIndexOf("tariff="); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 7, " tariff=");
+    }
+    pos = resXML.lastIndexOf("desc"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 4, " desc");
+    }
+    pos = resXML.lastIndexOf("desc",pos); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 4, " desc");
     }
     String cleanedXML = resXML.toString();
     InputSource is = new InputSource(new StringReader(cleanedXML));
@@ -319,7 +520,7 @@ public class ResponseToken {
 	else{
 		status = 0;
 	}
-	messMap.put("ref",ref);
+	messMap.put("ourref",ref);
 	
 
 	if(errorCodeId==0){

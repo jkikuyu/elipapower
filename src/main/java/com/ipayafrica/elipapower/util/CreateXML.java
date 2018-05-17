@@ -212,8 +212,8 @@ public class CreateXML {
     	
 		String key = env.getProperty("payment.key");
     	Byte paytype = (byte) Integer.parseInt(key);
-
-    	tokenReq.setAmt(Double.parseDouble(amount));
+    	Double dAmt = Double.parseDouble(amount)/100; //reset to shillings
+    	tokenReq.setAmt(dAmt);
     	tokenReq.setMeterno(meterNo);
     	tokenReq.setRef(refNo);
     	tokenReq.setType(paytype);

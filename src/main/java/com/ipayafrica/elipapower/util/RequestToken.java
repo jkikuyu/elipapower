@@ -53,7 +53,7 @@ public class RequestToken {
 		 */
 	    HashMap<String, Object> messResponse = null;
 		messResponse = new HashMap<String,Object>();
-		String mess = "<ipayMsgclient=\"IPAYAFRICA\"term=\"00001\"seqNum=\"32\"time=\"2018-05-1112:17:52+0200\"><elecMsgver=\"2.48\"><vendRes><ref>813113170032</ref><rescode=\"elec001\"extCode=\"0\">MaximumAmountExceededMaximumAmountExceeded=1.0Notvalid-Range10.0-9.9999999999999E13.Verifythedataprovidedandretry</res></vendRes></elecMsg></ipayMsg>";
+		String mess = "<ipayMsgclient=\"IPAYAFRICA\"term=\"00001\"seqNum=\"47\"time=\"2018-05-1708:53:10+0200\"><elecMsgver=\"2.48\"finAdj=\"-10000\"><vendRessupGrpRef=\"100405\"tariffIdx=\"52\"keyRevNum=\"1\"tokenTechCode=\"02\"algCode=\"05\"daysLastVend=\"19999\"resource=\"elec\"><ref>813709530047</ref><rescode=\"elec000\">OK</res><utiladdr=\"59WaterFront,Durban.5899.\"taxRef=\"3988339883\"distId=\"6004708001509\">EskomOnline</util><stdTokenunits=\"333.33334\"amt=\"6260\"tax=\"940\"tariff=\"aaaa.aakWh@065.72c/kWh:bbbb.bbkWh@075.42c/kWh:cccc.cckWh@109.50c/kWh:dddd.ddkWh@120.10c/kWh:\"desc=\"NormalSale\"unitsType=\"kWh\"rctNum=\"969476426191\">59032564186831613321</stdToken><debtamt=\"1700\"tax=\"0\"rem=\"7700\"desc=\"1122\">DebtRecovery</debt><fixedamt=\"956\"tax=\"144\">Fixed</fixed><rtlrMsg>HelloOperatorMessage.</rtlrMsg><customerMsg>Gooddaydearcustomer.Thisisatestcustomermessagefromcustomer.Wehavevendedatokenforthecustomer.Themessagecanbeupto160characterslong....</customerMsg></vendRes></elecMsg></ipayMsg>";
 		try {
 			messResponse = responseToken.cleanXML(mess);
 		} catch (ParserConfigurationException e) {

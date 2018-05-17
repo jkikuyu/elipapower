@@ -1,4 +1,6 @@
 package com.ipayafrica.elipapower.webapp.controller;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  * 
  * @author Jude Kikuyu
@@ -10,6 +12,7 @@ package com.ipayafrica.elipapower.webapp.controller;
  *
  */
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,7 +23,8 @@ import com.ipayafrica.elipapower.util.RequestToken;
 */
 @RestController
 public class CustomerInfoController {
-	
+    protected final transient Log log = LogFactory.getLog(getClass());
+
 	private CreateXML createxml;
 	
     private RequestToken tokenRequest;
@@ -38,12 +42,12 @@ public class CustomerInfoController {
 	public CustomerInfoController() {
 	}
 	
-	@RequestMapping("/customerinfo")
-	public void customerInfoRequest(){
-		String meterNo = "A12C3456789";
-
-		byte[] reqXML = createxml.buildXML(meterNo,1);
-		tokenRequest.makeRequest(reqXML, meterNo);
+	@RequestMapping("/customerinfo/{meterno}")
+	public void customerInfoRequest(@PathVariable String meterno){
+		//String meterNo = "A12C3456789";
+		log.info("meter no" + meterno);
+		byte[] reqXML = createxml.buildXML(meterno,1);
+		tokenRequest.makeRequest(reqXML, meterno);
 
 		
 	}
