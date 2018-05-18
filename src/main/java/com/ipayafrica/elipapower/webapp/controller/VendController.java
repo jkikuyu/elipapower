@@ -119,7 +119,7 @@ public class VendController {
 	
 	
 		log.info("begin make request....");
-		messResponse = requestToken.makeRequest(reqXML,meterNo,true);
+		messResponse = requestToken.makeRequest(reqXML,meterNo);
 		tokenResponse= responseToken.getTokenResponse();
 		tokenResponse.setMeterno(meterNo);
 		messResponse.put("ref", token.getRefno());

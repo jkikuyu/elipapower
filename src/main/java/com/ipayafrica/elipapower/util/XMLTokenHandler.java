@@ -99,6 +99,8 @@ public class XMLTokenHandler extends DefaultHandler {
 			bcustInfoRes = true;
 		}
 		if (qName.equalsIgnoreCase("customer")) {
+			mapResponse.put("address", attributes.getValue("addr"));
+
 			bcustomer = true;
 		}
 		if (qName.equalsIgnoreCase("contract")) {
@@ -109,7 +111,7 @@ public class XMLTokenHandler extends DefaultHandler {
 			butil = true;
 		}
 
-/*		int length = attributes.getLength();
+		int length = attributes.getLength();
 
 		for (int i=0; i<length; i++) {
 			String name = attributes.getQName(i);
@@ -119,7 +121,7 @@ public class XMLTokenHandler extends DefaultHandler {
 			
 
 		}
-*/
+
 		//log.info("ref " + ref);
 		if (qName.equalsIgnoreCase("stdToken")) {
 
@@ -159,16 +161,16 @@ public class XMLTokenHandler extends DefaultHandler {
 
 	}
 	public HashMap<String, Object>  getMessageMap() {
-	    if (mapResponse.isEmpty() ||mapResponse==null) {
+/*	    if (mapResponse.isEmpty() ||mapResponse==null) {
 			log.info("hashmap empty");
 
 	    }
 	    else {
-			log.info("hashmap not empty");
 
 			mapResponse.forEach((k,v)->log.info("key : " + k + " value : " + v));
 		
 	    }
+*/		
 		return mapResponse;
 	}
 	
@@ -194,8 +196,14 @@ public class XMLTokenHandler extends DefaultHandler {
 		}
 
 		if (bref) {
-			
-			ref = new String(ch, start, length);
+			String tref;
+			tref = new String(ch, start, length);
+			if(tref.equals("OK")) {
+				ref = "1";
+			}
+			else {
+				ref = tref;
+			}
 			//ref = Double.parseDouble(s);
 
 			bref = false;
@@ -209,6 +217,8 @@ public class XMLTokenHandler extends DefaultHandler {
 			bcustInfoRes = false;
 		}
 		if (bcustomer) {
+			mapResponse.put("customerName",new String(ch, start, length) );
+
 			//System.out.println("customer : " + new String(ch, start, length));
 			bcustomer = false;
 		}

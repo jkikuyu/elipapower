@@ -1,6 +1,23 @@
 package com.ipayafrica.elipapower.webapp.controller;
+import java.util.HashMap;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ipayafrica.elipapower.model.TokenRequest;
+import com.ipayafrica.elipapower.model.TokenResponse;
+import com.ipayafrica.elipapower.service.ITokenRequestService;
+import com.ipayafrica.elipapower.service.ITokenResponseService;
+import com.ipayafrica.elipapower.util.CreateXML;
+import com.ipayafrica.elipapower.util.RequestToken;
+import com.ipayafrica.elipapower.util.ResponseToken;
+
 /**
  * 
  * @author Jude Kikuyu
@@ -11,23 +28,21 @@ import org.apache.commons.logging.LogFactory;
  * </custInfoReq></elecMsg></ipayMsg>
  *
  */
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.ipayafrica.elipapower.util.CreateXML;
-import com.ipayafrica.elipapower.util.RequestToken;
-
-/**
-*/
 @RestController
 public class CustomerInfoController {
     protected final transient Log log = LogFactory.getLog(getClass());
 
 	private CreateXML createxml;
 	
-    private RequestToken tokenRequest;
+    private TokenRequest tokenRequest;
+    
+    private TokenResponse tokenResponse = null;
+
+    
+    private boolean isEmptyMeterNo =false;
+	
+    HashMap<String,Object> messResponse = null;
+
 
 	@Autowired
 	public void setCreatexml(CreateXML createxml) {
@@ -35,21 +50,66 @@ public class CustomerInfoController {
 	}
 
 	@Autowired
-	public void setTokenRequest(RequestToken tokenRequest) {
-		this.tokenRequest = tokenRequest;
-	}
+	private RequestToken requestToken;
 
-	public CustomerInfoController() {
-	}
+	@Autowired
+    private ResponseToken responseToken;
 	
+	@Autowired
+	private ITokenRequestService iTokenRequestService;
+
+	
+	@Autowired
+	private ITokenResponseService iTokenResponseService;
+
 	@RequestMapping("/customerinfo/{meterno}")
-	public void customerInfoRequest(@PathVariable String meterno){
+	public String customerInfoRequest(@PathVariable String meterno){
 		//String meterNo = "A12C3456789";
 		log.info("meter no" + meterno);
-		byte[] reqXML = createxml.buildXML(meterno,1);
-		tokenRequest.makeRequest(reqXML, meterno);
+		messResponse = new HashMap<String,Object>();
+		String messJSON = null;
 
-		
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		if(meterno==null || meterno.isEmpty()) {
+			isEmptyMeterNo = true;
+
+		}
+		if (!isEmptyMeterNo) {
+			tokenRequest = new TokenRequest();
+			byte[] reqXML = createxml.buildXML(meterno,1,tokenRequest);
+			tokenRequest = new TokenRequest();
+			tokenRequest.setOref("OK");
+			iTokenRequestService.save(tokenRequest);
+
+			messResponse = requestToken.makeRequest(reqXML, meterno);
+			tokenResponse= responseToken.getTokenResponse();
+			tokenResponse.setMeterno(meterno);
+			messResponse.put("ref", "OK");
+			try {
+				messJSON = objectMapper.writeValueAsString(messResponse);
+				log.info("response:"+ messJSON);
+
+				
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			log.info(messJSON);
+
+			tokenResponse.setJsonresponse(messJSON);
+
+			iTokenResponseService.save(tokenResponse);
+
+		}
+		else {
+			String errResponse = null;
+			errResponse = isEmptyMeterNo? "Meter No is empty or  key used is wrong. ":"";
+			messResponse.put("error",errResponse);
+			messResponse.put("status", "0");
+			isEmptyMeterNo =false;
+
+		}
+		return messJSON;
 	}
-
 }

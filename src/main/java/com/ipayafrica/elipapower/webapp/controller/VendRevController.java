@@ -15,29 +15,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ipayafrica.elipapower.model.TokenRequest;
 import com.ipayafrica.elipapower.util.CreateXML;
 import com.ipayafrica.elipapower.util.RequestToken;
 
 @RestController
 public class VendRevController {
     private byte[] reqXML;
+    
+    private TokenRequest tokenRequest;
+    @Autowired
     private CreateXML createxml;
 
 	@Autowired
-    private RequestToken tokenRequest;
-   
-	public CreateXML getCreatexml() {
-		return createxml;
-	}
-	@Autowired
-	public void setCreatexml(CreateXML createxml) {
-		this.createxml = createxml;
-	}
-
-	@Autowired
-	public void setTokenRequest(RequestToken tokenRequest) {
-		this.tokenRequest = tokenRequest;
-	}
+    private RequestToken requestToken;
+	
+	
 
 
 	public VendRevController() {
@@ -46,7 +39,7 @@ public class VendRevController {
 	@RequestMapping("/vendrev")
 	public void reversalRequest(){
 		String meterNo = "A12C3456789";
-		reqXML = createxml.buildXML(meterNo, 3);
+		reqXML = createxml.buildXML(meterNo, 3, tokenRequest);
 		//tokenRequest.makeRequest(reqXML);
 	
 	}
