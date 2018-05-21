@@ -50,8 +50,8 @@ public class CreateXML {
 
 	private Element ipayMsg = null, elecMsg=null;
 	byte[] reqXML=null;
-
-	private String  num, currency, type,tref, seqNo;
+	
+	private String  num, currency, type,tref, seqNo, dtt;
 	Double refNo;
 
 	int repeat = 0;
@@ -91,13 +91,12 @@ public class CreateXML {
 	 * @param meter
 	 * @return
 	 */
-	public byte[] buildXML(String meterNo,int reqtype){
+	public byte[] buildXML(String meterNo,int reqtype, TokenRequest tokenReq){
 		date = new Date();// date to be used in message
 
-		String dtt;
 		reqXML= null;
-		sdf.setTimeZone(tz);
-		dtt = sdf.format(date);
+		//sdf.setTimeZone(tz);
+		//dtt = sdf.format(date);
 
 		doc = new Document();
 		createInitDoc();
@@ -153,7 +152,17 @@ public class CreateXML {
 			elecMsg.addContent(vendRevReq);
 		}
 		makeXML(doc);
+		String sXML = new String(reqXML);
+    	byte payType = 0;
+
 		String mess = "Request: " + new String(reqXML);
+    	tokenReq.setMeterno(meterNo);
+    	tokenReq.setRef(refNo);
+    	tokenReq.setRequestdate(date);
+    	tokenReq.setRequestxml(sXML);
+    	tokenReq.setSeqnum(Integer.parseInt(seqNo));
+    	tokenReq.setType(payType);
+		logfile.eventLog(mess);
 		logfile.eventLog(mess);
 		return reqXML;
 	}
@@ -220,7 +229,6 @@ public class CreateXML {
     	tokenReq.setRequestdate(date);
     	tokenReq.setRequestxml(sXML);
     	tokenReq.setSeqnum(Integer.parseInt(seqNo));
-    	tokenReq.setType(paytype);
 		logfile.eventLog(mess);
 
 	return reqXML;
@@ -233,7 +241,7 @@ public class CreateXML {
 	 * @param term
 	 */
 	private void createInitDoc(){
-		String client, term, ver,dtt;
+		String client, term, ver;
 		client = env.getProperty("company.name");
 		term = env.getProperty("company.id");
         ver = env.getProperty("api.ver");

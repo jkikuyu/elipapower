@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ipayafrica.elipapower.model.TokenRequest;
 import com.ipayafrica.elipapower.util.CreateXML;
 import com.ipayafrica.elipapower.util.RequestToken;
 
@@ -20,9 +21,10 @@ public class VendLastReqController {
     private CreateXML createxml;
 
 	@Autowired
-    private RequestToken tokenRequest;
+    private TokenRequest tokenRequest;
    
-
+	@Autowired
+	private RequestToken requestToken;
 
 	public CreateXML getCreatexml() {
 		return createxml;
@@ -32,11 +34,6 @@ public class VendLastReqController {
 		this.createxml = createxml;
 	}
 
-	@Autowired
-	public void setTokenRequest(RequestToken tokenRequest) {
-		this.tokenRequest = tokenRequest;
-	}
-
 
 	public VendLastReqController() {
 	}
@@ -44,7 +41,7 @@ public class VendLastReqController {
 	@RequestMapping("/vendlastreq")
 	public void lastRequest(){
 		String meterNo = "A12C3456789";
-		reqXML = createxml.buildXML(meterNo, 2);
+		reqXML = createxml.buildXML(meterNo, 2, tokenRequest);
 		//tokenRequest.makeRequest(reqXML,meterNo);
 
 		
