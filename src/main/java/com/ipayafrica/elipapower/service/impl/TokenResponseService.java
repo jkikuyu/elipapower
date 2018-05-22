@@ -25,6 +25,7 @@ public class TokenResponseService implements ITokenResponseService{
 		return tokenResponses;
 	}
 
+
 	public TokenResponse save(TokenResponse tokenResponse) {
 		tokenResponseRepository.save(tokenResponse);
 		return tokenResponse;
@@ -58,6 +59,14 @@ public class TokenResponseService implements ITokenResponseService{
 	public List<TokenResponse> getAllPendingRecords() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+
+	@Override
+	public List<TokenResponse> findFailedRequests(Byte status) {
+		// TODO Auto-generated method stub
+		return tokenResponseRepository.findAllFailedRequests(status);
 	}
 
 		 
