@@ -64,11 +64,12 @@ public class XMLTokenHandler extends DefaultHandler {
 
 			String datetime = attributes.getValue("time");
 			StringBuffer sb = new StringBuffer(datetime);
-			sb.insert(11," ");
+			sb.insert(10," ");
 			sb.insert(sb.indexOf("+"), " ");
 			datetime = sb.toString();
 			try {
 				responseDate = sdf.parse(datetime);
+				log.info("datetime" + datetime);
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

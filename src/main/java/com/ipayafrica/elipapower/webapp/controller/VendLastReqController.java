@@ -20,7 +20,6 @@ public class VendLastReqController {
     private byte[] reqXML;
     private CreateXML createxml;
 
-	@Autowired
     private TokenRequest tokenRequest;
    
 	@Autowired
