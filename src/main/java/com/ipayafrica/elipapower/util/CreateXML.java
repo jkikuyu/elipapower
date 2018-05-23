@@ -99,8 +99,15 @@ public class CreateXML {
 		//dtt = sdf.format(date);
 
 		doc = new Document();
-		createInitDoc();
+		if(tokenReq == null) {
+			String term = env.getProperty("company.id");
 
+			createInitDoc(term);
+		}
+		else {
+			createInitDoc("00001");
+
+		}
 		Element ref = new Element(Invariable.REF);
 		
 		
@@ -131,6 +138,7 @@ public class CreateXML {
 			String oTime = dtt; //to obtain origin time of first reversal advice
 			Element vendRevReq =null;
 			vendRevReq = new Element(Invariable.VENDREVREQ);
+			
 			if(repeat >1){
 				repeat++;
 				
@@ -145,6 +153,7 @@ public class CreateXML {
 			//if repeat request for reversal then add the or
 			if(repeat >1){
 				Element origRef = new Element(Invariable.ORIGREF);
+				refNo = tokenReq.getRef();
 				origRef.setText(refNo.toString());
 				vendRevReq.addContent(origRef);
 			}
@@ -176,13 +185,14 @@ public class CreateXML {
 
         reqXML = null;
 		date = new Date();// date to be used in message
+		String term = env.getProperty("company.id");
 
 
         doc = new Document();
         
     	// vendreq element
     	Element vendReq = null;
-		createInitDoc();
+		createInitDoc(term);
 
 		//ref
 		Element ref = new Element(Invariable.REF);
@@ -240,10 +250,9 @@ public class CreateXML {
 	 * @param seqNo
 	 * @param term
 	 */
-	private void createInitDoc(){
-		String client, term, ver;
+	private void createInitDoc(String term){
+		String client, ver;
 		client = env.getProperty("company.name");
-		term = env.getProperty("company.id");
         ver = env.getProperty("api.ver");
 		tz = TimeZone.getTimeZone(env.getProperty("timezone.local"));
 		sdf = new SimpleDateFormat(env.getProperty("time.format"));

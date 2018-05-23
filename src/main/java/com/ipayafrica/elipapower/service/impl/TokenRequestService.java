@@ -54,6 +54,18 @@ public class TokenRequestService implements ITokenRequestService{
 		return null;
 	}
 
+	@Override
+	public TokenRequest findTokenRequestByRef(Double ref) {
+		// TODO Auto-generated method stub
+		return tokenRequestRepository.findTokenRequestByRef(ref);
+	}
+
+
+	@Override
+	public List<TokenRequest> findFailedRequests(Byte status) {
+		// TODO Auto-generated method stub
+		return tokenRequestRepository.findAllFailedRequests(status);
+	}
 		 
 
 

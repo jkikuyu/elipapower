@@ -4,6 +4,7 @@ import java.util.HashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -62,6 +63,9 @@ public class CustomerInfoController {
 	@Autowired
 	private ITokenResponseService iTokenResponseService;
 
+	@Autowired
+	private Environment env;
+
 	@RequestMapping("/customerinfo/{meterno}")
 	public String customerInfoRequest(@PathVariable String meterno){
 		//String meterNo = "A12C3456789";
@@ -81,8 +85,8 @@ public class CustomerInfoController {
 			tokenRequest = new TokenRequest();
 			tokenRequest.setOref("OK");
 			iTokenRequestService.save(tokenRequest);
-
-			messResponse = requestToken.makeRequest(reqXML, meterno);
+			String term = env.getProperty("company.id");
+			messResponse = requestToken.makeRequest(reqXML, meterno, term);
 			tokenResponse= responseToken.getTokenResponse();
 			tokenResponse.setMeterno(meterno);
 			messResponse.put("ref", "OK");

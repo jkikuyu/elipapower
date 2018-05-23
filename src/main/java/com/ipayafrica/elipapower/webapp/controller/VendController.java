@@ -18,6 +18,7 @@ import java.util.HashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -50,7 +51,8 @@ public class VendController {
 	@Autowired
     private ResponseToken responseToken;
 	
-
+	@Autowired
+	Environment env;
 	
 	public VendController() {
 	}
@@ -94,6 +96,7 @@ public class VendController {
 	amount = dAmt.toString();
 	String refNo = token.getRefno();
 	HashMap<String,Object> messResponse = null;
+	Byte status;
 
 	if(meterNo==null || meterNo.isEmpty()) {
 		isEmptyMeterNo = true;
@@ -116,27 +119,38 @@ public class VendController {
 		tokenRequest.setOref(refNo);
 		iTokenRequestService.save(tokenRequest);
 		log.info("meter No:" + meterNo);
-	
+		String term = env.getProperty("company.id");
+
 	
 		log.info("begin make request....");
-		messResponse = requestToken.makeRequest(reqXML,meterNo);
-		tokenResponse= responseToken.getTokenResponse();
-		tokenResponse.setMeterno(meterNo);
-		messResponse.put("ref", token.getRefno());
-		try {
-			messJSON = objectMapper.writeValueAsString(messResponse);
-			log.info("response:"+ messJSON);
+		messResponse = requestToken.makeRequest(reqXML,meterNo,term);
+		if (messResponse==null) {
+			status = 2;
+			tokenRequest.setStatus(status);
+			iTokenRequestService.save(tokenRequest);
 
-			
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-		log.info(messJSON);
-
-		tokenResponse.setJsonresponse(messJSON);
-
-		iTokenResponseService.save(tokenResponse);
+		else {
+			tokenResponse= responseToken.getTokenResponse();
+			tokenResponse.setMeterno(meterNo);
+			
+	
+			messResponse.put("ref", token.getRefno());
+			try {
+				messJSON = objectMapper.writeValueAsString(messResponse);
+				log.info("response:"+ messJSON);
+	
+				
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			log.info(messJSON);
+	
+			tokenResponse.setJsonresponse(messJSON);
+	
+			iTokenResponseService.save(tokenResponse);
+		}
 	}
 	else {
 		String errResponse = null;

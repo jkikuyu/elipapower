@@ -48,6 +48,9 @@ public class TokenRequest extends Token implements Serializable{
     @Column(name="REQUESTEDBY")
     private Long requestedby;
     
+    @Column(name="STATUS")
+    private Byte status;
+
     
 	@Column(name = "REQUESTDATE",  nullable=false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -142,6 +145,9 @@ public class TokenRequest extends Token implements Serializable{
 		return ref;
 	}
     
+	public Byte getStatus() {
+		return status;
+	}
 
 	public void setRef(Double ref) {
 		this.ref = ref;
@@ -157,6 +163,9 @@ public class TokenRequest extends Token implements Serializable{
 	}
 	public void setOref(String oref) {
 		this.oref = oref;
+	}
+	public void setStatus(Byte status) {
+		this.status = status;
 	}
 
 

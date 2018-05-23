@@ -70,7 +70,7 @@ public class RequestToken {
 		return messResponse;
 	}
 
-	public HashMap<String,Object> makeRequest(byte[] reqB, String meterNo){
+	public HashMap<String,Object> makeRequest(byte[] reqB, String meterNo,String term){
 //		String serverIP= "41.204.194.188";
 		String serverIP = env.getProperty("token.server.ip");
 		int port =  Integer.parseInt(env.getProperty("token.server.port"));
@@ -124,19 +124,20 @@ public class RequestToken {
             String mess = "response: " + responseLine;
             
     		logfile.eventLog(mess);
-    		try {
-    			messResponse = new HashMap<String,Object>();
-				messResponse = responseToken.cleanXML(mess);
-				
-				
-			} catch (ParserConfigurationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SAXException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    		
+    		if (mess.length()> 10) {
+	    		try {
+	    			messResponse = new HashMap<String,Object>();
+					messResponse = responseToken.cleanXML(mess);
+					
+					
+				} catch (ParserConfigurationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SAXException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    		}
             socket.close();
 
 		} catch (SocketException e) {

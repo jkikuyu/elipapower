@@ -8,7 +8,6 @@ public interface ITokenResponseService extends IGenericService<TokenResponse,Lon
 	List<TokenResponse> getAllRecords();
 	TokenResponse getByTokenResponseId (Long responsetId);
 	List<TokenResponse>getAllPendingRecords();
-	List<TokenResponse> findFailedRequests(Byte status);
 		
 	
 }

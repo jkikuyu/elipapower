@@ -63,12 +63,6 @@ public class TokenResponseService implements ITokenResponseService{
 
 
 
-	@Override
-	public List<TokenResponse> findFailedRequests(Byte status) {
-		// TODO Auto-generated method stub
-		return tokenResponseRepository.findAllFailedRequests(status);
-	}
-
 		 
 
 
