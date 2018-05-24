@@ -4,6 +4,7 @@ public class Token {
 	private String refno;
 	private String meterno;
 	private String amount;
+	private String demo;
 	public String getAmount() {
 		return amount;
 	}
@@ -21,5 +22,11 @@ public class Token {
 	}
 	public void setRefno(String refno) {
 		this.refno = refno;
+	}
+	public String getDemo() {
+		return demo;
+	}
+	public void setDemo(String demo) {
+		this.demo = demo;
 	}
 }

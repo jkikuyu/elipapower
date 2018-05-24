@@ -1,5 +1,6 @@
 package com.ipayafrica.elipapower.repository;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,7 +15,7 @@ public interface ITokenRequestRepository<T extends TokenRequest,PK> extends JpaR
 	@Query("SELECT t FROM TokenRequest t where t.ref = :ref")
 	public TokenRequest findTokenRequestByRef(@Param("ref") Double ref);
 	
-	@Query("SELECT t FROM TokenRequest t where t.status = :status")
-	public List<TokenRequest> findAllFailedRequests(@Param("status") Byte status);
+	@Query("SELECT t FROM TokenRequest t where t.status = :status and t.requestdate <= :requestdate")
+	public List<TokenRequest> findAllFailedRequests(@Param("status") Byte status, @Param("requestdate") Date requestdate);
 
 }

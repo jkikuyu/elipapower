@@ -80,12 +80,13 @@ public class CustomerInfoController {
 
 		}
 		if (!isEmptyMeterNo) {
+			String term = env.getProperty("company.id");
+
 			tokenRequest = new TokenRequest();
-			byte[] reqXML = createxml.buildXML(meterno,1,tokenRequest);
+			byte[] reqXML = createxml.buildXML(meterno,1,tokenRequest,term);
 			tokenRequest = new TokenRequest();
 			tokenRequest.setOref("OK");
 			iTokenRequestService.save(tokenRequest);
-			String term = env.getProperty("company.id");
 			messResponse = requestToken.makeRequest(reqXML, meterno, term);
 			tokenResponse= responseToken.getTokenResponse();
 			tokenResponse.setMeterno(meterno);

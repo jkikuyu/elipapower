@@ -38,8 +38,10 @@ public class VendRevController {
 
 	@RequestMapping("/vendrev")
 	public void reversalRequest(){
+		String term = "";
+
 		String meterNo = "A12C3456789";
-		reqXML = createxml.buildXML(meterNo, 3, tokenRequest);
+		reqXML = createxml.buildXML(meterNo, 3, tokenRequest, term);
 		//tokenRequest.makeRequest(reqXML);
 	
 	}

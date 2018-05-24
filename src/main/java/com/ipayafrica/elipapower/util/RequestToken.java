@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -136,11 +137,15 @@ public class RequestToken {
 				} catch (SAXException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
+				} 
+	    		
     		}
             socket.close();
 
-		} catch (SocketException e) {
+		} catch (SocketTimeoutException e) {
+			
+		}
+		catch (SocketException e) {
 			e.printStackTrace();
 		}
 		catch (IOException e) {

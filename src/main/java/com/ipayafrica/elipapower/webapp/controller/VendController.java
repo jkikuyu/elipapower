@@ -44,7 +44,7 @@ public class VendController {
     private TokenRequest tokenRequest = null;
     private TokenResponse tokenResponse = null;
 	private ITokenRequestService iTokenRequestService= null;
-	private boolean isEmptyMeterNo =false, isEmptyAmount=false, isEmptyRef=false;
+	private boolean isEmptyMeterNo =false, isEmptyAmount=false, isEmptyRef=false, isEmptyDemo=false;
 	@Autowired
     private RequestToken requestToken;
    
@@ -92,7 +92,8 @@ public class VendController {
 	
 	String amount = token.getAmount();
 	Integer dAmt = Integer.parseInt(amount)*100; // convert to cents
-
+	Integer demo = Integer.parseInt(token.getDemo());
+	
 	amount = dAmt.toString();
 	String refNo = token.getRefno();
 	HashMap<String,Object> messResponse = null;
@@ -103,10 +104,13 @@ public class VendController {
 
 	}
 	else if (amount==null || amount.isEmpty()){
-		isEmptyAmount =true;
+		isEmptyAmount =true; 
 	}
 	else if (refNo==null || refNo.isEmpty()) {
 		isEmptyRef =true;
+	}
+	else if (demo == null || demo>1) {
+		isEmptyDemo =true;
 	}
 	log.info("amount:"+amount);
 	messResponse = new HashMap<String,Object>();
@@ -114,13 +118,22 @@ public class VendController {
 	if (!isEmptyMeterNo && !isEmptyAmount && !isEmptyRef) {
 		
 		tokenRequest = new TokenRequest();
-	
+		status = 1;
 		byte[] reqXML= createxml.buildXML( meterNo, amount,tokenRequest );
 		tokenRequest.setOref(refNo);
+		
+		tokenRequest.setStatus(status);
+		tokenRequest.setRepcount(0);
 		iTokenRequestService.save(tokenRequest);
 		log.info("meter No:" + meterNo);
-		String term = env.getProperty("company.id");
+		String term;
+		if(demo == 1) {
+			term = env.getProperty("demo.id");
 
+		}
+		else {
+			term = env.getProperty("company.id");
+		}
 	
 		log.info("begin make request....");
 		messResponse = requestToken.makeRequest(reqXML,meterNo,term);
@@ -158,11 +171,15 @@ public class VendController {
 		errResponse +=isEmptyRef? "Reference Number is empty or key used is wrong":"";
 
 		errResponse +=isEmptyAmount ? "Amount is empty or key used is wrong":"";
+		errResponse +=isEmptyDemo ? "Demo is empty or key used is wrong":"";
+
 		messResponse.put("error",errResponse);
 		messResponse.put("status", "0");
 		isEmptyMeterNo =false;
 		isEmptyAmount=false;
 		isEmptyRef=false;
+		isEmptyDemo=false;
+
 	}
 
 	

@@ -1,6 +1,7 @@
 package com.ipayafrica.elipapower.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,9 +63,9 @@ public class TokenRequestService implements ITokenRequestService{
 
 
 	@Override
-	public List<TokenRequest> findFailedRequests(Byte status) {
+	public List<TokenRequest> findFailedRequests(Byte status, Date requestdate) {
 		// TODO Auto-generated method stub
-		return tokenRequestRepository.findAllFailedRequests(status);
+		return tokenRequestRepository.findAllFailedRequests(status,requestdate);
 	}
 		 
 

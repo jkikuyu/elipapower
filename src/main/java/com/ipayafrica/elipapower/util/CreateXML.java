@@ -54,7 +54,7 @@ public class CreateXML {
 	private String  num, currency, type,tref, seqNo, dtt;
 	Double refNo;
 
-	int repeat = 0;
+	//int repeat = 0;
 	Date date = null;
 	SimpleDateFormat sdf;
 	TimeZone tz = null;
@@ -91,7 +91,7 @@ public class CreateXML {
 	 * @param meter
 	 * @return
 	 */
-	public byte[] buildXML(String meterNo,int reqtype, TokenRequest tokenReq){
+	public byte[] buildXML(String meterNo,int reqtype, TokenRequest tokenReq, String term){
 		date = new Date();// date to be used in message
 
 		reqXML= null;
@@ -99,16 +99,18 @@ public class CreateXML {
 		//dtt = sdf.format(date);
 
 		doc = new Document();
-		if(tokenReq == null) {
-			String term = env.getProperty("company.id");
+		createInitDoc(term);
+
+/*		if(tokenReq == null) {
 
 			createInitDoc(term);
 		}
 		else {
+			
 			createInitDoc("00001");
 
 		}
-		Element ref = new Element(Invariable.REF);
+*/		Element ref = new Element(Invariable.REF);
 		
 		
 		Element meter = new Element(Invariable.METER);
@@ -135,29 +137,33 @@ public class CreateXML {
 
 			break;
 		case 3:
-			String oTime = dtt; //to obtain origin time of first reversal advice
+			String oTime = sdf.format(tokenReq.getRequestdate()); //to obtain origin time of first reversal advice
 			Element vendRevReq =null;
+			int repeat = tokenReq.getRepcount();
 			vendRevReq = new Element(Invariable.VENDREVREQ);
-			
-			if(repeat >1){
+
+			Element origRef = new Element(Invariable.ORIGREF);
+			String oref = String.valueOf(tokenReq.getOref());
+			origRef.setText(oref.toString());
+			ref.setText(tref);
+
+			if(repeat >0){
 				repeat++;
-				
 				Element repCount = new Element(Invariable.REPCOUNT);
-				repCount.setText(Integer.toString(repeat));
 				Element orgTime = new Element(Invariable.ORIGTIME);
 				orgTime.setText(oTime);
-				vendRevReq.addContent(repCount);
 				vendRevReq.addContent(orgTime);
+
+				repCount.setText(Integer.toString(repeat));
+
+				vendRevReq.addContent(repCount);
+
 			}
 			vendRevReq.addContent(ref);
-			//if repeat request for reversal then add the or
-			if(repeat >1){
-				Element origRef = new Element(Invariable.ORIGREF);
-				refNo = tokenReq.getRef();
-				origRef.setText(refNo.toString());
-				vendRevReq.addContent(origRef);
-			}
-			vendRevReq.addContent(meter);
+			vendRevReq.addContent(origRef);		
+
+			//if repeat request for reversal then add the orig
+
 			elecMsg.addContent(vendRevReq);
 		}
 		makeXML(doc);

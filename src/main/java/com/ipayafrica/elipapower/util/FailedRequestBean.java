@@ -1,11 +1,14 @@
 package com.ipayafrica.elipapower.util;
 
+import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -30,33 +33,56 @@ public class FailedRequestBean {
 	RequestToken requestToken;
 	@Autowired
 	ResponseToken responseToken;
+	@Autowired
+	Environment env;
 	
+
 	public FailedRequestBean() {
 		
 	}
-	@Scheduled (cron = "45 * * * * *")
+	//@Scheduled (cron = "45 * * * * *")
+	@Scheduled(initialDelay=5000, fixedDelay=15000 )
 	public void cronJob(){
 		Byte status = 2;
 		HashMap<String,Object> messResponse = null;
 		String messJSON = null;
 		ObjectMapper objectMapper = new ObjectMapper();
+		Date requestdate = new Date();
+		log.info("date before"+requestdate.toString());
+		requestdate.setTime(requestdate.getTime() - 30000);
+		log.info("date after"+requestdate.toString());
+		DecimalFormat df = new DecimalFormat(".#");
 
-
-		List <TokenRequest>failedTokenRequests = iTokenRequestService.findFailedRequests(status);
+		List <TokenRequest>failedTokenRequests = iTokenRequestService.findFailedRequests(status,requestdate);
 		if (failedTokenRequests!=null) {
 			for(TokenRequest tokenRequest:failedTokenRequests){
 				TokenResponse tokenResponse = new TokenResponse();
 				Double dAmt = tokenRequest.getAmt() * 100;
 				Double ref = tokenRequest.getRef();
-				String refNo = ref.toString();
-
+				TokenRequest treq = new TokenRequest();
+				/* format double 
+				 * store in string buffer
+				 * remove decimal part
+				 */
+				
+				String sref = df.format(ref);
+			    StringBuffer refNo = new StringBuffer(sref);
+			    int pos = refNo.indexOf(".");
+			    int end = refNo.length();
+			    refNo.delete(pos,end);
+				String term = env.getProperty("company.id");
+				
 				String amount = String.valueOf(dAmt.intValue());
+				treq.setAmt(dAmt);
+				treq.setRef(ref);
 
-				tokenRequest.setAmount(amount);
-				tokenRequest.setOref(refNo);
+				treq.setAmount(amount);
+				treq.setOref(refNo.toString());
+				status = 1;
+				treq.setStatus(status);
 				//amount = dAmt.toString();
 				String meterNo = tokenRequest.getMeterno();
-				byte[] reqXML= createxml.buildXML( meterNo, 3,tokenRequest );
+				byte[] reqXML= createxml.buildXML( meterNo, 3,treq, term );
 				iTokenRequestService.save(tokenRequest);
 				log.info("meter No:" + meterNo);
 			
@@ -64,7 +90,7 @@ public class FailedRequestBean {
 				log.info("begin make request....");
 				messResponse = new HashMap<String,Object>();
 
-				messResponse = requestToken.makeRequest(reqXML,meterNo);
+				messResponse = requestToken.makeRequest(reqXML,meterNo, term);
 				tokenResponse= responseToken.getTokenResponse();
 				tokenResponse.setMeterno(meterNo);
 				messResponse.put("ref", tokenRequest.getRefno());

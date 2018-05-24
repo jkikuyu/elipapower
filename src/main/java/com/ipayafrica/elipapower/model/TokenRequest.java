@@ -50,6 +50,9 @@ public class TokenRequest extends Token implements Serializable{
     
     @Column(name="STATUS")
     private Byte status;
+    
+    @Column(name="REPCOUNT")
+    private Integer repcount = 0;
 
     
 	@Column(name = "REQUESTDATE",  nullable=false)
@@ -167,7 +170,12 @@ public class TokenRequest extends Token implements Serializable{
 	public void setStatus(Byte status) {
 		this.status = status;
 	}
-
+	public Integer getRepcount() {
+		return repcount;
+	}
+	public void setRepcount(Integer repcount) {
+		this.repcount = repcount;
+	}
 
 
 

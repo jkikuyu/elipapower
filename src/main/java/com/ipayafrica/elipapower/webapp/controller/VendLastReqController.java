@@ -39,8 +39,9 @@ public class VendLastReqController {
 	
 	@RequestMapping("/vendlastreq")
 	public void lastRequest(){
+		String term = "";
 		String meterNo = "A12C3456789";
-		reqXML = createxml.buildXML(meterNo, 2, tokenRequest);
+		reqXML = createxml.buildXML(meterNo, 2, tokenRequest, term);
 		//tokenRequest.makeRequest(reqXML,meterNo);
 
 		
