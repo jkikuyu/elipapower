@@ -114,59 +114,73 @@ public class VendController {
 	}
 	log.info("amount:"+amount);
 	messResponse = new HashMap<String,Object>();
+	String errResponse = null;
 
-	if (!isEmptyMeterNo && !isEmptyAmount && !isEmptyRef) {
+	if (!isEmptyMeterNo && !isEmptyAmount && !isEmptyRef &&!isEmptyDemo) {
 		
 		tokenRequest = new TokenRequest();
 		status = 1;
-		byte[] reqXML= createxml.buildXML( meterNo, amount,tokenRequest );
-		tokenRequest.setOref(refNo);
-		
-		tokenRequest.setStatus(status);
-		tokenRequest.setRepcount(0);
-		iTokenRequestService.save(tokenRequest);
-		log.info("meter No:" + meterNo);
 		String term;
 		if(demo == 1) {
-			term = env.getProperty("demo.id");
+			term = env.getProperty("dummy.id");
 
 		}
 		else {
 			term = env.getProperty("company.id");
 		}
-	
-		log.info("begin make request....");
-		messResponse = requestToken.makeRequest(reqXML,meterNo,term);
-		if (messResponse==null) {
-			status = 2;
-			tokenRequest.setStatus(status);
-			iTokenRequestService.save(tokenRequest);
-
-		}
-		else {
-			tokenResponse= responseToken.getTokenResponse();
-			tokenResponse.setMeterno(meterNo);
-			
-	
-			messResponse.put("ref", token.getRefno());
+		if (term==null) {
+			errResponse = "internal server error";
+			messResponse.put("error",errResponse);
+			messResponse.put("status", "0");
 			try {
 				messJSON = objectMapper.writeValueAsString(messResponse);
-				log.info("response:"+ messJSON);
-	
-				
 			} catch (JsonProcessingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			log.info(messJSON);
+		}
+		else {
+			byte[] reqXML= createxml.buildXML( meterNo, amount,tokenRequest, term );
+			tokenRequest.setClientref(refNo);
+			Double oref = tokenRequest.getRef();
+			tokenRequest.setStatus(status);
+			tokenRequest.setRepcount(0);
+			tokenRequest.setOref(oref);
+			iTokenRequestService.save(tokenRequest);
+			log.info("meter No:" + meterNo);
+		
+			log.info("begin make request....");
+			messResponse = requestToken.makeRequest(reqXML,meterNo,term);
+			if (messResponse==null) {
+				status = 2;
+				tokenRequest.setStatus(status);
+				iTokenRequestService.save(tokenRequest);
 	
-			tokenResponse.setJsonresponse(messJSON);
-	
-			iTokenResponseService.save(tokenResponse);
+			}
+			else {
+				tokenResponse= responseToken.getTokenResponse();
+				tokenResponse.setMeterno(meterNo);
+				
+		
+				messResponse.put("ref", token.getRefno());
+				try {
+					messJSON = objectMapper.writeValueAsString(messResponse);
+					log.info("response:"+ messJSON);
+		
+					
+				} catch (JsonProcessingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				log.info(messJSON);
+		
+				tokenResponse.setJsonresponse(messJSON);
+		
+				iTokenResponseService.save(tokenResponse);
+			}
 		}
 	}
 	else {
-		String errResponse = null;
+		errResponse = null;
 		errResponse = isEmptyMeterNo? "Meter No is empty or  key used is wrong. ":"";
 		errResponse +=isEmptyRef? "Reference Number is empty or key used is wrong":"";
 
@@ -179,6 +193,11 @@ public class VendController {
 		isEmptyAmount=false;
 		isEmptyRef=false;
 		isEmptyDemo=false;
+		try {
+			messJSON = objectMapper.writeValueAsString(messResponse);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
 
 	}
 

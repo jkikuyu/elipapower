@@ -85,7 +85,9 @@ public class CustomerInfoController {
 			tokenRequest = new TokenRequest();
 			byte[] reqXML = createxml.buildXML(meterno,1,tokenRequest,term);
 			tokenRequest = new TokenRequest();
-			tokenRequest.setOref("OK");
+			tokenRequest.setClientref("OK");
+			Double oref = tokenRequest.getRef();
+			tokenRequest.setOref(oref);
 			iTokenRequestService.save(tokenRequest);
 			messResponse = requestToken.makeRequest(reqXML, meterno, term);
 			tokenResponse= responseToken.getTokenResponse();

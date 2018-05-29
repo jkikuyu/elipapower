@@ -68,6 +68,11 @@ public class TokenRequestService implements ITokenRequestService{
 		return tokenRequestRepository.findAllFailedRequests(status,requestdate);
 	}
 		 
+	@Override
+	public int countTokenRequestByOref(Double ref) {
+		// TODO Auto-generated method stub
+		return tokenRequestRepository.countTokenRequestByOrigRef(ref);
+	}
 
 
 }

@@ -102,6 +102,8 @@ public class RequestToken {
 		try {
 			socket = new Socket();
 			socket.connect(new InetSocketAddress(serverIP,port),timeout);
+		} catch (SocketTimeoutException e) {
+		logfile.eventLog(e.getMessage());
 			
 			
 		} catch (UnknownHostException e) {

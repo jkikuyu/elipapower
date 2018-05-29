@@ -13,6 +13,7 @@ package com.ipayafrica.elipapower.util;
  */
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -139,24 +140,35 @@ public class CreateXML {
 		case 3:
 			String oTime = sdf.format(tokenReq.getRequestdate()); //to obtain origin time of first reversal advice
 			Element vendRevReq =null;
-			int repeat = tokenReq.getRepcount();
+			DecimalFormat df = new DecimalFormat(".#");
+
+			Integer repcount = tokenReq.getRepcount();
 			vendRevReq = new Element(Invariable.VENDREVREQ);
 
 			Element origRef = new Element(Invariable.ORIGREF);
-			String oref = String.valueOf(tokenReq.getOref());
-			origRef.setText(oref.toString());
+			String sref = df.format(tokenReq.getOref());
+		    StringBuffer sbRefNo = new StringBuffer(sref);
+		    int pos = sbRefNo.indexOf(".");
+		    int end = sbRefNo.length();
+		    sbRefNo.delete(pos,end);
+
+
+			origRef.setText(sbRefNo.toString());
 			ref.setText(tref);
 
-			if(repeat >0){
-				repeat++;
-				Element repCount = new Element(Invariable.REPCOUNT);
+			if(repcount >0){
+/*				Element repCount = new Element(Invariable.REPCOUNT);
 				Element orgTime = new Element(Invariable.ORIGTIME);
-				orgTime.setText(oTime);
+			orgTime.setText(oTime);
 				vendRevReq.addContent(orgTime);
 
 				repCount.setText(Integer.toString(repeat));
 
 				vendRevReq.addContent(repCount);
+				
+*/				vendRevReq.setAttribute(Invariable.REPCOUNT,repcount.toString());
+				vendRevReq.setAttribute(Invariable.ORIGTIME,oTime);
+
 
 			}
 			vendRevReq.addContent(ref);
@@ -174,6 +186,8 @@ public class CreateXML {
     	tokenReq.setMeterno(meterNo);
     	tokenReq.setRef(refNo);
     	tokenReq.setRequestdate(date);
+		Double dAmt = tokenReq.getAmt()/100;
+		tokenReq.setAmt(dAmt);
     	tokenReq.setRequestxml(sXML);
     	tokenReq.setSeqnum(Integer.parseInt(seqNo));
     	tokenReq.setType(payType);
@@ -187,11 +201,11 @@ public class CreateXML {
 	 * @param meterNo
 	 * @return
 	 */
-	public byte[] buildXML(String meterNo, String amount,TokenRequest tokenReq){
+	public byte[] buildXML(String meterNo, String amount,TokenRequest tokenReq,String term){
 
         reqXML = null;
 		date = new Date();// date to be used in message
-		String term = env.getProperty("company.id");
+		//String term = env.getProperty("company.id");
 
 
         doc = new Document();

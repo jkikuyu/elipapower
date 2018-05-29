@@ -51,8 +51,8 @@ public class TokenRequest extends Token implements Serializable{
     @Column(name="STATUS")
     private Byte status;
     
-    @Column(name="REPCOUNT")
-    private Integer repcount = 0;
+    @Column (name = "CLIENTREF", length = 50)
+    private String clientref;
 
     
 	@Column(name = "REQUESTDATE",  nullable=false)
@@ -61,13 +61,15 @@ public class TokenRequest extends Token implements Serializable{
 	private Date requestdate;
 	
     @Column(name = "oref",nullable=false, length=50)
-    private String oref;
+    private Double oref;
 
 
 	
 	@Transient
     private String amount;
 	
+	@Transient
+    private Integer repcount = 0;
 
 	public TokenRequest() {
 		
@@ -161,10 +163,10 @@ public class TokenRequest extends Token implements Serializable{
 	public void setAmt(Double amt) {
 		this.amt = amt;
 	}
-	public String getOref() {
+	public Double getOref() {
 		return oref;
 	}
-	public void setOref(String oref) {
+	public void setOref(Double oref) {
 		this.oref = oref;
 	}
 	public void setStatus(Byte status) {
@@ -175,6 +177,12 @@ public class TokenRequest extends Token implements Serializable{
 	}
 	public void setRepcount(Integer repcount) {
 		this.repcount = repcount;
+	}
+	public String getClientref() {
+		return clientref;
+	}
+	public void setClientref(String clientref) {
+		this.clientref = clientref;
 	}
 
 

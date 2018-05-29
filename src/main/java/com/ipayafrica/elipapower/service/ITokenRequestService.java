@@ -10,6 +10,7 @@ public interface ITokenRequestService extends IGenericService<TokenRequest,Long>
 	TokenRequest getByTokenRequestId (Long requestId);
 	TokenRequest findTokenRequestByRef(Double ref);
 	List<TokenRequest> findFailedRequests(Byte status, Date requestdate);
+	int countTokenRequestByOref(Double ref);
 
 
 }

@@ -16,6 +16,7 @@ public interface ITokenRequestRepository<T extends TokenRequest,PK> extends JpaR
 	public TokenRequest findTokenRequestByRef(@Param("ref") Double ref);
 	
 	@Query("SELECT t FROM TokenRequest t where t.status = :status and t.requestdate <= :requestdate")
-	public List<TokenRequest> findAllFailedRequests(@Param("status") Byte status, @Param("requestdate") Date requestdate);
-
+	public List<TokenRequest> findAllFailedRequests(@Param("status") Byte status,@Param("requestdate") Date requestdate);
+	@Query("SELECT Count(t.oref) as repcount FROM TokenRequest t where ref <> oref AND RTRIM(t.oref)= :ref")
+	public int countTokenRequestByOrigRef(@Param("ref") Double ref);
 }
