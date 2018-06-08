@@ -98,12 +98,13 @@ public class RequestToken {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}*/
-
+		boolean noSocketAvaliable = false;
 		try {
 			socket = new Socket();
 			socket.connect(new InetSocketAddress(serverIP,port),timeout);
 		} catch (SocketTimeoutException e) {
-		logfile.eventLog(e.getMessage());
+			noSocketAvaliable = true;
+			logfile.eventLog(e.getMessage());
 			
 			
 		} catch (UnknownHostException e) {
@@ -113,48 +114,63 @@ public class RequestToken {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		try {
-			// This stops the request from dragging on after connection succeeds.
-			socket.setSoTimeout(timeout);
-			os = new DataOutputStream(socket.getOutputStream());
-			is = new Scanner(socket.getInputStream());
-			String s = new String(res);
-			System.out.println(s);
-			os.write(res);
-            while (is.hasNext()) {
-            	responseLine += is.next();
-            }
-            String mess = "response: " + responseLine;
-            
-    		logfile.eventLog(mess);
-    		if (mess.length()> 10) {
-	    		try {
-	    			messResponse = new HashMap<String,Object>();
-					messResponse = responseToken.cleanXML(mess);
-					
-					
-				} catch (ParserConfigurationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (SAXException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} 
-	    		
-    		}
-            socket.close();
+		if (noSocketAvaliable) {
+			messResponse = new HashMap<String,Object>();
 
-		} catch (SocketTimeoutException e) {
+			messResponse.put("error","no socket");
+			try {
+				socket.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
+			return messResponse;
 		}
-		catch (SocketException e) {
-			e.printStackTrace();
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-	return messResponse;
-  	}
+		else {
+			try {
+				// This stops the request from dragging on after connection succeeds.
+				socket.setSoTimeout(timeout);
+				os = new DataOutputStream(socket.getOutputStream());
+				is = new Scanner(socket.getInputStream());
+				String s = new String(res);
+				System.out.println(s);
+				os.write(res);
+	            while (is.hasNext()) {
+	            	responseLine += is.next();
+	            }
+	            String mess = "response: " + responseLine;
+	            
+	    		logfile.eventLog(mess);
+	    		if (mess.length()> 10) {
+		    		try {
+		    			messResponse = new HashMap<String,Object>();
+						messResponse = responseToken.cleanXML(mess);
+						
+						
+					} catch (ParserConfigurationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SAXException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} 
+		    		
+	    		}
+	            socket.close();
+	
+			} catch (SocketTimeoutException e) {
+				logfile.LogError(e);
+			}
+			catch (SocketException e) {
+				e.printStackTrace();
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+		return messResponse;
+	  	}
+	}
 
 	 private byte[] wrap(byte[] msg) throws Exception {
         int len = msg.length;

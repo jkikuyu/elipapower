@@ -60,6 +60,9 @@ public class FailedRequestBean {
 		if (failedTokenRequests!=null) {
 			for(TokenRequest tokenRequest:failedTokenRequests){
 				TokenResponse tokenResponse = new TokenResponse();
+				String term = env.getProperty("dummy.id");
+		        String type = env.getProperty("payment.value");
+
 				Double dAmt = tokenRequest.getAmt() * 100;
 				Double ref = tokenRequest.getRef();
 				TokenRequest treq = new TokenRequest();
@@ -80,7 +83,7 @@ public class FailedRequestBean {
 			    refNo.delete(pos,end);
 			    String s = refNo.toString();
 			    oref = Double.parseDouble(s);
-				String term = env.getProperty("company.id");
+
 				String amount = String.valueOf(dAmt.intValue());
 				treq.setAmt(dAmt);
 				treq.setRef(ref);
@@ -88,6 +91,10 @@ public class FailedRequestBean {
 				treq.setAmount(amount);
 				treq.setOref(oref);
 				treq.setRequestdate(date);
+				String key = env.getProperty("payment.key");
+		    	Byte paytype = (byte) Integer.parseInt(key);
+
+				treq.setType(paytype);
 				status = 1;
 				treq.setStatus(status);
 				//amount = dAmt.toString();
@@ -95,36 +102,52 @@ public class FailedRequestBean {
 				
 
 				byte[] reqXML= createxml.buildXML( meterNo, 3,treq, term );
-				iTokenRequestService.save(treq);
 				log.info("meter No:" + meterNo);
 			
 			
 				log.info("begin make request....");
 				messResponse = new HashMap<String,Object>();
+				iTokenRequestService.save(treq);
 
 				messResponse = requestToken.makeRequest(reqXML,meterNo, term);
 				if (messResponse == null) {
 					logfile.eventLog("No message returned for request:-" + new String(reqXML));
 				}
-				else {
-					tokenResponse= responseToken.getTokenResponse();
-					tokenResponse.setMeterno(meterNo);
-					messResponse.put("ref", tokenRequest.getRefno());
-					try {
-						messJSON = objectMapper.writeValueAsString(messResponse);
-						log.info("response:"+ messJSON);
-	
-						
-					} catch (JsonProcessingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+
+				else{
 					
-					log.info(messJSON);
-	
-					tokenResponse.setJsonresponse(messJSON);
-	
-					iTokenResponseService.save(tokenResponse);
+					String error = (String) messResponse.get("error");
+					if(error==null || error =="") {
+
+						logfile.eventLog("response: " + new String(reqXML));
+						tokenResponse= responseToken.getTokenResponse();
+						tokenResponse.setMeterno(meterNo);
+						messResponse.put("ref", tokenRequest.getClientref());
+						try {
+							messJSON = objectMapper.writeValueAsString(messResponse);
+							log.info("response:"+ messJSON);
+		
+							
+						} catch (JsonProcessingException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						log.info(messJSON);
+		
+						tokenResponse.setJsonresponse(messJSON);
+		
+						iTokenResponseService.save(tokenResponse);
+						tokenRequest.setStatus(status);
+						iTokenRequestService.save(tokenRequest);
+					}
+					else {
+						status = 3;
+						treq.setStatus(status);
+						iTokenRequestService.save(treq);
+
+						System.out.println("no socket available");
+					}
 				}
 				
 				

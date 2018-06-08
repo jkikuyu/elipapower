@@ -39,9 +39,19 @@ public class XMLTokenHandler extends DefaultHandler {
 	boolean bdebt = false;
 	boolean bfixed = false;
 	boolean brtlrMsg = false;
+	boolean bkeyChangeRes = false;
+	boolean bkeyChangeToken = false;
 
+	boolean boldSupGrpRef = false;
+	boolean boldTariffIdx = false;
+	boolean boldKeyRevNum = false;
+	boolean bnewSupGrpRef = false;
+	boolean bnewTariffIdx = false;
+	boolean bnewKeyRevNum = false;
+	boolean bcode   	  = false;
 	private HashMap<String, Object> mapResponse = null;
 	private String ref;
+	
 	private String resCode;
 	private Date responseDate;
 	@Autowired
@@ -159,6 +169,38 @@ public class XMLTokenHandler extends DefaultHandler {
 		if (qName.equalsIgnoreCase("rtlrMsg")) {
 			brtlrMsg = true;
 		}
+		
+		if (qName.equalsIgnoreCase("bkeyChangeRes")) {
+			bkeyChangeRes = true;
+		}
+		        
+
+		if (qName.equalsIgnoreCase("bkeyChangeToken")) {
+			bkeyChangeToken = true;
+		}
+		if (qName.equalsIgnoreCase("boldSupGrpRef")) {
+			boldSupGrpRef = true;
+		}
+		
+		if (qName.equalsIgnoreCase("boldTariffIdx")) {
+			boldTariffIdx = true;
+		}
+		if (qName.equalsIgnoreCase("boldKeyRevNum")) {
+			boldKeyRevNum = true;
+		}
+
+		if (qName.equalsIgnoreCase("bnewSupGrpRef")) {
+			bnewSupGrpRef = true;
+		}
+		if (qName.equalsIgnoreCase("bnewTariffIdx")) {
+			bnewTariffIdx = true;
+		}
+		if (qName.equalsIgnoreCase("bnewKeyRevNum")) {
+			bnewKeyRevNum = true;
+		}
+		if (qName.equalsIgnoreCase("bcode")) {
+			bcode = true;
+		}
 
 	}
 	public HashMap<String, Object>  getMessageMap() {
@@ -254,6 +296,42 @@ public class XMLTokenHandler extends DefaultHandler {
 			//System.out.println("contract : " + new String(ch, start, length));
 			brtlrMsg = false;
 		}
+		if (bkeyChangeRes) {
+			//System.out.println("contract : " + new String(ch, start, length));
+			bkeyChangeRes = false;
+		}
+		if (bkeyChangeToken) {
+			//System.out.println("contract : " + new String(ch, start, length));
+			bkeyChangeToken = false;
+		}
+		if (boldSupGrpRef) {
+			//System.out.println("contract : " + new String(ch, start, length));
+			boldSupGrpRef = false;
+		}
+		if (boldTariffIdx) {
+			//System.out.println("contract : " + new String(ch, start, length));
+			boldTariffIdx = false;
+		}
+		if (boldKeyRevNum) {
+			//System.out.println("contract : " + new String(ch, start, length));
+			boldKeyRevNum = false;
+		}
+		if (bnewSupGrpRef) {
+			//System.out.println("contract : " + new String(ch, start, length));
+			bnewSupGrpRef = false;
+		}
+		if (bnewTariffIdx) {
+			//System.out.println("contract : " + new String(ch, start, length));
+			bnewTariffIdx = false;
+		}
+		if (bnewKeyRevNum) {
+			//System.out.println("contract : " + new String(ch, start, length));
+			bnewKeyRevNum = false;
+		}
+		if (bcode) {
+			//System.out.println("contract : " + new String(ch, start, length));
+			bcode = false;
+}
 
 
 	}

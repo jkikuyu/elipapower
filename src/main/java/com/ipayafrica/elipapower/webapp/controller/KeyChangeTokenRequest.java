@@ -67,7 +67,7 @@ public class KeyChangeTokenRequest {
 		String refNo = token.getRefno();
 		HashMap<String,Object> messResponse = null;
 		Byte status;
-
+		
 		if(meterNo==null || meterNo.isEmpty()) {
 			isEmptyMeterNo = true;
 
@@ -88,14 +88,9 @@ public class KeyChangeTokenRequest {
 		if (!isEmptyMeterNo && !isEmptyAmount && !isEmptyRef &&!isEmptyDemo) {
 			tokenRequest = new TokenRequest();
 			status = 1;
-			String term;
-			if(demo == 1) {
-				term = env.getProperty("dummy.id");
+			String term = env.getProperty("company.id");
+			tokenRequest = new TokenRequest();
 
-			}
-			else {
-				term = env.getProperty("company.id");
-			}
 			if (term==null) {
 				errResponse = "internal server error";
 				messResponse.put("error",errResponse);
@@ -107,44 +102,80 @@ public class KeyChangeTokenRequest {
 				}
 			}
 			else {
-				byte[] reqXML= createxml.buildXML( meterNo, 4,tokenRequest, term );
-
-				tokenRequest.setClientref(refNo);
+				meterNo = token.getMeterno();
+				// get customer info
+				tokenRequest = new TokenRequest();
+				tokenRequest.setAmount(amount);
+				byte[] reqXML= createxml.buildXML( meterNo, 1,tokenRequest, term );
+		
+				tokenRequest.setClientref("OK");
 				Double oref = tokenRequest.getRef();
-				tokenRequest.setStatus(status);
-				tokenRequest.setRepcount(0);
+				Byte reversal = 0;
 				tokenRequest.setOref(oref);
 				iTokenRequestService.save(tokenRequest);
-				log.info("meter No:" + meterNo);
-			
-				log.info("begin make request....");
-				messResponse = requestToken.makeRequest(reqXML,meterNo,term);
-				if (messResponse==null) {
-					status = 2;
-					tokenRequest.setStatus(status);
-					iTokenRequestService.save(tokenRequest);
-		
-				}
-				else {
-					tokenResponse= responseToken.getTokenResponse();
-					tokenResponse.setMeterno(meterNo);
+				messResponse = requestToken.makeRequest(reqXML, meterNo, term);
+				tokenResponse= responseToken.getTokenResponse();
+				tokenResponse.setMeterno(meterNo);
+				messResponse.put("ref", "OK");
+				try {
+					messJSON = objectMapper.writeValueAsString(messResponse);
+					log.info("response:"+ messJSON);
+
 					
+				} catch (JsonProcessingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				log.info(messJSON);
+
+				tokenResponse.setJsonresponse(messJSON);
+				tokenResponse.setReversal(reversal);
+				iTokenResponseService.save(tokenResponse);
+
+// end of get customer ifo
+				for(int i = 4; i <=6; i++) {
+
+					term = env.getProperty("changekey.id");
+					reqXML= createxml.buildXML( meterNo, i,tokenRequest, term );
+				
+					tokenRequest.setClientref(refNo);
+					oref = tokenRequest.getRef();
+					tokenRequest.setStatus(status);
+					tokenRequest.setRepcount(0);
+					tokenRequest.setOref(oref);
+					iTokenRequestService.save(tokenRequest);
+					log.info("meter No:" + meterNo);
+				
+					log.info("begin make request....");
+					messResponse = requestToken.makeRequest(reqXML,meterNo,term);
+					if (messResponse==null) {
+						tokenRequest.setStatus(status);
+						iTokenRequestService.save(tokenRequest);
 			
-					messResponse.put("ref", token.getRefno());
-					try {
-						messJSON = objectMapper.writeValueAsString(messResponse);
-						log.info("response:"+ messJSON);
-			
-						
-					} catch (JsonProcessingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
 					}
-					log.info(messJSON);
-			
-					tokenResponse.setJsonresponse(messJSON);
-			
-					iTokenResponseService.save(tokenResponse);
+					else {
+						tokenResponse= responseToken.getTokenResponse();
+						tokenResponse.setMeterno(meterNo);
+						tokenResponse.setReversal(reversal);
+	
+						
+				
+						messResponse.put("ref", token.getRefno());
+						try {
+							messJSON = objectMapper.writeValueAsString(messResponse);
+							log.info("response:"+ messJSON);
+				
+							
+						} catch (JsonProcessingException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						log.info(messJSON);
+				
+						tokenResponse.setJsonresponse(messJSON);
+						iTokenResponseService.save(tokenResponse);
+	
+					}
 				}
 			}
 		}
@@ -169,6 +200,7 @@ public class KeyChangeTokenRequest {
 			}
 
 		}
+		
 		return messJSON;
 	}
 

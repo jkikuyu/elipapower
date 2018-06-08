@@ -52,7 +52,7 @@ public class CreateXML {
 	private Element ipayMsg = null, elecMsg=null;
 	byte[] reqXML=null;
 	
-	private String  num, currency, type,tref, seqNo, dtt;
+	private String  num, currency, type,tref, seqNo, dtt, oref;
 	Double refNo;
 
 	//int repeat = 0;
@@ -115,11 +115,12 @@ public class CreateXML {
 		
 		
 		Element meter = new Element(Invariable.METER);
+		Element origRef = null;
 		meter.setText(meterNo);
 		doc.setRootElement(ipayMsg);   
 		ipayMsg.addContent(elecMsg);
+		Double dAmt = 0.0;
 		
-
 		switch(reqtype){
 		case 1:
 			Element custInfoReq =null;
@@ -145,7 +146,7 @@ public class CreateXML {
 			Integer repcount = tokenReq.getRepcount();
 			vendRevReq = new Element(Invariable.VENDREVREQ);
 
-			Element origRef = new Element(Invariable.ORIGREF);
+			origRef = new Element(Invariable.ORIGREF);
 			String sref = df.format(tokenReq.getOref());
 		    StringBuffer sbRefNo = new StringBuffer(sref);
 		    int pos = sbRefNo.indexOf(".");
@@ -171,29 +172,144 @@ public class CreateXML {
 
 
 			}
+
 			vendRevReq.addContent(ref);
 			vendRevReq.addContent(origRef);		
 
 			//if repeat request for reversal then add the orig
 
 			elecMsg.addContent(vendRevReq);
+			break;
+		case 4:
+/*			<ipayMsg client="uattest" term="term1" seqNum="6" time="2017-05-05 16:24:06 +0200" termAuthId="F8-CA-B8-0E-27-4F">
+			  <elecMsg ver="2.6a">
+			    <vendReq>
+			      <ref>712516240051</ref>
+			      <amt cur="ZAR">100000</amt>
+			      <numTokens>1</numTokens>
+			      <meter supGrpRef="000402" tokenTechCode="02" algCode="07" tariffIdx="01" keyRevNum="1">01000000198</meter>
+			      <payType>cash</payType>
+			    </vendReq>
+			  </elecMsg>
+			</ipayMsg>
+			
+			
+*/			
+			String amount = tokenReq.getAmount();
+	    	dAmt = Double.parseDouble(amount)/100; //reset to shillings
+
+			Element vendReq = new Element(Invariable.VENDREQ);
+			Element numTokens = new Element(Invariable.NUM);
+			Element payType = new Element(Invariable.PAYTYPE);
+			Element amt = new Element(Invariable.AMT);
+			ref = new Element(Invariable.REF);
+			ref.setText(tref);
+
+			amt.setAttribute(Invariable.CUR, currency);
+			
+			amt.setText(amount);
+
+			numTokens.setText(num);
+
+			payType.setText(type);
+
+			vendReq.addContent(ref);
+			vendReq.addContent(amt);
+			
+			vendReq.addContent(numTokens);
+			vendReq.addContent(meter);
+			vendReq.addContent(payType);
+			ipayMsg.setAttribute("termAuthId", "F8-CA-B8-0E-27-4F");
+			elecMsg.setAttribute(Invariable.VER, "2.6a");
+			
+			meter.setAttribute("supGrpRef","000402");
+			meter.setAttribute("tokenTechCode","02");
+			meter.setAttribute("algCode","07");
+			meter.setAttribute("tariffIdx","01");
+			meter.setAttribute("keyRevNum","1");
+			oref =tref;
+			
+			elecMsg.addContent(vendReq);
+
+			break;
+
+		case 5:
+		/*
+		 * <ipayMsg client="uattest" term="term1" seqNum="2" time="2017-05-05 16:24:14 +0200" termAuthId="F8-CA-B8-0E-27-4F">
+		  <elecMsg ver="2.42">
+		    <keyChangeAdvReq>
+		      <ref>712516248588</ref>
+		      <origRef>712516248587</origRef>
+		      <adviceData>meterEngTokenRef:7861231050,kctMeterEngTokenRef:7861221050,meterType:STSMeter,msno:01000000198</adviceData>
+		    </keyChangeAdvReq>
+		  </elecMsg>
+		</ipayMsg>
+		 */
+			ref = new Element(Invariable.REF);
+			ref.setText(tref);
+
+			ipayMsg.setAttribute("termAuthId", "F8-CA-B8-0E-27-4F");
+			elecMsg.setAttribute(Invariable.VER, "2.42");
+			meter.setAttribute("supGrpRef","000402");
+			meter.setAttribute("tokenTechCode","02");
+			meter.setAttribute("algCode","07");
+			meter.setAttribute("tariffIdx","01");
+			meter.setAttribute("keyRevNum","1");
+
+			Element keyChangeReq =new Element(Invariable.KEYCHANGEREQ);
+
+			Element newSupGrpRef = new Element("newSupGrpRef");
+			Element newTariffIdx = new Element("newTariffIdx");
+			Element newKeyRevNum =new Element("newKeyRevNum");
+			
+			keyChangeReq.addContent(ref);
+			keyChangeReq.addContent(meter);
+
+			keyChangeReq.addContent(newSupGrpRef);
+			keyChangeReq.addContent(newTariffIdx);
+			keyChangeReq.addContent(newKeyRevNum);
+			elecMsg.addContent(keyChangeReq);
+			break;
+		case 6:
+			Element keyChangeAdvReq =new Element(Invariable.KEYCHANGEADVREQ);
+			Element adviceData = new Element(Invariable.ADVICEDATA);
+			
+			ref = new Element(Invariable.REF);
+			ref.setText(tref);
+			ipayMsg.setAttribute("termAuthId", "F8-CA-B8-0E-27-4F");
+
+
+			adviceData.setText("meterEngTokenRef:7861231050,kctMeterEngTokenRef:"
+					+ "7861221050,meterType:STSMeter,msno:01000000198");
+			origRef =new Element(Invariable.ORIGREF);
+			origRef.setText(oref);
+			elecMsg.setAttribute(Invariable.VER, "2.42");
+
+			keyChangeAdvReq.addContent(ref);
+			keyChangeAdvReq.addContent(origRef);
+			keyChangeAdvReq.addContent(adviceData);
+			elecMsg.addContent(keyChangeAdvReq);
+
+
+
 		}
 		makeXML(doc);
 		String sXML = new String(reqXML);
+		System.out.println(sXML);
     	byte payType = 0;
 
 		String mess = "Request: " + new String(reqXML);
     	tokenReq.setMeterno(meterNo);
     	tokenReq.setRef(refNo);
-    	tokenReq.setRequestdate(date);
-		Double dAmt = tokenReq.getAmt()/100;
 		tokenReq.setAmt(dAmt);
+
+    	tokenReq.setRequestdate(date);
     	tokenReq.setRequestxml(sXML);
     	tokenReq.setSeqnum(Integer.parseInt(seqNo));
     	tokenReq.setType(payType);
 		logfile.eventLog(mess);
-		logfile.eventLog(mess);
 		return reqXML;
+		
 	}
 	/**
 	 * 

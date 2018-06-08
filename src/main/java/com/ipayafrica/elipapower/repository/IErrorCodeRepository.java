@@ -5,9 +5,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.ipayafrica.elipapower.model.ErrorCode;
+import com.ipayafrica.elipapower.model.TokenRequest;
 
-public interface IErrorCodeRepository extends JpaRepository<ErrorCode, Integer> {
-    @Query(value = "SELECT e.errorcodeid FROM errorcode e where e.messagecode = :code",nativeQuery = true) 
-    int findByMessageCode(@Param("code") String code);
+public interface IErrorCodeRepository<T extends ErrorCode,PK> extends JpaRepository<ErrorCode, Integer> {
+    @Query("SELECT e FROM ErrorCode e where e.messagecode = :code") 
+    ErrorCode findByMessageCode(@Param("code") String code);
 
 }

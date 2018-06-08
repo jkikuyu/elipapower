@@ -326,6 +326,12 @@ public class ResponseToken {
   	  resXML.replace(pos, pos + 4, " code");
   	  
     }
+/*    pos = resXML.indexOf("code="); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 4, " code=");
+  	  
+    }
+*/
     pos = resXML.indexOf("extCode"); 
     if(pos>0) {
   	  resXML.replace(pos, pos + 7, " extCode");
@@ -472,6 +478,11 @@ public class ResponseToken {
   	  resXML.replace(pos, pos + 3, " rem");
     }
 
+    pos = resXML.indexOf("advRequired"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 3, " advRequired");
+    }
+
     pos = resXML.lastIndexOf("unitsType"); 
     if(pos>0) {
   	  resXML.replace(pos, pos + 9, " unitsType");
@@ -492,6 +503,8 @@ public class ResponseToken {
     if(pos>0) {
   	  resXML.replace(pos, pos + 4, " desc");
     }
+    
+    
     String cleanedXML = resXML.toString();
     InputSource is = new InputSource(new StringReader(cleanedXML));
     saxParser.parse(is, xmlTokenHandler);
@@ -506,11 +519,10 @@ public class ResponseToken {
     tokenResponse.setResponsexml(cleanedXML);
     tokenResponse.setOsysdate(new Date());
     tokenResponse.setResponsedate(xmlTokenHandler.getResponseDate());
-	int errorCodeId =  iErrorCodeService.getByMessageCode(xmlTokenHandler.getResCode());
-	ErrorCode errorCode =iErrorCodeService.getByErrorCodeID(errorCodeId);
-	
+	ErrorCode errorCode =  iErrorCodeService.findByMessageCode(xmlTokenHandler.getResCode());
+	int errorCodeId = errorCode.getErrorcodeid();
 	Byte status = null;
-	if (errorCodeId ==1){
+	if (errorCodeId==1){
 		status = 1;
 	}
 	else if (errorCodeId >1){
@@ -535,7 +547,7 @@ public class ResponseToken {
 
 	}
 	
-	tokenResponse.setStatus(status);
+	//tokenResponse.setStatus(status);
 		
 	tokenResponse.setErrorcodeid(errorCodeId);
 

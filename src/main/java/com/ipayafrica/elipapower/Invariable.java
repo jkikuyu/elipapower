@@ -44,13 +44,19 @@ public class Invariable {
     
     public static final String VENDLASTRES ="vendLastRes";
     
-    public static final String REPCOUNT ="repcount" ;
+    public static final String REPCOUNT ="repCount" ;
     
     public static final String ORIGTIME = "origTime";
     
-    public static final String ORIGREF = "origref";
+    public static final String ORIGREF = "origRef";
 
+    public static final String KEYCHANGEADVREQ = "keyChangeAdvReq";
     
+    public static final String KEYCHANGEREQ = "keyChangeReq";
+    
+    public static final String ADVICEDATA = "adviceData";
+
+
     public static final String VENDREVREQ = "vendRevReq";
     
     public static final String VENDREVRES = "vendRevRes";

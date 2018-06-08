@@ -43,7 +43,6 @@ public class VendController {
     private CreateXML createxml;
     private TokenRequest tokenRequest = null;
     private TokenResponse tokenResponse = null;
-	private ITokenRequestService iTokenRequestService= null;
 	private boolean isEmptyMeterNo =false, isEmptyAmount=false, isEmptyRef=false, isEmptyDemo=false;
 	@Autowired
     private RequestToken requestToken;
@@ -77,6 +76,10 @@ public class VendController {
 	public void setiTokenRequestService(ITokenRequestService iTokenRequestService) {
 		this.iTokenRequestService = iTokenRequestService;
 	}
+	@Autowired
+	private ITokenRequestService iTokenRequestService;
+
+
 	@Autowired
 	private ITokenResponseService iTokenResponseService;
 

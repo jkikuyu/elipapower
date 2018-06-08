@@ -48,8 +48,9 @@ public class TokenResponse implements Serializable{
     @Column(name = "OSYSDATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date osysdate;
-    @Column(name="STATUS",  nullable=false) // 1 success 2 pending 3 failed
-    private Byte status;
+    @Column(name="REVERSAL",  nullable=false) // 0 Normal vend 2 reversal
+    private Byte reversal;
+    
 
 	public TokenResponse() {
 		// TODO Auto-generated constructor stub
@@ -100,8 +101,8 @@ public class TokenResponse implements Serializable{
 		return ref;
 	}
 
-	public Byte getStatus() {
-		return status;
+	public Byte getReversal() {
+		return reversal;
 	}
 
 	public void setErrorcodeid(Integer errorcodeid) {
@@ -116,8 +117,8 @@ public class TokenResponse implements Serializable{
 		this.osysdate = osysdate;
 	}
 
-	public void setStatus(Byte status) {
-		this.status = status;
+	public void setReversal(Byte reversal) {
+		this.reversal = reversal;
 	}
 
 	public String getOrigxml() {

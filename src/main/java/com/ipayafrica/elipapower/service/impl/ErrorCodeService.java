@@ -38,14 +38,15 @@ public class ErrorCodeService implements IErrorCodeService {
 	}
 
 	@Override
-	public ErrorCode getByErrorCodeID(Integer errorCodeId) {
+	public ErrorCode findByMessageCode( String messageCode) {
 		// TODO Auto-generated method stub
-		return iErrorCodeRepository.getOne(errorCodeId);
-	}
-
-	@Override
-	public int getByMessageCode(String messageCode) {
 		return iErrorCodeRepository.findByMessageCode(messageCode);
 	}
 
+
+/*	@Override
+	public ErrorCode getByMessageCode(String messageCode) {
+		return iErrorCodeRepository.findByMessageCode(messageCode);
+	}
+*/
 }
