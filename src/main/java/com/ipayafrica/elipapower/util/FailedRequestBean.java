@@ -116,8 +116,15 @@ public class FailedRequestBean {
 
 				else{
 					
-					String error = (String) messResponse.get("error");
-					if(error==null || error =="") {
+					String st=(String) messResponse.get("status");
+					if(st.equals("3")) {
+							status = 3;
+							treq.setStatus(status);
+							iTokenRequestService.save(treq);
+
+							System.out.println("no socket available");
+						}
+					else {
 
 						logfile.eventLog("response: " + new String(reqXML));
 						tokenResponse= responseToken.getTokenResponse();
@@ -140,13 +147,6 @@ public class FailedRequestBean {
 						iTokenResponseService.save(tokenResponse);
 						tokenRequest.setStatus(status);
 						iTokenRequestService.save(tokenRequest);
-					}
-					else {
-						status = 3;
-						treq.setStatus(status);
-						iTokenRequestService.save(treq);
-
-						System.out.println("no socket available");
 					}
 				}
 				

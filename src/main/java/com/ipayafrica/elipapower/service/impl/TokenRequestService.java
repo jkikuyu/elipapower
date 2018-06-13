@@ -60,6 +60,9 @@ public class TokenRequestService implements ITokenRequestService{
 		// TODO Auto-generated method stub
 		return tokenRequestRepository.findTokenRequestByRef(ref);
 	}
+	public TokenRequest findTokenRequestByMeterNo(String meterno) {
+		return tokenRequestRepository.findTokenRequestByMeterNo(meterno);
+	}
 
 
 	@Override

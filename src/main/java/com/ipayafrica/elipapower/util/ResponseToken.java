@@ -293,6 +293,8 @@ public class ResponseToken {
     if(pos>0) {
   	  resXML.replace(pos, pos + 4, " desc");
     }*/
+    boolean isExist = true;
+    int nextpos = 0;
     pos = resXML.indexOf("client"); 
     if(pos>0) {
   	  resXML.replace(pos, pos + 6, " client");
@@ -321,17 +323,20 @@ public class ResponseToken {
   	  resXML.replace(pos, pos + 3, " ver");
   	  
     }
-    pos = resXML.indexOf("code"); 
-    if(pos>0) {
-  	  resXML.replace(pos, pos + 4, " code");
-  	  
+    while (isExist) {
+        pos = resXML.indexOf("code",nextpos); 
+        if(pos>0) {
+      	  resXML.replace(pos, pos + 4, " code");
+      	  nextpos = pos + 4;
+      	  
+        }
+        else {
+        	isExist = false;
+        	nextpos = 0;
+        }
+    	
     }
-/*    pos = resXML.indexOf("code="); 
-    if(pos>0) {
-  	  resXML.replace(pos, pos + 4, " code=");
-  	  
-    }
-*/
+
     pos = resXML.indexOf("extCode"); 
     if(pos>0) {
   	  resXML.replace(pos, pos + 7, " extCode");
@@ -417,44 +422,48 @@ public class ResponseToken {
     if(pos>0) {
   	  resXML.replace(pos, pos + 6, " units=");
     }
-    pos = resXML.indexOf("tax="); 
-    if(pos>0) {
-  	  resXML.replace(pos, pos + 4, " tax=");
-    }
-    pos = resXML.indexOf("tax=",pos+4); 
-    if(pos>0) {
-  	  resXML.replace(pos, pos + 4, " tax=");
-    }
-    pos = resXML.indexOf("tax=",pos+4); 
-    if(pos>0) {
-  	  resXML.replace(pos, pos + 4, " tax=");
+    isExist = true;
+    while(isExist) {
+	    
+    	pos = resXML.indexOf("tax=",nextpos); 
+	    if(pos>0) {
+	  	  resXML.replace(pos, pos + 4, " tax=");
+	  	  nextpos = pos +4;
+	    }
+	    else {
+	    	isExist = false;
+	    	nextpos = 0;
+	    }
+
     }
 
-    pos = resXML.indexOf("tax=",pos+4); 
-    if(pos>0) {
-  	  resXML.replace(pos, pos + 4, " tax=");
-    }
+    isExist = true;
+    while(isExist) {
+        pos = resXML.indexOf("tariff=",nextpos);
 
-    pos = resXML.indexOf("tariff="); 
-    if(pos>0) {
-  	  resXML.replace(pos, pos + 7, " tariff=");
+	    if(pos>0) {
+	  	  resXML.replace(pos, pos + 7, " tariff=");
+	  	  nextpos = pos+7;
+	    }
+	    
+	    else {
+	    	isExist = false;
+	        nextpos = 0;
+
+	    }
     }
-    pos = resXML.indexOf("amt"); 
-    if(pos>0) {
-  	  resXML.replace(pos, pos + 3, " amt");
-    }
-    pos = resXML.indexOf("amt",pos+3); 
-    if(pos>0) {
-  	  resXML.replace(pos, pos + 3, " amt");
-    }
-    pos = resXML.indexOf("amt",pos+3); 
-    if(pos>0) {
-  	  resXML.replace(pos, pos + 3, " amt");
-    }
-    
-    pos = resXML.indexOf("amt",pos+3); 
-    if(pos>0) {
-  	  resXML.replace(pos, pos + 3, " amt");
+    isExist = true;
+    while(isExist) {
+
+	    pos = resXML.indexOf("amt",nextpos); 
+	    if(pos>0) {
+	  	  resXML.replace(pos, pos + 3, " amt");
+	  	  nextpos = pos+3;
+	    }
+	    else {
+	        nextpos = 0;
+	    	isExist = false;
+	    }
     }
 
     pos = resXML.indexOf("unitsType"); 
@@ -465,9 +474,17 @@ public class ResponseToken {
     if(pos>0) {
   	  resXML.replace(pos, pos + 6, " rctNum");
     }
-    pos = resXML.indexOf("desc"); 
-    if(pos>0) {
-  	  resXML.replace(pos, pos + 4, " desc");
+    isExist = true;
+    while(isExist)     {
+	    pos = resXML.indexOf("desc",nextpos); 
+	    if(pos>0) {
+	  	  resXML.replace(pos, pos + 4, " desc");
+	  	  nextpos = pos+ 4;
+	    }
+	    else {
+	        nextpos = 0;
+	    	isExist = false;
+	    }
     }
     pos = resXML.indexOf("bsstDate"); 
     if(pos>0) {
@@ -490,18 +507,6 @@ public class ResponseToken {
     pos = resXML.lastIndexOf("units="); 
     if(pos>0) {
   	  resXML.replace(pos, pos + 6, " units=");
-    }
-    pos = resXML.lastIndexOf("tariff="); 
-    if(pos>0) {
-  	  resXML.replace(pos, pos + 7, " tariff=");
-    }
-    pos = resXML.lastIndexOf("desc"); 
-    if(pos>0) {
-  	  resXML.replace(pos, pos + 4, " desc");
-    }
-    pos = resXML.lastIndexOf("desc",pos); 
-    if(pos>0) {
-  	  resXML.replace(pos, pos + 4, " desc");
     }
     
     

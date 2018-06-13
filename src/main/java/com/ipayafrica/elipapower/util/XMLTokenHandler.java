@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.TimeZone;
 
 import org.apache.commons.logging.Log;
@@ -140,18 +141,25 @@ public class XMLTokenHandler extends DefaultHandler {
 
 			HashMap<String,String> mapTarrif = new HashMap<String,String>();
 			mapResponse.put("tax", attributes.getValue("tax"));
-			String tarrifs[] = attributes.getValue("tariff").split(":");
-			String key = "";
-			int i = 1;
-
-			for (String tarrif:tarrifs) {
-				key="t" +Integer.toString(i);
-				mapTarrif.put(key, tarrif);
-				i++;
+			Optional<String[]> optTarrifs = Optional.ofNullable(attributes.getValue("tariff").split(":"));
+			if(optTarrifs.isPresent()) {
+				String[] tarrifs = optTarrifs.get();
+				String key = "";
+				int i = 1;
+	
+				for (String tarrif:tarrifs) {
+					key="t" +Integer.toString(i);
+					mapTarrif.put(key, tarrif);
+					i++;
+				}
+				mapResponse.put("tarrif",mapTarrif);
+				mapResponse.put("unitsType", attributes.getValue("unitsType"));
+				bstdToken = true;
 			}
-			mapResponse.put("tarrif",mapTarrif);
-			mapResponse.put("unitsType", attributes.getValue("unitsType"));
-			bstdToken = true;
+			if (qName.equalsIgnoreCase("rctnum")) {
+				mapResponse.put("rctnum", attributes.getValue("rctNum"));
+			}
+
 		}
 		if (qName.equalsIgnoreCase("bsstToken")) {
 			bbsstToken = true;

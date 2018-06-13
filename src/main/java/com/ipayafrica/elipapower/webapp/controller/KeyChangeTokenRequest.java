@@ -110,7 +110,7 @@ public class KeyChangeTokenRequest {
 		
 				tokenRequest.setClientref("OK");
 				Double oref = tokenRequest.getRef();
-				Byte reversal = 0;
+				//Byte reversal = 0;
 				tokenRequest.setOref(oref);
 				iTokenRequestService.save(tokenRequest);
 				messResponse = requestToken.makeRequest(reqXML, meterNo, term);
@@ -129,7 +129,7 @@ public class KeyChangeTokenRequest {
 				log.info(messJSON);
 
 				tokenResponse.setJsonresponse(messJSON);
-				tokenResponse.setReversal(reversal);
+				//tokenResponse.setReversal(reversal);
 				iTokenResponseService.save(tokenResponse);
 
 // end of get customer ifo
@@ -156,7 +156,7 @@ public class KeyChangeTokenRequest {
 					else {
 						tokenResponse= responseToken.getTokenResponse();
 						tokenResponse.setMeterno(meterNo);
-						tokenResponse.setReversal(reversal);
+						//tokenResponse.setReversal(reversal);
 	
 						
 				

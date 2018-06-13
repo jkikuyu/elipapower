@@ -118,6 +118,8 @@ public class RequestToken {
 			messResponse = new HashMap<String,Object>();
 
 			messResponse.put("error","no socket");
+			messResponse.put("status","3");
+
 			try {
 				socket.close();
 			} catch (IOException e) {

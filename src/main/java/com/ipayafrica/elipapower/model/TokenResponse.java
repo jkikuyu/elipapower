@@ -48,7 +48,7 @@ public class TokenResponse implements Serializable{
     @Column(name = "OSYSDATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date osysdate;
-    @Column(name="REVERSAL",  nullable=false) // 0 Normal vend 2 reversal
+    @Column(name="REVERSAL") // 0 Normal vend 2 reversal
     private Byte reversal;
     
 

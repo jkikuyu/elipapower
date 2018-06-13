@@ -1,5 +1,6 @@
 package com.ipayafrica.elipapower.webapp.controller;
 import java.util.HashMap;
+import java.util.Optional;
 
 /**
  * 
@@ -33,6 +34,7 @@ import com.ipayafrica.elipapower.model.TokenResponse;
 import com.ipayafrica.elipapower.service.ITokenRequestService;
 import com.ipayafrica.elipapower.service.ITokenResponseService;
 import com.ipayafrica.elipapower.util.CreateXML;
+import com.ipayafrica.elipapower.util.LogFile;
 import com.ipayafrica.elipapower.util.RequestToken;
 import com.ipayafrica.elipapower.util.ResponseToken;
 
@@ -79,6 +81,8 @@ public class VendController {
 	@Autowired
 	private ITokenRequestService iTokenRequestService;
 
+	@Autowired
+	private LogFile logfile;
 
 	@Autowired
 	private ITokenResponseService iTokenResponseService;
@@ -121,7 +125,6 @@ public class VendController {
 
 	if (!isEmptyMeterNo && !isEmptyAmount && !isEmptyRef &&!isEmptyDemo) {
 		
-		tokenRequest = new TokenRequest();
 		status = 1;
 		String term;
 		if(demo == 1) {
@@ -142,43 +145,66 @@ public class VendController {
 			}
 		}
 		else {
-			byte[] reqXML= createxml.buildXML( meterNo, amount,tokenRequest, term );
-			tokenRequest.setClientref(refNo);
-			Double oref = tokenRequest.getRef();
-			tokenRequest.setStatus(status);
-			tokenRequest.setRepcount(0);
-			tokenRequest.setOref(oref);
-			iTokenRequestService.save(tokenRequest);
-			log.info("meter No:" + meterNo);
-		
-			log.info("begin make request....");
-			messResponse = requestToken.makeRequest(reqXML,meterNo,term);
-			if (messResponse==null) {
-				status = 2;
-				tokenRequest.setStatus(status);
-				iTokenRequestService.save(tokenRequest);
-	
+
+			tokenRequest = iTokenRequestService.findTokenRequestByMeterNo(meterNo);
+
+			Optional<TokenRequest> optReq = Optional.ofNullable(tokenRequest);
+			if(optReq.isPresent()){
+					errResponse = "Meter " + meterNo + " being processed. Please wait for response";
+					messResponse.put("error",errResponse);
+					messResponse.put("status", "0");
+					try {
+						messJSON = objectMapper.writeValueAsString(messResponse);
+					} catch (JsonProcessingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				
+				
 			}
 			else {
+				tokenRequest = new TokenRequest();
+
+				byte[] reqXML= createxml.buildXML( meterNo, amount,tokenRequest, term );
+				tokenRequest.setClientref(refNo);
+				Double oref = tokenRequest.getRef();
+				tokenRequest.setStatus(status);
+				tokenRequest.setRepcount(0);
+				tokenRequest.setOref(oref);
+				iTokenRequestService.save(tokenRequest);
+				log.info("meter No:" + meterNo);
+			
+				log.info("begin make request....");
+				messResponse = requestToken.makeRequest(reqXML,meterNo,term);
 				tokenResponse= responseToken.getTokenResponse();
-				tokenResponse.setMeterno(meterNo);
+				Optional<TokenResponse> optRes = Optional.ofNullable(tokenResponse);
+				if (optRes.isPresent()) {
 				
-		
-				messResponse.put("ref", token.getRefno());
-				try {
-					messJSON = objectMapper.writeValueAsString(messResponse);
-					log.info("response:"+ messJSON);
-		
+					tokenResponse.setMeterno(meterNo);
 					
-				} catch (JsonProcessingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			
+					messResponse.put("ref", token.getRefno());
+					try {
+						messJSON = objectMapper.writeValueAsString(messResponse);
+						log.info("response:"+ messJSON);
+			
+						
+					} catch (JsonProcessingException e) {
+						// TODO Auto-generated catch block
+						logfile.eventLog(e.getMessage());
+					}
+					log.info(messJSON);
+			
+					tokenResponse.setJsonresponse(messJSON);
+			
+					iTokenResponseService.save(tokenResponse);
 				}
-				log.info(messJSON);
-		
-				tokenResponse.setJsonresponse(messJSON);
-		
-				iTokenResponseService.save(tokenResponse);
+				else {
+					status = 2;
+					tokenRequest.setStatus(status);
+					iTokenRequestService.save(tokenRequest);
+				}
+				
 			}
 		}
 	}
@@ -199,7 +225,7 @@ public class VendController {
 		try {
 			messJSON = objectMapper.writeValueAsString(messResponse);
 		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+			logfile.eventLog(e.getMessage());
 		}
 
 	}
