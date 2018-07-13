@@ -1,23 +1,36 @@
 package com.ipayafrica.elipapower.util;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
+import java.security.KeyStore;
+import java.security.SecureRandom;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.Scanner;
 
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManagerFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
+
+import com.ipayafrica.elipapower.model.TokenResponse;
 /**
  * 
  * @author jkikuyu
@@ -26,6 +39,8 @@ import org.xml.sax.SAXException;
 @Component
 @PropertySource("classpath:application.properties")
 public class RequestToken {
+    protected final transient Log log = LogFactory.getLog(getClass());
+
 	private byte[] res = null; 
 	
 	@Autowired
@@ -37,7 +52,7 @@ public class RequestToken {
 	@Autowired
 	ResponseToken responseToken;
 	
-
+	//Socket socket = null;
 	public RequestToken() {
 	}
 
@@ -73,22 +88,23 @@ public class RequestToken {
 
 	public HashMap<String,Object> makeRequest(byte[] reqB, String meterNo,String term){
 //		String serverIP= "41.204.194.188";
-		String serverIP = env.getProperty("token.server.ip");
-		int port =  Integer.parseInt(env.getProperty("token.server.port"));
+//		String serverIP = env.getProperty("token.server.ip");
+//		int port =  Integer.parseInt(env.getProperty("token.server.port"));
 //		int port = 8902;
 //		int timeout = 30000;
-		int timeout = Integer.parseInt(env.getProperty("token.server.timeout"));
-		Scanner is = null;
-		DataOutputStream os = null;
-		Socket socket = null;
+		//Scanner is = null;
+		//Socket socket = null;
 
-	    String responseLine =""; // obtain response from server
+	    //String responseLine =""; // obtain response from server
 	    HashMap<String, Object> messResponse = null;
 
 		try {
 			res = wrap(reqB);
-		} catch (Exception e2) {
-			e2.printStackTrace();
+		    messResponse =  createSecureSocket();
+
+		} catch (Exception e) {
+			logfile.LogError(e);
+			
 		}
 
 		/*	InputStream inputStream = new ByteArrayInputStream(res); //convert into input stream
@@ -98,80 +114,106 @@ public class RequestToken {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}*/
-		boolean noSocketAvaliable = false;
+		
+		return messResponse;
+	}
+    protected HashMap<String, Object> createSecureSocket()  {
+    	String pass = env.getProperty("keystore.pass");
+    	char[] localKeyStorePassword = pass.toCharArray();
+        String sep = System.getProperty("file.separator");                                                                 
+
+    	String keystorepath = env.getProperty("keystore.path")+sep+ env.getProperty("keystore.file");
+ 		final SSLSocket sslSocket;
+ 		HashMap<String, Object> messResponse = null;
+    	try {
+	    	KeyStore localKeyStore = KeyStore.getInstance("JKS");
+
+	    	localKeyStore.load(new FileInputStream(keystorepath), localKeyStorePassword);
+	                    
+	        KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+	        kmf.init(localKeyStore, localKeyStorePassword);
+	        TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+	        tmf.init(localKeyStore);
+	        SecureRandom secureRandom = new SecureRandom();
+	        secureRandom.nextInt();  // Force initialisation to occur now.
+	        
+	        SSLContext sslContext = SSLContext.getInstance("TLS");
+	        sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), secureRandom);
+	 		String serverIP = env.getProperty("token.server.ip");
+	 		int port =  Integer.parseInt(env.getProperty("token.ssl.server.port"));
+	        sslContext.getSocketFactory();
+			SSLSocketFactory sf = (SSLSocketFactory) SSLSocketFactory.getDefault();
+			int timeout = Integer.parseInt(env.getProperty("token.server.timeout"));
+
+            Socket tunnel = new Socket();
+			tunnel.connect(new InetSocketAddress(serverIP,port),timeout);
+			messResponse = doTunnelHandshake(tunnel, serverIP, port);
+			sslSocket = (SSLSocket) sf.createSocket(serverIP, port);
+		    sslSocket.addHandshakeCompletedListener(handshakeCompletedEvent -> {
+                try {
+                    log.debug("Connected [" + handshakeCompletedEvent.getSource() + ", " + 
+                sslSocket.getSession().getPeerCertificateChain()[0].getSubjectDN() + "]");
+                } catch (SSLPeerUnverifiedException e) {
+                    log.warn(e.getMessage(), e);
+                }
+            });
+			sslSocket.startHandshake();
+	       
+    	}
+        catch(Exception e) {
+        	
+        	logfile.LogError(e);
+        }
+    	return messResponse;
+    }
+
+	private HashMap<String, Object> doTunnelHandshake(Socket tunnel, String host, int port) throws IOException{
+		HashMap<String, Object> messResponse = null;
+		DataOutputStream os = null;		
+
+		// This stops the request from dragging on after connection succeeds.
+		//socket.setSoTimeout(timeout);
+		os = new DataOutputStream(tunnel.getOutputStream());
+		//is = new Scanner(socket.getInputStream());
+		String s = new String(res);
+		System.out.println(s);
+		os.write(res);
+		os.flush();
+		res = null;
 		try {
-			socket = new Socket();
-			socket.connect(new InetSocketAddress(serverIP,port),timeout);
-		} catch (SocketTimeoutException e) {
-			noSocketAvaliable = true;
-			logfile.eventLog(e.getMessage());
-			
-			
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		if (noSocketAvaliable) {
-			messResponse = new HashMap<String,Object>();
+			InputStream is = tunnel.getInputStream();
 
-			messResponse.put("error","no socket");
-			messResponse.put("status","3");
-
-			try {
-				socket.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			return messResponse;
+			res = unWrap(is);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logfile.LogError(e);
 		}
-		else {
-			try {
-				// This stops the request from dragging on after connection succeeds.
-				socket.setSoTimeout(timeout);
-				os = new DataOutputStream(socket.getOutputStream());
-				is = new Scanner(socket.getInputStream());
-				String s = new String(res);
-				System.out.println(s);
-				os.write(res);
-	            while (is.hasNext()) {
+/*	            while (is.hasNext()) {
 	            	responseLine += is.next();
 	            }
-	            String mess = "response: " + responseLine;
-	            
-	    		logfile.eventLog(mess);
-	    		if (mess.length()> 10) {
-		    		try {
-		    			messResponse = new HashMap<String,Object>();
-						messResponse = responseToken.cleanXML(mess);
-						
-						
-					} catch (ParserConfigurationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (SAXException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} 
-		    		
-	    		}
-	            socket.close();
-	
-			} catch (SocketTimeoutException e) {
+	            */
+		String mess = "";
+        if (res != null) {
+
+		     mess = "response: " + new String(res);
+    		logfile.eventLog(mess);
+    		try {
+    			messResponse = new HashMap<String,Object>();
+				messResponse = responseToken.cleanXML(mess);
+				
+				
+			} catch (ParserConfigurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SAXException e) {
+				// TODO Auto-generated catch block
 				logfile.LogError(e);
-			}
-			catch (SocketException e) {
-				e.printStackTrace();
-			}
-			catch (IOException e) {
-				e.printStackTrace();
-			}
+			} 
+    		
+		}
+        tunnel.close();
+
 		return messResponse;
-	  	}
 	}
 
 	 private byte[] wrap(byte[] msg) throws Exception {
@@ -194,38 +236,42 @@ public class RequestToken {
      * @return
      * @throws Exception
      */
-	    public byte[] unWrap(InputStream inputStream) throws Exception {
-	        int firstByte = inputStream.read();
-	        if (firstByte ==-1) {
-	            throw new IOException("End of Stream while trying to read vli byte 1");
-	        }
-	        int firstByteValue = firstByte << 8;   
-	        int secondByteValue = inputStream.read();
-	        if (secondByteValue ==-1) {
-	            throw new IOException("End of Stream reading vli byte 2.");
-	        }
-	        int len = firstByteValue + secondByteValue;
-	        byte[] message = new byte[len];
-	        int requestLen;
-	        int readLen;
-	        int currentIndex = 0;
-	        while(true) { 
-	            requestLen = len - currentIndex;
-	            readLen = inputStream.read(message, currentIndex, requestLen);
-	            if (readLen == requestLen) {
-	                break;  // Message is complete.
-	            }
-	            
-	            // Either data was not yet available, or End of Stream.
-	            currentIndex += readLen;
-	            int nextByte = inputStream.read();
-	            if (nextByte ==  1) {
-	                throw new IOException("End of Stream at " + currentIndex );
-	            }
-	            message[currentIndex++] = (byte)nextByte;
-	        }
-	        return message;
-	    }
+    public byte[] unWrap(InputStream is) throws Exception {
+
+        int firstByte = is.read();
+        if (firstByte ==-1) {
+            throw new IOException("End of Stream while trying to read vli byte 1");
+        }
+        int firstByteValue = firstByte << 8;   
+        int secondByteValue = is.read();
+        if (secondByteValue ==-1) {
+            throw new IOException("End of Stream reading vli byte 2.");
+        }
+        int len = firstByteValue + secondByteValue;
+        byte[] message = new byte[len];
+        
+        int requestLen = 0;
+        int currentIndex = 0;
+        int readLen;
+
+        
+        while(true) { 
+            requestLen = len - currentIndex;
+            readLen = is.read(message, currentIndex, requestLen);
+            if (readLen == requestLen) {
+                break;  // Message is complete.
+            }
+            
+            // Either data was not yet available, or End of Stream.
+            currentIndex += readLen;
+            int nextByte = is.read();
+            if (nextByte ==  1) {
+                throw new IOException("End of Stream at " + currentIndex );
+            }
+            message[currentIndex++] = (byte)nextByte;
+        }
+        return message;
+    }
 
 
 }

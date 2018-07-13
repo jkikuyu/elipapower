@@ -12,6 +12,7 @@ public interface ITokenRequestService extends IGenericService<TokenRequest,Long>
 	TokenRequest findTokenRequestByMeterNo(String meterno);
 	List<TokenRequest> findFailedRequests(Byte status, Date requestdate);
 	int countTokenRequestByOref(Double ref);
+	TokenRequest findTokenNotPrinted(String meterno);
 	
 
 

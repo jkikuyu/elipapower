@@ -24,7 +24,7 @@ import com.ipayafrica.elipapower.util.RequestToken;
 import com.ipayafrica.elipapower.util.ResponseToken;
 
 @RestController
-public class KeyChangeTokenRequest {
+public class KeyChangeTokenRequest extends CommonRequestUtil{
     protected final transient Log log = LogFactory.getLog(getClass());
     HashMap<String,Object> messResponse = null;
 	private boolean isEmptyMeterNo =false, isEmptyAmount=false, isEmptyRef=false, isEmptyDemo=false;
@@ -176,7 +176,13 @@ public class KeyChangeTokenRequest {
 						iTokenResponseService.save(tokenResponse);
 	
 					}
+					
 				}
+			// vend Request
+				term = env.getProperty("company.id");
+
+				messJSON = makeVendRequest(meterNo, amount,term, refNo, status);
+
 			}
 		}
 		else {

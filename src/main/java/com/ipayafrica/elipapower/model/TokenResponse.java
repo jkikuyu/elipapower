@@ -37,7 +37,7 @@ public class TokenResponse implements Serializable{
     private Double ref;
     @Column(name = "RESPONSEXML",length=1000)
     private String responsexml;
-    @Column(name = "ORIGXML", length=1000)
+    @Column(name = "ORIGXML", length=1500)
     private String origxml;
     @Column(name = "JSONResponse")
     private String jsonresponse;

@@ -60,7 +60,9 @@ public class TokenResponseService implements ITokenResponseService{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	public String getJsonResponse(Double ref) {
+		return tokenResponseRepository.getJsonResponse(ref);
+	}
 
 
 		 

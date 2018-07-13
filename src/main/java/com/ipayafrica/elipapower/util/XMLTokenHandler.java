@@ -136,14 +136,16 @@ public class XMLTokenHandler extends DefaultHandler {
 
 		//log.info("ref " + ref);
 		if (qName.equalsIgnoreCase("stdToken")) {
+			bstdToken = true;
 
 			mapResponse.put("units", attributes.getValue("units"));
 
 			HashMap<String,String> mapTarrif = new HashMap<String,String>();
 			mapResponse.put("tax", attributes.getValue("tax"));
-			Optional<String[]> optTarrifs = Optional.ofNullable(attributes.getValue("tariff").split(":"));
+			Optional<String> optTarrifs = Optional.ofNullable(attributes.getValue("tariff"));
 			if(optTarrifs.isPresent()) {
-				String[] tarrifs = optTarrifs.get();
+				String stariff = optTarrifs.get();
+				String[] tarrifs= stariff.split(":");
 				String key = "";
 				int i = 1;
 	
@@ -154,7 +156,6 @@ public class XMLTokenHandler extends DefaultHandler {
 				}
 				mapResponse.put("tarrif",mapTarrif);
 				mapResponse.put("unitsType", attributes.getValue("unitsType"));
-				bstdToken = true;
 			}
 			if (qName.equalsIgnoreCase("rctnum")) {
 				mapResponse.put("rctnum", attributes.getValue("rctNum"));
@@ -178,35 +179,35 @@ public class XMLTokenHandler extends DefaultHandler {
 			brtlrMsg = true;
 		}
 		
-		if (qName.equalsIgnoreCase("bkeyChangeRes")) {
+		if (qName.equalsIgnoreCase("keyChangeRes")) {
 			bkeyChangeRes = true;
 		}
 		        
 
-		if (qName.equalsIgnoreCase("bkeyChangeToken")) {
+		if (qName.equalsIgnoreCase("keyChangeToken")) {
 			bkeyChangeToken = true;
 		}
-		if (qName.equalsIgnoreCase("boldSupGrpRef")) {
+		if (qName.equalsIgnoreCase("oldSupGrpRef")) {
 			boldSupGrpRef = true;
 		}
 		
-		if (qName.equalsIgnoreCase("boldTariffIdx")) {
+		if (qName.equalsIgnoreCase("oldTariffIdx")) {
 			boldTariffIdx = true;
 		}
-		if (qName.equalsIgnoreCase("boldKeyRevNum")) {
+		if (qName.equalsIgnoreCase("oldKeyRevNum")) {
 			boldKeyRevNum = true;
 		}
 
-		if (qName.equalsIgnoreCase("bnewSupGrpRef")) {
+		if (qName.equalsIgnoreCase("newSupGrpRef")) {
 			bnewSupGrpRef = true;
 		}
-		if (qName.equalsIgnoreCase("bnewTariffIdx")) {
+		if (qName.equalsIgnoreCase("newTariffIdx")) {
 			bnewTariffIdx = true;
 		}
-		if (qName.equalsIgnoreCase("bnewKeyRevNum")) {
+		if (qName.equalsIgnoreCase("newKeyRevNum")) {
 			bnewKeyRevNum = true;
 		}
-		if (qName.equalsIgnoreCase("bcode")) {
+		if (qName.equalsIgnoreCase("code")) {
 			bcode = true;
 		}
 

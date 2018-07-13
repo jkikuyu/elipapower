@@ -141,11 +141,12 @@ public class FailedRequestBean {
 						}
 						
 						log.info(messJSON);
-		
+						tokenResponse.setRef(oref);
 						tokenResponse.setJsonresponse(messJSON);
 		
 						iTokenResponseService.save(tokenResponse);
 						tokenRequest.setStatus(status);
+						
 						iTokenRequestService.save(tokenRequest);
 					}
 				}

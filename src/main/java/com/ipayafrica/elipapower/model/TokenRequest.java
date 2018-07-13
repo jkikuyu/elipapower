@@ -63,6 +63,8 @@ public class TokenRequest extends Token implements Serializable{
     @Column(name = "oref",nullable=false, length=50)
     private Double oref;
 
+    @Column(name="RECEIPT")
+    private Byte receipt = 0;
 
 	
 	@Transient
@@ -183,6 +185,12 @@ public class TokenRequest extends Token implements Serializable{
 	}
 	public void setClientref(String clientref) {
 		this.clientref = clientref;
+	}
+	public Byte getReceipt() {
+		return receipt;
+	}
+	public void setReceipt(Byte receipt) {
+		this.receipt = receipt;
 	}
 
 

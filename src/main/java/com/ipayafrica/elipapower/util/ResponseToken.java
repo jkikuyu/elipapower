@@ -465,15 +465,33 @@ public class ResponseToken {
 	    	isExist = false;
 	    }
     }
-
+    
     pos = resXML.indexOf("unitsType"); 
     if(pos>0) {
   	  resXML.replace(pos, pos + 9, " unitsType");
     }
-    pos = resXML.indexOf("rctNum"); 
+    isExist = true;
+    while(isExist) {
+        pos = resXML.indexOf("rctNum",nextpos); 
+
+	    if(pos>0) {
+	  	  resXML.replace(pos, pos + 6, " rctNum");
+	  	  nextpos = pos+6;
+	    }
+	    else {
+	        nextpos = 0;
+	    	isExist = false;
+	    }
+    }
+
     if(pos>0) {
   	  resXML.replace(pos, pos + 6, " rctNum");
     }
+    pos = resXML.indexOf("unitsType"); 
+    if(pos>0) {
+  	  resXML.replace(pos, pos + 9, " unitsType");
+    }
+
     isExist = true;
     while(isExist)     {
 	    pos = resXML.indexOf("desc",nextpos); 
@@ -541,13 +559,13 @@ public class ResponseToken {
 	
 
 	if(errorCodeId==0){
-		messMap.put("error","Please try again later");
+		messMap.put("response","Please try again later");
 		messMap.put("status"," 0");
 		
 		
 	}
 	else{
-		messMap.put("error",errorCode.getDescription());
+		messMap.put("response",errorCode.getDescription());
 		messMap.put("status","2");
 
 	}

@@ -39,18 +39,15 @@ import com.ipayafrica.elipapower.util.RequestToken;
 import com.ipayafrica.elipapower.util.ResponseToken;
 
 @RestController
-public class VendController {
+public class VendController extends CommonRequestUtil{
     protected final transient Log log = LogFactory.getLog(getClass());
 
     private CreateXML createxml;
     private TokenRequest tokenRequest = null;
-    private TokenResponse tokenResponse = null;
 	private boolean isEmptyMeterNo =false, isEmptyAmount=false, isEmptyRef=false, isEmptyDemo=false;
 	@Autowired
     private RequestToken requestToken;
    
-	@Autowired
-    private ResponseToken responseToken;
 	
 	@Autowired
 	Environment env;
@@ -150,61 +147,81 @@ public class VendController {
 
 			Optional<TokenRequest> optReq = Optional.ofNullable(tokenRequest);
 			if(optReq.isPresent()){
-					errResponse = "Meter " + meterNo + " being processed. Please wait for response";
-					messResponse.put("error",errResponse);
+					errResponse = "Meter " + meterNo + " being processed. Please try later";
+					messResponse.put("response",errResponse);
 					messResponse.put("status", "0");
 					try {
 						messJSON = objectMapper.writeValueAsString(messResponse);
 					} catch (JsonProcessingException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						logfile.eventLog(e.getMessage());
 					}
 				
 				
 			}
-			else {
-				tokenRequest = new TokenRequest();
 
-				byte[] reqXML= createxml.buildXML( meterNo, amount,tokenRequest, term );
-				tokenRequest.setClientref(refNo);
-				Double oref = tokenRequest.getRef();
-				tokenRequest.setStatus(status);
-				tokenRequest.setRepcount(0);
-				tokenRequest.setOref(oref);
-				iTokenRequestService.save(tokenRequest);
-				log.info("meter No:" + meterNo);
-			
-				log.info("begin make request....");
-				messResponse = requestToken.makeRequest(reqXML,meterNo,term);
-				tokenResponse= responseToken.getTokenResponse();
-				Optional<TokenResponse> optRes = Optional.ofNullable(tokenResponse);
-				if (optRes.isPresent()) {
-				
-					tokenResponse.setMeterno(meterNo);
+			else {
+				tokenRequest = iTokenRequestService.findTokenNotPrinted(meterNo);
+				optReq = Optional.ofNullable(tokenRequest);
+				if(optReq.isPresent()){
+					Double ref = tokenRequest.getOref();
+					messJSON = iTokenResponseService.getJsonResponse(ref);
+					Byte receipt = 1;
+					tokenRequest.setReceipt(receipt);
+					iTokenRequestService.save(tokenRequest);
 					
-			
-					messResponse.put("ref", token.getRefno());
-					try {
-						messJSON = objectMapper.writeValueAsString(messResponse);
-						log.info("response:"+ messJSON);
-			
-						
-					} catch (JsonProcessingException e) {
-						// TODO Auto-generated catch block
-						logfile.eventLog(e.getMessage());
-					}
-					log.info(messJSON);
-			
-					tokenResponse.setJsonresponse(messJSON);
-			
-					iTokenResponseService.save(tokenResponse);
 				}
 				else {
-					status = 2;
+					messJSON = makeVendRequest(meterNo, amount,term, refNo, status);
+					
+	
+/*					tokenRequest = new TokenRequest();
+	
+					byte[] reqXML= createxml.buildXML( meterNo, amount,tokenRequest, term );
+					tokenRequest.setClientref(refNo);
+					Double oref = tokenRequest.getRef();
 					tokenRequest.setStatus(status);
+					tokenRequest.setRepcount(0);
+					tokenRequest.setOref(oref);
 					iTokenRequestService.save(tokenRequest);
-				}
+					log.info("meter No:" + meterNo);
 				
+					log.info("begin make request....");
+					messResponse = requestToken.makeRequest(reqXML,meterNo,term);
+					tokenResponse= responseToken.getTokenResponse();
+					Optional<TokenResponse> optRes = Optional.ofNullable(tokenResponse);
+					if (optRes.isPresent() && messResponse !=null) {
+					
+						tokenResponse.setMeterno(meterNo);
+						
+						
+						messResponse.put("ref", token.getRefno());
+						try {
+							messJSON = objectMapper.writeValueAsString(messResponse);
+							log.info("response:"+ messJSON);
+				
+							
+						} catch (JsonProcessingException e) {
+							// TODO Auto-generated catch block
+							logfile.eventLog(e.getMessage());
+						}
+						log.info(messJSON);
+				
+						tokenResponse.setJsonresponse(messJSON);
+				
+						iTokenResponseService.save(tokenResponse);
+						Byte receipt = 1;
+						tokenRequest.setReceipt(receipt);
+						iTokenRequestService.save(tokenRequest);
+					}
+					else {
+						status = 2;
+						tokenRequest.setStatus(status);
+						iTokenRequestService.save(tokenRequest);
+					}
+					*/
+					
+				}
 			}
 		}
 	}

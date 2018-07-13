@@ -45,19 +45,16 @@ public class TokenRequestService implements ITokenRequestService{
 
 	@Override
 	public TokenRequest getByTokenRequestId(Long requestId) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public TokenRequest get(Long id) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public TokenRequest findTokenRequestByRef(Double ref) {
-		// TODO Auto-generated method stub
 		return tokenRequestRepository.findTokenRequestByRef(ref);
 	}
 	public TokenRequest findTokenRequestByMeterNo(String meterno) {
@@ -67,15 +64,15 @@ public class TokenRequestService implements ITokenRequestService{
 
 	@Override
 	public List<TokenRequest> findFailedRequests(Byte status, Date requestdate) {
-		// TODO Auto-generated method stub
 		return tokenRequestRepository.findAllFailedRequests(status,requestdate);
 	}
 		 
 	@Override
 	public int countTokenRequestByOref(Double ref) {
-		// TODO Auto-generated method stub
 		return tokenRequestRepository.countTokenRequestByOrigRef(ref);
 	}
-
+	public TokenRequest findTokenNotPrinted(String meterno) {
+		return tokenRequestRepository.findTokenNotPrinted(meterno);
+	}
 
 }
