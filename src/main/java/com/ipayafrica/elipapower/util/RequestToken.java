@@ -176,6 +176,9 @@ public class RequestToken {
 		os = new DataOutputStream(tunnel.getOutputStream());
 		//is = new Scanner(socket.getInputStream());
 		String s = new String(res);
+		int timeout = Integer.parseInt(env.getProperty("token.server.timeout"));
+
+		tunnel.setSoTimeout(timeout);
 		System.out.println(s);
 		os.write(res);
 		os.flush();
@@ -265,7 +268,7 @@ public class RequestToken {
             // Either data was not yet available, or End of Stream.
             currentIndex += readLen;
             int nextByte = is.read();
-            if (nextByte ==  1) {
+            if (nextByte == -1) {
                 throw new IOException("End of Stream at " + currentIndex );
             }
             message[currentIndex++] = (byte)nextByte;
