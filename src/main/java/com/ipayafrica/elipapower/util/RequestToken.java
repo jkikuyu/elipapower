@@ -141,15 +141,14 @@ public class RequestToken {
 	        sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), secureRandom);
 	 		String serverIP = env.getProperty("token.server.ip");
 	 		int port =  Integer.parseInt(env.getProperty("token.ssl.server.port"));
-	        sslContext.getSocketFactory();
-			SSLSocketFactory sf = (SSLSocketFactory) SSLSocketFactory.getDefault();
+	 		SSLSocketFactory sf= sslContext.getSocketFactory();
+			//SSLSocketFactory sf = (SSLSocketFactory) SSLSocketFactory.getDefault();
 			int timeout = Integer.parseInt(env.getProperty("token.server.timeout"));
 
-            Socket tunnel = new Socket();
-			tunnel.connect(new InetSocketAddress(serverIP,port),timeout);
-			messResponse = doTunnelHandshake(tunnel, serverIP, port);
-			sslSocket = (SSLSocket) sf.createSocket(serverIP, port);
-		    sslSocket.addHandshakeCompletedListener(handshakeCompletedEvent -> {
+            Socket socket = new Socket();
+			socket.connect(new InetSocketAddress(serverIP,port),timeout);
+			socket =  sf.createSocket(serverIP, port);
+/*		    sslSocket.addHandshakeCompletedListener(handshakeCompletedEvent -> {
                 try {
                     log.debug("Connected [" + handshakeCompletedEvent.getSource() + ", " + 
                 sslSocket.getSession().getPeerCertificateChain()[0].getSubjectDN() + "]");
@@ -158,6 +157,9 @@ public class RequestToken {
                 }
             });
 			sslSocket.startHandshake();
+*/			
+			messResponse = doTunnelHandshake(socket, serverIP, port);
+
 	       
     	}
         catch(Exception e) {
@@ -167,24 +169,24 @@ public class RequestToken {
     	return messResponse;
     }
 
-	private HashMap<String, Object> doTunnelHandshake(Socket tunnel, String host, int port) throws IOException{
+	private HashMap<String, Object> doTunnelHandshake(Socket socket, String host, int port) throws IOException{
 		HashMap<String, Object> messResponse = null;
 		DataOutputStream os = null;		
 
 		// This stops the request from dragging on after connection succeeds.
 		//socket.setSoTimeout(timeout);
-		os = new DataOutputStream(tunnel.getOutputStream());
+		os = new DataOutputStream(socket.getOutputStream());
 		//is = new Scanner(socket.getInputStream());
 		String s = new String(res);
 		int timeout = Integer.parseInt(env.getProperty("token.server.timeout"));
 
-		tunnel.setSoTimeout(timeout);
+		socket.setSoTimeout(timeout);
 		System.out.println(s);
 		os.write(res);
 		os.flush();
 		res = null;
 		try {
-			InputStream is = tunnel.getInputStream();
+			InputStream is = socket.getInputStream();
 
 			res = unWrap(is);
 		} catch (Exception e) {
@@ -214,7 +216,7 @@ public class RequestToken {
 			} 
     		
 		}
-        tunnel.close();
+        socket.close();
 
 		return messResponse;
 	}
