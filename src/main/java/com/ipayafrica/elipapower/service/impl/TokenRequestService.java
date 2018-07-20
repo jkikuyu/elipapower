@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.ipayafrica.elipapower.model.TokenRequest;
@@ -74,5 +76,15 @@ public class TokenRequestService implements ITokenRequestService{
 	public TokenRequest findTokenNotPrinted(String meterno) {
 		return tokenRequestRepository.findTokenNotPrinted(meterno);
 	}
+
+	@Override
+	public Page<Date> findFirstVendRevRequest(Double oref, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return tokenRequestRepository.findFirstVendRevRequest(oref,pageable);
+	}
+	public List<Date> findFirstVendRevRequest(Double oref){
+		return tokenRequestRepository.findFirstVendRevRequest(oref);
+	}
+
 
 }

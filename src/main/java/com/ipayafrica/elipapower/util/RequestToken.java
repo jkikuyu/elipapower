@@ -117,6 +117,10 @@ public class RequestToken {
 		
 		return messResponse;
 	}
+	/**
+	 * Method to create a ssl socket and call function to write the data.
+	 * @return a message response
+	 */
     protected HashMap<String, Object> createSecureSocket()  {
     	String pass = env.getProperty("keystore.pass");
     	char[] localKeyStorePassword = pass.toCharArray();
@@ -158,7 +162,7 @@ public class RequestToken {
             });
 			sslSocket.startHandshake();
 */			
-			messResponse = doTunnelHandshake(socket, serverIP, port);
+			messResponse = writeMessagetoSocket(socket, serverIP, port);
 
 	       
     	}
@@ -169,7 +173,7 @@ public class RequestToken {
     	return messResponse;
     }
 
-	private HashMap<String, Object> doTunnelHandshake(Socket socket, String host, int port) throws IOException{
+	private HashMap<String, Object> writeMessagetoSocket(Socket socket, String host, int port) throws IOException{
 		HashMap<String, Object> messResponse = null;
 		DataOutputStream os = null;		
 
@@ -180,7 +184,7 @@ public class RequestToken {
 		String s = new String(res);
 		int timeout = Integer.parseInt(env.getProperty("token.server.timeout"));
 
-		socket.setSoTimeout(timeout);
+		socket.setSoTimeout(timeout); 
 		System.out.println(s);
 		os.write(res);
 		os.flush();

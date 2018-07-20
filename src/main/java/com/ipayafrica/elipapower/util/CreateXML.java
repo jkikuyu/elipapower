@@ -139,7 +139,6 @@ public class CreateXML {
 
 			break;
 		case 3:
-			String oTime = sdf.format(tokenReq.getRequestdate()); //to obtain origin time of first reversal advice
 			Element vendRevReq =null;
 			DecimalFormat df = new DecimalFormat(".#");
 
@@ -156,13 +155,14 @@ public class CreateXML {
 
 			origRef.setText(sbRefNo.toString());
 			ref.setText(tref);
-
 			if(repcount >0){
+				String	oTime= sdf.format(tokenReq.getRequestdate()); //to obtain origin time of first reversal advice
+
 /*				Element repCount = new Element(Invariable.REPCOUNT);
 				Element orgTime = new Element(Invariable.ORIGTIME);
 			orgTime.setText(oTime);
 				vendRevReq.addContent(orgTime);
-
+				
 				repCount.setText(Integer.toString(repeat));
 
 				vendRevReq.addContent(repCount);
@@ -247,6 +247,7 @@ public class CreateXML {
 		 */
 			ref = new Element(Invariable.REF);
 			ref.setText(tref);
+			oref =tref;
 
 			ipayMsg.setAttribute("termAuthId", "F8-CA-B8-0E-27-4F");
 			elecMsg.setAttribute(Invariable.VER, "2.42");
@@ -400,7 +401,7 @@ public class CreateXML {
 		iSerialNumberService.updateLastNumber(name);
 		Integer nextNum = iSerialNumberService.getLastNumber(); 
 		seqNo = nextNum.toString();
-
+		seqNo = ("00000"+seqNo).substring(seqNo.length());
 
         type = env.getProperty("payment.value");
         currency = env.getProperty("currency.code");

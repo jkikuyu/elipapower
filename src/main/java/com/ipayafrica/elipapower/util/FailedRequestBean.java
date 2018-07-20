@@ -10,7 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,7 +19,7 @@ import com.ipayafrica.elipapower.model.TokenResponse;
 import com.ipayafrica.elipapower.service.ITokenRequestService;
 import com.ipayafrica.elipapower.service.ITokenResponseService;
 
-@Component
+@Service
 public class FailedRequestBean {
     protected final transient Log log = LogFactory.getLog(getClass());
 
@@ -73,8 +73,17 @@ public class FailedRequestBean {
 
 				String sref = df.format(ref);
 				Double oref = tokenRequest.getOref();
-				int repcount = iTokenRequestService.countTokenRequestByOref(oref);	
+				//int repcount = iTokenRequestService.countTokenRequestByOref(oref);	
+				List<Date> listWithDates = iTokenRequestService.findFirstVendRevRequest(oref);
+				int repcount = listWithDates.size();
+
 			    Date date = tokenRequest.getRequestdate();
+			    
+				if (repcount >0) { //set the date for the first vend reversal request
+					//PageRequest pageRequest= PageRequest.of(0, 10);
+					treq.setRequestdate(listWithDates.get(0));
+
+				}
 
 				
 			    StringBuffer refNo = new StringBuffer(sref);
@@ -90,7 +99,6 @@ public class FailedRequestBean {
 				treq.setRepcount(repcount);
 				treq.setAmount(amount);
 				treq.setOref(oref);
-				treq.setRequestdate(date);
 				String key = env.getProperty("payment.key");
 		    	Byte paytype = (byte) Integer.parseInt(key);
 
@@ -126,9 +134,11 @@ public class FailedRequestBean {
 						}
 					else {
 
-						logfile.eventLog("response: " + new String(reqXML));
+						//logfile.eventLog("response: " + new String(reqXML));
+						 
 						tokenResponse= responseToken.getTokenResponse();
 						tokenResponse.setMeterno(meterNo);
+						String respTerm = tokenResponse.getTerm();
 						messResponse.put("ref", tokenRequest.getClientref());
 						try {
 							messJSON = objectMapper.writeValueAsString(messResponse);
@@ -143,11 +153,13 @@ public class FailedRequestBean {
 						log.info(messJSON);
 						tokenResponse.setRef(oref);
 						tokenResponse.setJsonresponse(messJSON);
-		
-						iTokenResponseService.save(tokenResponse);
-						tokenRequest.setStatus(status);
 						
-						iTokenRequestService.save(tokenRequest);
+						iTokenResponseService.save(tokenResponse);
+						if(respTerm.equals(term)) {
+							tokenRequest.setStatus(status);
+							
+							iTokenRequestService.save(tokenRequest);
+						}
 					}
 				}
 				

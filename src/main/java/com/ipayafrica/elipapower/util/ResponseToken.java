@@ -533,13 +533,14 @@ public class ResponseToken {
     saxParser.parse(is, xmlTokenHandler);
     tokenResponse = new TokenResponse();
     String ref = xmlTokenHandler.getRef();
-
+    String term = xmlTokenHandler.getTerm();
     
     HashMap<String, Object> messMap = xmlTokenHandler.getMessageMap();
 
     tokenResponse.setOrigxml(xml);
     tokenResponse.setRef(Double.parseDouble(ref));
     tokenResponse.setResponsexml(cleanedXML);
+    tokenResponse.setTerm(term);
     tokenResponse.setOsysdate(new Date());
     tokenResponse.setResponsedate(xmlTokenHandler.getResponseDate());
 	ErrorCode errorCode =  iErrorCodeService.findByMessageCode(xmlTokenHandler.getResCode());

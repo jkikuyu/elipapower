@@ -8,7 +8,7 @@ import com.ipayafrica.elipapower.model.SerialNumber;
 
 public interface ISerialNumberRepository extends JpaRepository<SerialNumber, Long>{
 	@Modifying
-	@Query(value="UPDATE serialnumber SET value = LAST_INSERT_ID(value + 1) WHERE name =?1", nativeQuery = true)
+	@Query(value="UPDATE serialnumber set value = CASE WHEN value = 99999 AND name = 'seqcount' THEN 1 ELSE LAST_INSERT_ID(value + 1) END WHERE name=?1", nativeQuery = true)
 
 	int updateNextNumber(String name);
 

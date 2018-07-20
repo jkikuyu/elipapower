@@ -3,6 +3,8 @@ package com.ipayafrica.elipapower.repository;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,4 +28,11 @@ public interface ITokenRequestRepository<T extends TokenRequest,PK> extends JpaR
 
 	@Query("SELECT t FROM TokenRequest t where t.status = 1 and t.receipt=0 AND t.ref = t.oref AND t.meterno = :meterno")
 	public TokenRequest findTokenNotPrinted(@Param("meterno") String meterno);
+	
+	@Query(value = "SELECT requestdate FROM tokenrequest t where t.status = 1 AND  t.oref = ?1", 
+			countQuery = "SELECT requestdate FROM tokenrequest t where t.status = 1 AND  t.oref = ?1",nativeQuery=true)
+	public Page<Date> findFirstVendRevRequest(Double oref,Pageable pageable);
+	@Query("SELECT requestdate FROM TokenRequest t where t.status = 1 AND  t.oref = :oref") 
+	public List<Date> findFirstVendRevRequest(@Param("oref") Double oref);
+
 }

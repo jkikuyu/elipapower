@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "TOKENRESPONSE")
@@ -51,6 +52,8 @@ public class TokenResponse implements Serializable{
     @Column(name="REVERSAL") // 0 Normal vend 2 reversal
     private Byte reversal;
     
+	@Transient
+    private String term;
 
 	public TokenResponse() {
 		// TODO Auto-generated constructor stub
@@ -135,6 +138,14 @@ public class TokenResponse implements Serializable{
 
 	public void setJsonresponse(String jsonresponse) {
 		this.jsonresponse = jsonresponse;
+	}
+
+	public String getTerm() {
+		return term;
+	}
+
+	public void setTerm(String term) {
+		this.term = term;
 	}
 
 

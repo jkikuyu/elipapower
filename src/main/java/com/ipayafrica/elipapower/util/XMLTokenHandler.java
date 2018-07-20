@@ -55,6 +55,7 @@ public class XMLTokenHandler extends DefaultHandler {
 	
 	private String resCode;
 	private Date responseDate;
+	private String term;
 	@Autowired
 	Environment env;
 	public XMLTokenHandler() {
@@ -74,6 +75,7 @@ public class XMLTokenHandler extends DefaultHandler {
 			sdf.setTimeZone(tz);
 
 			String datetime = attributes.getValue("time");
+			term = attributes.getValue("term");
 			StringBuffer sb = new StringBuffer(datetime);
 			sb.insert(10," ");
 			sb.insert(sb.indexOf("+"), " ");
@@ -353,6 +355,9 @@ public class XMLTokenHandler extends DefaultHandler {
 	public String getResCode() {
 		return resCode;
 	}
-   
+	public String getTerm() {
+		return term;
+	}
+
 }
 
