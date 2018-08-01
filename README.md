@@ -14,5 +14,14 @@ response time is less than 5 seconds. A timeout has been set to 30 seconds.
 
 2. Open the properies file and set the following 
 
+ - keystore.pass =keystorepassword (there is an existing password. This can be changed by typing the following 
+ 		keytool -keypasswd  -alias <key_name> -keystore my.keystore
+ - keystore.path = /path/to/keystore
+ - errorLog.filepath=/path/to/logs
+ - spring.datasource.username = username
+ - pring.datasource.password = password
+ 
+ 
+
 
 
