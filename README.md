@@ -24,10 +24,10 @@ response time is less than 5 seconds. A timeout has been set to 30 seconds.
  - pring.datasource.password = password
  - spring.datasource.url = jdbc:mariadb://localhost:3306/elipapower database url 
  
- ## SSL Keys 
+## SSL Keys 
  Copy ssl key from the SSLkeys folder to location specified by the *keystore.path* of the properties file
  
- ## Database
+## Database
  
  Create the database and ensure you change the *spring.datasource.url* in order to point to your database;
  
