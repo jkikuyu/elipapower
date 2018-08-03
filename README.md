@@ -49,6 +49,28 @@ i. Startup postman
 ii. Make a post method request to /tokenreq using the following payload
 *{"refno": "your ref number", "meterno": "A83456510", "amount": "7500"}*
 The response you get will be as follows
+*{
+    "reason": "OK",
+    "unitsAmt": 313.04,
+    "tax": 46.96,
+    "units": "1666.6666",
+    "unitsType": "kWh",
+    "token": "87173517064585435974",
+    "ref": "76061100",
+    "tarrif": {
+        "t4": " dddd.dd kWh @ 120.10 c/kWh ",
+        "t5": " ",
+        "t1": "aaaa.aa kWh @ 065.72 c/kWh",
+        "t2": " bbbb.bb kWh @ 075.42 c/kWh",
+        "t3": " cccc.cc kWh @ 109.50 c/kWh"
+    },
+    "debtAmt": 85,
+    "response": "Please try again later",
+    "ourref": "821517380455",
+    "fixedamt": 47.82,
+    "fixedtax": 7.18,
+    "status": "Successful"
+}*
 
 ## Scenarios
 i. Server does not respond within 30 seconds
