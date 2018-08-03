@@ -6,13 +6,14 @@ response time is less than 5 seconds. A timeout has been set to 30 seconds.
 
 ## Prerequistes
 - Open JDK 1.8.0_161
+- Apache Tomcat 8.5.29
 - Self Signed SSL certificate
 - Database mysql Ver 15.1 Distrib 10.2.14-MariaDB, for debian-linux-gnu (x86_64) using readline 5.2
 
 ## Installation 
-1. Execute the script script in the script folder to create the required tables
+i. Execute the script script in the script folder to create the required tables
 
-2. Open the properies file and set the following 
+ii. Open the properies file and set the following 
 
  - keystore.pass =keystorepassword (there is an existing password. This can be changed by typing the following 
  ```
@@ -29,14 +30,15 @@ response time is less than 5 seconds. A timeout has been set to 30 seconds.
  
 ## Database
  
- Create the database and ensure you change the *spring.datasource.url* in order to point to your database;
+Create the database and ensure you change the *spring.datasource.url* in order to point to your database;
  
- Grant the appropriate rights to the databse
+Grant the appropriate rights to the database
  
- Execute scripts located int eh Scripts folder
+Execute scripts located in the Scripts folder
+
 
 ## Deploy the ElipaPower App
-go to the War folder *cd jar*
+go to the War folder *cd war*
 
 
 
