@@ -26,20 +26,34 @@ ii. Open the properies file and set the following
  - spring.datasource.url = jdbc:mariadb://localhost:3306/elipapower database url 
  
 ## SSL Keys 
- Copy ssl key from the SSLkeys folder to location specified by the *keystore.path* of the properties file
+ Copy ssl key from the SSLkeys folder to location specified by the **keystore.path** of the properties file
  
 ## Database
  
-Create the database and ensure you change the *spring.datasource.url* in order to point to your database;
+i. Create the database and ensure you change the **spring.datasource.url** in order to point to your database;
  
-Grant the appropriate rights to the database
+ii. Grant the appropriate rights to the database
  
-Execute scripts located in the Scripts folder
+iii. Execute scripts located in the Scripts folder
+iv. It is also possible to create tables by setting the following parameter in the properties file
 
 
 ## Deploy the ElipaPower App
-go to the War folder *cd war*
+i. Start the terminal in linux
+ii. navigate to *tomcat/bin* and stop tomcat if already running using **shutdown.sh**
+iii. go to the war folder *cd war*
+iv. Copy the *elipapower.war* to */tomcat/webapps*
+iv. navigate to *tomcat/bin* and use **startup.sh** to start the tomcat
+## Make Request
+i. Startup postman
+ii. Make a post method request to /tokenreq using the following payload
+*{"refno": "your ref number", "meterno": "A83456510", "amount": "7500"}*
+The response you get will be as follows
 
+## Scenarios
+i. Server does not respond within 30 seconds
+
+ii. Server 
 
 
 
