@@ -49,9 +49,9 @@ public class TokenResponse implements Serializable{
     @Column(name = "OSYSDATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date osysdate;
-    @Column(name="REVERSAL") // 0 Normal vend 2 reversal
+/*    @Column(name="REVERSAL") // 0 Normal vend 2 reversal
     private Byte reversal;
-    
+*/    
 	@Transient
     private String term;
 
@@ -104,10 +104,10 @@ public class TokenResponse implements Serializable{
 		return ref;
 	}
 
-	public Byte getReversal() {
+/*	public Byte getReversal() {
 		return reversal;
 	}
-
+*/
 	public void setErrorcodeid(Integer errorcodeid) {
 		this.errorcodeid = errorcodeid;
 	}
@@ -120,10 +120,10 @@ public class TokenResponse implements Serializable{
 		this.osysdate = osysdate;
 	}
 
-	public void setReversal(Byte reversal) {
+/*	public void setReversal(Byte reversal) {
 		this.reversal = reversal;
 	}
-
+*/
 	public String getOrigxml() {
 		return origxml;
 	}

@@ -168,6 +168,7 @@ public class VendController extends CommonRequestUtil{
 					messJSON = iTokenResponseService.getJsonResponse(ref);
 					Byte receipt = 1;
 					tokenRequest.setReceipt(receipt);
+					tokenRequest.setStatus(status);
 					iTokenRequestService.save(tokenRequest);
 					
 				}

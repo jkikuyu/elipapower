@@ -149,15 +149,17 @@ public class FailedRequestBean {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+						//Byte reversal = 1;
 						
 						log.info(messJSON);
 						tokenResponse.setRef(oref);
 						tokenResponse.setJsonresponse(messJSON);
-						
+						//tokenResponse.setReversal(reversal);
 						iTokenResponseService.save(tokenResponse);
 						if(respTerm.equals(term)) {
+							Byte receipt = 2;
 							tokenRequest.setStatus(status);
-							
+							tokenRequest.setReceipt(receipt);
 							iTokenRequestService.save(tokenRequest);
 						}
 					}

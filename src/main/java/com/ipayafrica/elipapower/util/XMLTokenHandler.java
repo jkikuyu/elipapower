@@ -141,9 +141,16 @@ public class XMLTokenHandler extends DefaultHandler {
 			bstdToken = true;
 
 			mapResponse.put("units", attributes.getValue("units"));
+			mapResponse.put("unitsType", attributes.getValue("unitsType"));
+			Double unitsAmt = Double.parseDouble(attributes.getValue("amt"))/100;
 
+			mapResponse.put("unitsAmt", unitsAmt);
+
+			Double tax = Double.parseDouble(attributes.getValue("tax"))/100;
+
+			mapResponse.put("tax", tax);
 			HashMap<String,String> mapTarrif = new HashMap<String,String>();
-			mapResponse.put("tax", attributes.getValue("tax"));
+
 			Optional<String> optTarrifs = Optional.ofNullable(attributes.getValue("tariff"));
 			if(optTarrifs.isPresent()) {
 				String stariff = optTarrifs.get();
@@ -157,7 +164,7 @@ public class XMLTokenHandler extends DefaultHandler {
 					i++;
 				}
 				mapResponse.put("tarrif",mapTarrif);
-				mapResponse.put("unitsType", attributes.getValue("unitsType"));
+
 			}
 			if (qName.equalsIgnoreCase("rctnum")) {
 				mapResponse.put("rctnum", attributes.getValue("rctNum"));
@@ -168,11 +175,19 @@ public class XMLTokenHandler extends DefaultHandler {
 			bbsstToken = true;
 		}
 		if (qName.equalsIgnoreCase("debt")) {
+			
 			bdebt = true;
+			Double debtAmt = Double.parseDouble(attributes.getValue("amt"))/100;
+
+			mapResponse.put("debtAmt", debtAmt);
+
+			
 		}
 		if (qName.equalsIgnoreCase("fixed")) {
-			mapResponse.put("fixedamt", attributes.getValue("amt"));
-			mapResponse.put("fixedtax", attributes.getValue("tax"));
+			Double fixedAmt = Double.parseDouble(attributes.getValue("amt"))/100;
+			Double fixedtax = Double.parseDouble(attributes.getValue("tax"))/100;
+			mapResponse.put("fixedamt", fixedAmt);
+			mapResponse.put("fixedtax", fixedtax);
 
 			bfixed = true;
 		}

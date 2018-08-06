@@ -64,7 +64,7 @@ public class TokenRequest extends Token implements Serializable{
     private Double oref;
 
     @Column(name="RECEIPT")
-    private Byte receipt = 0;
+    private Byte receipt = 0; //0 not printed 1 printed 2:No receipt
 
 	
 	@Transient

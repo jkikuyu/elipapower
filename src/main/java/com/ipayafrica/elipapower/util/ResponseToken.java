@@ -546,7 +546,7 @@ public class ResponseToken {
 	ErrorCode errorCode =  iErrorCodeService.findByMessageCode(xmlTokenHandler.getResCode());
 	int errorCodeId = errorCode.getErrorcodeid();
 	Byte status = null;
-	if (errorCodeId==1){
+/*	if (errorCodeId==1){
 		status = 1;
 	}
 	else if (errorCodeId >1){
@@ -556,21 +556,24 @@ public class ResponseToken {
 	else{
 		status = 0;
 	}
+*/
 	messMap.put("ourref",ref);
 	
 
-	if(errorCodeId==0){
-		messMap.put("response","Please try again later");
-		messMap.put("status"," 0");
-		
-		
-	}
-	else{
-		messMap.put("response",errorCode.getDescription());
-		messMap.put("status","2");
-
-	}
+	switch (errorCodeId) {
+		case 0:
+			messMap.put("response","Please try again later");
+			messMap.put("status"," 0");
+			break;
+		case 1:
+			messMap.put("response","Please try again later");
+			messMap.put("status",errorCode.getDescription());
+			break;
+		default:
+			messMap.put("response",errorCode.getDescription());
+			messMap.put("status","2");
 	
+	}
 	//tokenResponse.setStatus(status);
 		
 	tokenResponse.setErrorcodeid(errorCodeId);
