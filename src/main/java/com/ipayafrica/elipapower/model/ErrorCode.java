@@ -6,13 +6,16 @@ package com.ipayafrica.elipapower.model;
 * 
 */
 import java.io.Serializable;
+import java.util.Collection;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 @Entity
 @Table(name = "ERRORCODE")
@@ -33,6 +36,9 @@ public class ErrorCode implements Serializable{
     @Column(name = "DESCRIPTION" , nullable=false)
     private String description;
     
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "errorcode")
+    private Collection<TokenResponse> tokenresponses;
+
     
 	public ErrorCode() {
 		// TODO Auto-generated constructor stub
@@ -66,6 +72,16 @@ public class ErrorCode implements Serializable{
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+
+	public Collection<TokenResponse> getTokenresponses() {
+		return tokenresponses;
+	}
+
+
+	public void setTokenresponses(Collection<TokenResponse> tokenresponses) {
+		this.tokenresponses = tokenresponses;
 	}
 	
 

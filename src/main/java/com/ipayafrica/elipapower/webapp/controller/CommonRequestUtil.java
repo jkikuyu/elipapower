@@ -76,7 +76,7 @@ public class CommonRequestUtil {
 			}
 			log.info(messJSON);
 			//Byte reversal = 0;
-			
+			tokenResponse.setTokenrequest(tokenRequest);
 			tokenResponse.setJsonresponse(messJSON);
 			//tokenResponse.setReversal(reversal);
 			iTokenResponseService.save(tokenResponse);

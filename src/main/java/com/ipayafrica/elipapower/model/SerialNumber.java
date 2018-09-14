@@ -33,12 +33,12 @@ public class SerialNumber implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Integer id;
     @Column(name = "NAME", nullable=false)
     private String name;
 
 	@Column(name = "VALUE",nullable=false )
-    private Long value =(long) 0;
+    private Integer value = 0;
 	public SerialNumber() {
 		
 	}
@@ -49,17 +49,17 @@ public class SerialNumber implements Serializable {
     public String getName() {
 		return name;
 	}
-	public Long getValue() {
+	public Integer getValue() {
 		return value;
 	}
-	public void setId(long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
 	public void setName(String name) {
 		this.name = name;
 	}
-	public void setValue(Long value) {
+	public void setValue(Integer value) {
 		this.value = value;
 	}
 

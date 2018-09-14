@@ -11,9 +11,13 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -28,19 +32,20 @@ public class TokenResponse implements Serializable{
     @Basic(optional = false)
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "REPONSEID")
-    private Long responseid;
+    private Integer responseid;
     @Column(name = "METERNO", length=100)
     private String meterno;
 
-    @Column(name = "ERRORCODEID")
+/*    @Column(name = "ERRORCODEID")
     private  Integer errorcodeid;
+*/    
     @Column(name = "REF", precision=12)
     private Double ref;
-    @Column(name = "RESPONSEXML",length=1000)
+    @Column(name = "RESPONSEXML",length=1500)
     private String responsexml;
     @Column(name = "ORIGXML", length=1500)
     private String origxml;
-    @Column(name = "JSONResponse")
+    @Column(name = "JSONResponse",length=1500)
     private String jsonresponse;
 
     @Column(name = "RESPONSEDATE")
@@ -52,14 +57,24 @@ public class TokenResponse implements Serializable{
 /*    @Column(name="REVERSAL") // 0 Normal vend 2 reversal
     private Byte reversal;
 */    
-	@Transient
+    
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="errorcodeid", foreignKey = @ForeignKey(name = "fk_tokenresponse_errorcode"))
+    private ErrorCode errorcode;
+    
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="requestid", foreignKey = @ForeignKey(name = "fk_tokenresponse_tokenrequest"))
+    private TokenRequest tokenrequest;
+	
+    @Transient
     private String term;
 
+	
 	public TokenResponse() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Long getResponseid() {
+	public Integer getResponseid() {
 		return responseid;
 	}
 
@@ -80,7 +95,7 @@ public class TokenResponse implements Serializable{
 		return osysdate;
 	}
 
-	public void setResponseid(Long responseid) {
+	public void setResponseid(Integer responseid) {
 		this.responseid = responseid;
 	}
 
@@ -96,10 +111,10 @@ public class TokenResponse implements Serializable{
 		this.responsedate = responsedate;
 	}
 
-	public Integer getErrorcodeid() {
+/*	public Integer getErrorcodeid() {
 		return errorcodeid;
 	}
-
+*/
 	public Double getRef() {
 		return ref;
 	}
@@ -107,11 +122,11 @@ public class TokenResponse implements Serializable{
 /*	public Byte getReversal() {
 		return reversal;
 	}
-*/
+
 	public void setErrorcodeid(Integer errorcodeid) {
 		this.errorcodeid = errorcodeid;
 	}
-
+*/
 	public void setRef(Double ref) {
 		this.ref = ref;
 	}
@@ -146,6 +161,22 @@ public class TokenResponse implements Serializable{
 
 	public void setTerm(String term) {
 		this.term = term;
+	}
+
+	public ErrorCode getErrorcode() {
+		return errorcode;
+	}
+
+	public TokenRequest getTokenrequest() {
+		return tokenrequest;
+	}
+
+	public void setErrorcode(ErrorCode errorcode) {
+		this.errorcode = errorcode;
+	}
+
+	public void setTokenrequest(TokenRequest tokenrequest) {
+		this.tokenrequest = tokenrequest;
 	}
 
 

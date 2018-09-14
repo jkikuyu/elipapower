@@ -7,14 +7,17 @@ package com.ipayafrica.elipapower.model;
 * 
 */
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -30,7 +33,7 @@ public class TokenRequest extends Token implements Serializable{
     @Basic(optional = false)
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "REQUESTID")
-    private Long requestid;
+    private Integer requestid;
     @Column(name = "METERNO", nullable=false, length=100)
     private String meterno;
     @Column(name = "SEQNUM", nullable=false)
@@ -73,10 +76,13 @@ public class TokenRequest extends Token implements Serializable{
 	@Transient
     private Integer repcount = 0;
 
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "tokenrequest")
+	  private Collection<TokenResponse> tokenresponses;
+
 	public TokenRequest() {
 		
 	}
-	public Long getRequestid() {
+	public Integer getRequestid() {
 		return requestid;
 	}
 
@@ -112,7 +118,7 @@ public class TokenRequest extends Token implements Serializable{
 	}
 
 
-	public void setRequestid(Long requestid) {
+	public void setRequestid(Integer requestid) {
 		this.requestid = requestid;
 	}
 
@@ -191,6 +197,12 @@ public class TokenRequest extends Token implements Serializable{
 	}
 	public void setReceipt(Byte receipt) {
 		this.receipt = receipt;
+	}
+	public Collection<TokenResponse> getTokenresponses() {
+		return tokenresponses;
+	}
+	public void setTokenresponses(Collection<TokenResponse> tokenresponses) {
+		this.tokenresponses = tokenresponses;
 	}
 
 

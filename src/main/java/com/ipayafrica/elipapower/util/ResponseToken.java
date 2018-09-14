@@ -545,7 +545,7 @@ public class ResponseToken {
     tokenResponse.setResponsedate(xmlTokenHandler.getResponseDate());
 	ErrorCode errorCode =  iErrorCodeService.findByMessageCode(xmlTokenHandler.getResCode());
 	int errorCodeId = errorCode.getErrorcodeid();
-	Byte status = null;
+	tokenResponse.setErrorcode(errorCode);
 /*	if (errorCodeId==1){
 		status = 1;
 	}
@@ -576,7 +576,7 @@ public class ResponseToken {
 	}
 	//tokenResponse.setStatus(status);
 		
-	tokenResponse.setErrorcodeid(errorCodeId);
+	//tokenResponse.setErrorcodeid(errorCodeId);
 
     return messMap;
    }

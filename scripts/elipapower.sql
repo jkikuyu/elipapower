@@ -31,7 +31,7 @@ DROP TABLE IF EXISTS `errorcode`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `errorcode` (
-  `errorcodeid` bigint(20) NOT NULL AUTO_INCREMENT,
+  `errorcodeid` int(11) NOT NULL AUTO_INCREMENT,
   `description` varchar(255) NOT NULL,
   `messagecode` varchar(20) NOT NULL,
   PRIMARY KEY (`errorcodeid`)
@@ -56,11 +56,11 @@ DROP TABLE IF EXISTS `serialnumber`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `serialnumber` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `value` bigint(20) NOT NULL,
+  `value` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -69,7 +69,6 @@ CREATE TABLE `serialnumber` (
 
 LOCK TABLES `serialnumber` WRITE;
 /*!40000 ALTER TABLE `serialnumber` DISABLE KEYS */;
-INSERT INTO `serialnumber` VALUES (1,'refcount',25),(2,'seqcount',25),(3,'revcount',0);
 /*!40000 ALTER TABLE `serialnumber` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -81,21 +80,21 @@ DROP TABLE IF EXISTS `tokenrequest`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tokenrequest` (
-  `requestid` bigint(20) NOT NULL AUTO_INCREMENT,
+  `requestid` int(11) NOT NULL AUTO_INCREMENT,
   `amount` double DEFAULT NULL,
-  `meterno` varchar(100) NOT NULL,
-  `ref` double DEFAULT NULL,
-  `requestdate` datetime(6) DEFAULT NULL,
-  `requestedby` bigint(20) DEFAULT NULL,
-  `requestxml` varchar(1000) DEFAULT NULL,
-  `seqnum` int(11) DEFAULT NULL,
-  `type` varchar(255) DEFAULT NULL,
   `clientref` varchar(50) DEFAULT NULL,
+  `meterno` varchar(100) NOT NULL,
   `oref` double NOT NULL,
   `receipt` tinyint(4) DEFAULT NULL,
+  `ref` double DEFAULT NULL,
+  `requestdate` datetime(6) NOT NULL,
+  `requestedby` bigint(20) DEFAULT NULL,
+  `requestxml` varchar(1000) NOT NULL,
+  `seqnum` int(11) NOT NULL,
   `status` tinyint(4) DEFAULT NULL,
+  `type` tinyint(4) NOT NULL,
   PRIMARY KEY (`requestid`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -104,7 +103,6 @@ CREATE TABLE `tokenrequest` (
 
 LOCK TABLES `tokenrequest` WRITE;
 /*!40000 ALTER TABLE `tokenrequest` DISABLE KEYS */;
-INSERT INTO `tokenrequest` VALUES (12,500,'A34345610',825515030025,'2018-09-12 15:03:40.511000',NULL,'<ipayMsg client=\"IPAYAFRICA\" term=\"00001\" seqNum=\"00025\" time=\"2018-09-12 15:03:40 +0300\"><elecMsg ver=\"2.44\"><vendReq><ref>825515030025</ref><amt cur=\"KES\">50000</amt><numTokens>1</numTokens><meter>A34345610</meter><payType>cash</payType></vendReq></elecMsg></ipayMsg>',25,'2','16061100',825515030025,1,1);
 /*!40000 ALTER TABLE `tokenrequest` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -116,18 +114,22 @@ DROP TABLE IF EXISTS `tokenresponse`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tokenresponse` (
-  `reponseid` bigint(20) NOT NULL AUTO_INCREMENT,
-  `errorcodeid` varchar(255) DEFAULT NULL,
-  `meterno` varchar(20) DEFAULT NULL,
-  `osysdate` datetime(6) DEFAULT NULL,
-  `ref` bigint(20) DEFAULT NULL,
-  `responsedate` datetime(6) DEFAULT NULL,
-  `responsexml` varchar(2000) DEFAULT NULL,
-  `type` tinyint(4) DEFAULT NULL,
-  `jsonresponse` varchar(2000) DEFAULT NULL,
+  `reponseid` int(11) NOT NULL AUTO_INCREMENT,
+  `jsonresponse` varchar(1500) DEFAULT NULL,
+  `meterno` varchar(100) DEFAULT NULL,
   `origxml` varchar(1500) DEFAULT NULL,
-  PRIMARY KEY (`reponseid`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+  `osysdate` datetime(6) DEFAULT NULL,
+  `ref` double DEFAULT NULL,
+  `responsedate` datetime(6) DEFAULT NULL,
+  `responsexml` varchar(1500) DEFAULT NULL,
+  `errorcodeid` int(11) DEFAULT NULL,
+  `requestid` int(11) DEFAULT NULL,
+  PRIMARY KEY (`reponseid`),
+  KEY `fk_tokenresponse_errorcode` (`errorcodeid`),
+  KEY `fk_tokenresponse_tokenrequest` (`requestid`),
+  CONSTRAINT `fk_tokenresponse_errorcode` FOREIGN KEY (`errorcodeid`) REFERENCES `errorcode` (`errorcodeid`),
+  CONSTRAINT `fk_tokenresponse_tokenrequest` FOREIGN KEY (`requestid`) REFERENCES `tokenrequest` (`requestid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -136,7 +138,6 @@ CREATE TABLE `tokenresponse` (
 
 LOCK TABLES `tokenresponse` WRITE;
 /*!40000 ALTER TABLE `tokenresponse` DISABLE KEYS */;
-INSERT INTO `tokenresponse` VALUES (3,'1','A34345610','2018-09-12 15:03:43.729000',825515030025,'2018-09-12 15:03:44.000000','<ipayMsg  client=\"IPAYAFRICA\"  term=\"00001\"   seqNum=\"00025\"  time=\"2018-09-12 14:03:44 +0200\"><elecMsg  ver=\"2.48\"  finAdj=\"-50000\"><vendRes  supGrpRef=\"100405\"  tariffIdx=\"52\"   keyRevNum=\"1\"  tokenTechCode=\"02\"  algCode=\"05\"  daysLastVend=\"19999\"  resource=\"elec\"><ref>825515030025</ref><res  code=\"elec000\">OK</res><util  addr=\"59 WaterFront, Durban. 5899.\"  taxRef=\"3988339883\"  distId=\"6004708001509\">Eskom Online</util><stdToken   units=\"1666.6666\"  amt=\"31304\"  tax=\"4696\"  tariff=\"aaaa.aa kWh @ 065.72 c/kWh: bbbb.bb kWh @ 075.42 c/kWh: cccc.cc kWh @ 109.50 c/kWh: dddd.dd kWh @ 120.10 c/kWh : \"  desc=\"Normal Sale\"    unitsType=\"kWh\"  rctNum=\"233875822915\">71396306497885587040</stdToken><debt  amt=\"8500\"  tax=\"0\"  rem=\"7700\"  desc=\"1122\">Debt Recovery</debt><fixed  amt=\"4782\"  tax=\"718\">Fixed</fixed><rtlrMsg>Hello Operator Message.</rtlrMsg><customerMsg>Good day dear customer. This is a test customer message from customer. We have vended a token for the customer. The message can be upto 160 characters long....</customerMsg></vendRes></elecMsg></ipayMsg>',NULL,'{\"reason\":\"OK\",\"unitsAmt\":313.04,\"tax\":46.96,\"units\":\"1666.6666\",\"unitsType\":\"kWh\",\"token\":\"71396306497885587040\",\"ref\":\"16061100\",\"tarrif\":{\"t4\":\" dddd.dd kWh @ 120.10 c/kWh \",\"t5\":\" \",\"t1\":\"aaaa.aa kWh @ 065.72 c/kWh\",\"t2\":\" bbbb.bb kWh @ 075.42 c/kWh\",\"t3\":\" cccc.cc kWh @ 109.50 c/kWh\"},\"debtAmt\":85.0,\"response\":\"Please try again later\",\"ourref\":\"825515030025\",\"fixedamt\":47.82,\"fixedtax\":7.18,\"status\":\"Successful\"}','response: <ipayMsg client=\"IPAYAFRICA\" term=\"00001\" seqNum=\"00025\" time=\"2018-09-12 14:03:44 +0200\"><elecMsg ver=\"2.48\" finAdj=\"-50000\"><vendRes supGrpRef=\"100405\" tariffIdx=\"52\" keyRevNum=\"1\" tokenTechCode=\"02\" algCode=\"05\" daysLastVend=\"19999\" resource=\"elec\"><ref>825515030025</ref><res code=\"elec000\">OK</res><util addr=\"59 WaterFront, Durban. 5899.\" taxRef=\"3988339883\" distId=\"6004708001509\">Eskom Online</util><stdToken units=\"1666.6666\" amt=\"31304\" tax=\"4696\" tariff=\"aaaa.aa kWh @ 065.72 c/kWh: bbbb.bb kWh @ 075.42 c/kWh: cccc.cc kWh @ 109.50 c/kWh: dddd.dd kWh @ 120.10 c/kWh : \" desc=\"Normal Sale\" unitsType=\"kWh\" rctNum=\"233875822915\">71396306497885587040</stdToken><debt amt=\"8500\" tax=\"0\" rem=\"7700\" desc=\"1122\">Debt Recovery</debt><fixed amt=\"4782\" tax=\"718\">Fixed</fixed><rtlrMsg>Hello Operator Message.</rtlrMsg><customerMsg>Good day dear customer. This is a test customer message from customer. We have vended a token for the customer. The message can be upto 160 characters long....</customerMsg></vendRes></elecMsg></ipayMsg>');
 /*!40000 ALTER TABLE `tokenresponse` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -149,4 +150,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-09-12 16:31:08
+-- Dump completed on 2018-09-14 14:25:20
