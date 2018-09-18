@@ -30,13 +30,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ipayafrica.elipapower.model.Token;
 import com.ipayafrica.elipapower.model.TokenRequest;
-import com.ipayafrica.elipapower.model.TokenResponse;
 import com.ipayafrica.elipapower.service.ITokenRequestService;
 import com.ipayafrica.elipapower.service.ITokenResponseService;
 import com.ipayafrica.elipapower.util.CreateXML;
 import com.ipayafrica.elipapower.util.LogFile;
 import com.ipayafrica.elipapower.util.RequestToken;
-import com.ipayafrica.elipapower.util.ResponseToken;
 
 @RestController
 public class VendController extends CommonRequestUtil{

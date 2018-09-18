@@ -40,6 +40,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.ipayafrica.elipapower.Invariable;
+import com.ipayafrica.elipapower.model.SerialNumber;
 import com.ipayafrica.elipapower.model.TokenRequest;
 import com.ipayafrica.elipapower.service.ISerialNumberService;
 @PropertySource("classpath:application.properties")
@@ -398,7 +399,18 @@ public class CreateXML {
 		dtt = sdf.format(date);
 		
 		String name =env.getProperty("seq.counter");
-		iSerialNumberService.updateLastNumber(name);
+		SerialNumber sno = iSerialNumberService.getSerialNumber(name);
+		if(sno ==null) {
+			SerialNumber serialnumber = new SerialNumber();
+			serialnumber.setName(name);
+			serialnumber.setValue(1);
+			iSerialNumberService.save(serialnumber);
+		}
+		else {
+			iSerialNumberService.updateLastNumber(name);
+
+		}
+
 		Integer nextNum = iSerialNumberService.getLastNumber(); 
 		seqNo = nextNum.toString();
 		seqNo = ("00000"+seqNo).substring(seqNo.length());
@@ -478,8 +490,16 @@ public class CreateXML {
 		Integer day_of_year = cal.get(Calendar.DAY_OF_YEAR);
 		String name =env.getProperty("ref.counter");
 
-
-		iSerialNumberService.updateLastNumber(name);
+		SerialNumber sno = iSerialNumberService.getSerialNumber(name);
+		if(sno ==null) {
+			SerialNumber serialnumber = new SerialNumber();
+			serialnumber.setName(name);
+			serialnumber.setValue(1);
+			iSerialNumberService.save(serialnumber);
+		}
+		else {
+			iSerialNumberService.updateLastNumber(name);
+		}
 		Integer nextNum = iSerialNumberService.getLastNumber(); 
 		log.info(nextNum);
 		String s = last_digit_of_year+String.format("%03d",day_of_year)  +String.format("%02d",hour) 

@@ -8,10 +8,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import com.ipayafrica.elipapower.model.TokenRequest;
 
-
+@Repository
 public interface ITokenRequestRepository<T extends TokenRequest,PK> extends JpaRepository<T, Long>{
 
 	@Query("SELECT t FROM TokenRequest t where t.ref = :ref")

@@ -24,19 +24,6 @@ public class SerialNumberService implements ISerialNumberService {
 	}
 
 	@Override
-	public SerialNumber get(Long id) {
-		// TODO Auto-generated method stub
-		return 	null;
-
-	}
-
-	@Override
-	public SerialNumber save(SerialNumber object) {
-			// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void remove(long Long) {
 		// TODO Auto-generated method stub
 	}
@@ -53,4 +40,27 @@ public class SerialNumberService implements ISerialNumberService {
 		return iSerialNumberRepository.getLastNumber();
 	}
 
+
+
+	@Override
+	public SerialNumber getSerialNumber(String name) {
+		// TODO Auto-generated method stub
+		return iSerialNumberRepository.findOneByName(name);
+	}
+
+	@Override
+	public SerialNumber get(Integer id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public SerialNumber save(SerialNumber serialnumber) {
+		// TODO Auto-generated method stub
+		iSerialNumberRepository.save(serialnumber);
+		return serialnumber;
+	}
+
+
 }
+

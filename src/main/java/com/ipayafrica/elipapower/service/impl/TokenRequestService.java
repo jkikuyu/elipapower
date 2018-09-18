@@ -17,7 +17,7 @@ import com.ipayafrica.elipapower.service.ITokenRequestService;
 public class TokenRequestService implements ITokenRequestService{
 
 	@Autowired
-	ITokenRequestRepository<TokenRequest, Long> tokenRequestRepository;
+	ITokenRequestRepository<TokenRequest, Integer> tokenRequestRepository;
 
 	@Override
 	public List<TokenRequest> getAll() {
@@ -34,7 +34,7 @@ public class TokenRequestService implements ITokenRequestService{
 	}
 
 	@Override
-	public void remove(long Long) {
+	public void remove(long Integer) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -46,12 +46,12 @@ public class TokenRequestService implements ITokenRequestService{
 	}
 
 	@Override
-	public TokenRequest getByTokenRequestId(Long requestId) {
+	public TokenRequest getByTokenRequestId(Integer requestId) {
 		return null;
 	}
 
 	@Override
-	public TokenRequest get(Long id) {
+	public TokenRequest get(Integer id) {
 		return null;
 	}
 

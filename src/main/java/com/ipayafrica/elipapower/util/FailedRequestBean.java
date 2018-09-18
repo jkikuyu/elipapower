@@ -154,6 +154,7 @@ public class FailedRequestBean {
 						log.info(messJSON);
 						tokenResponse.setRef(oref);
 						tokenResponse.setJsonresponse(messJSON);
+						tokenResponse.setTokenrequest(treq);
 						//tokenResponse.setReversal(reversal);
 						iTokenResponseService.save(tokenResponse);
 						if(respTerm.equals(term)) {

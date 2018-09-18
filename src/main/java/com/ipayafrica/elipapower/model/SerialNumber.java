@@ -27,13 +27,16 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "SERIALNUMBER")
 @NamedQueries({
-    @NamedQuery(name = "SerialNumber.findByName", query = "SELECT s FROM SerialNumber s WHERE s.name=:name")})
+    @NamedQuery(name = "SerialNumber.findOneByName", query = "SELECT s FROM SerialNumber s WHERE s.name=:name")})
 
 public class SerialNumber implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+
     private Integer id;
+    
     @Column(name = "NAME", nullable=false)
     private String name;
 
@@ -42,7 +45,7 @@ public class SerialNumber implements Serializable {
 	public SerialNumber() {
 		
 	}
-	public long getId() {
+	public Integer getId() {
 		return id;
 	}
 
